@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <title id="z">0 points, 0 dots</title>
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    <style>@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');</style>
+
+    <!-- import the webpage's javascript file -->
+    <script src="/ExpantaNum.js" defer></script>
+    <script src="/format-expantanum.js" defer></script>
+    <script src="/tab.js" defer></script>
+    <script src="/save.js" defer></script>
+    <script src="/layer.js" defer></script>
+    <script src="/function.js" defer></script>
+    <script src="/script.js" defer></script>
+  </head>
+  <body>
+    <!-- this is the start of content -->
+    <div class="center">
+      <span style="font-size: 20px;">You have <b id="points" style="font-size: 30px;"></b> points<br>
+      (<b id="pps"></b>/s)</span>
+    </div>
+    <br>
+    <div class="center">
+      <button onclick="tab(1)" id="tab1" class="tabButton" style="width: 180px;">Prestige Layers</button>
+      <button onclick="tab(2)" id="tab2" class="tabButton" style="width: 180px;">Dimension Shift</button>
+      <button onclick="tab(0)" id="tab0" class="tabButton">Options</button>
+    </div><br>
+    <div id="Tab1" class="center">
+    <button onclick="subtab(1,1)" id="tab1st1" class="subtabButton">Dot</button>
+    <button onclick="subtab(1,2)" id="tab1st2" class="subtabButton">Line</button>
+    <br>
+    <div id="Tab1St1" class="center">
+      You have <b id="layer1amt" style="font-size: 24px;"></b> Dots, which generate <b id="layer1eff" style="font-size: 24px;"></b> points per second.<br>
+      <button onclick="layerReset(1)" id="layer1reset" class="layerButton">
+        Reset for <b id="layer1gain"></b> Dots<br>
+        <span id="layer1extra">Require</span> <b id="layer1req"></b> points
+      </button>
+      <br><br>
+      <table class="center"><tr>
+        <td>
+          <button onclick="buyUpgrade(1,0)" id="layer1upg0" class="upgradeButton">
+            Multiply Dot effect by Dots^Dots.<br>Currently: <span id="layer1upg0eff"></span>x<br><br>Cost: 30 points and 3 dots.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,1)" id="layer1upg1" class="upgradeButton">
+            Multiply Dot effect by log10(points)^Dots.<br>Currently: <span id="layer1upg1eff"></span>x<br><br>Cost: 15,000 points and 4 dots.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,2)" id="layer1upg2" class="upgradeButton">
+            Multiply Dot gain by log10(log10(points)).<br>Currently: <span id="layer1upg2eff"></span>x<br><br>Cost: 1.000e23 points and 9 dots.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,3)" id="layer1upg3" class="upgradeButton">
+            You can buy max Dots, Dot effect exponent ^(1+0.032*log10(Dot)).<br>Currently: ^<span id="layer1upg3eff"></span><br><br>Cost: 2.000e643 points and 130 dots.
+          </button>
+        </td>
+      </tr></table>
+    </div>
+    <div id="Tab1St2" class="center">
+      The tab is Work in Progress.
+    </div>
+      
+    </div>
+    <div id="Tab0" class="center">
+      <button onclick="save()" class="saveButton" style="border-color: #0000FF">Save</button>
+      <button onclick="exportGame()" class="saveButton" style="border-color: #00FF00">Export</button>
+      <button onclick="importGame()" class="saveButton" style="border-color: #00FF00">Import</button>
+      <button onclick="hardReset()" class="saveButton" style="width: 120px;border-color: #FF0000">HARD RESET</button><br><br>
+      Scripts used: <a href="https://github.com/Naruyoko/ExpantaNum.js">ExpantaNum.js</a>, <a href="https://github.com/cloudytheconqueror/letter-notation-format">format-expantanum.js</a><br>
+      Endgame: 1.000e17,610 points, 1,027 Dots.<br><br>
+      Game Version: v1.0
+    </div>
+    <div id="Tab2" class="center">
+      The tab is Work in Progress.
+    </div>
+    <br><br>
+  </body>
+</html>

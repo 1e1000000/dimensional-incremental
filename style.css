@@ -1,0 +1,108 @@
+/* a minimalist set of CSS resets */
+
+/* default to border-box */
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* adjust typography defaults */
+body {
+  margin: 1rem;
+  font-family: 'Courier Prime', monospace;
+  line-height: 1.5;
+}
+
+button {
+  font-family: 'Courier Prime', monospace;
+  line-height: 1.5;
+  font-size: 16px;
+}
+
+.tabButton {
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 1000px;
+  border-color: #000000;
+  border-weight: 10px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  height: 50px;
+  width: 90px;
+  font-weight: bold;  
+}
+
+.tabButton:hover {
+  background: #CCCCCC;
+}
+
+.subtabButton {
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 1000px;
+  border-color: #000000;
+  border-weight: 10px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  height: 30px;
+  width: 60px;
+  font-weight: bold;  
+}
+
+.subtabButton:hover {
+  background: #CCCCCC;
+}
+
+.layerButton {
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 5px;
+  border-color: #000000;
+  border-weight: 10px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  height: 60px;  
+}
+
+.layerButton:hover {
+  background: #CCCCCC;
+}
+
+.saveButton {
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 1000px;
+  border-color: #000000;
+  border-weight: 10px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  height: 30px;
+  width: 80px;
+}
+
+.upgradeButton {
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 5px;
+  border-color: #000000;
+  border-weight: 10px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  height: 180px;
+  width: 180px; 
+  font-size: 12px;
+}
+
+.saveButton:hover {
+  background: #CCCCCC;
+}
+
+.center{
+  text-align:center;
+  margin-left: auto;
+  margin-right: auto;
+}
