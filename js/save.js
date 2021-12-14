@@ -36,9 +36,11 @@ function wipe() {
 
 function save(){
     if (tmp.offlineActive) return alert("Saving is disabled due to offline simulation")
-    if (localStorage.getItem(saveId) == '') getPlayerData()
-    localStorage.setItem(saveId,btoa(JSON.stringify(player)))
-    console.log("Game saved at Timestamp " + (Date.now()/1000).toLocaleString())
+    else {
+      if (localStorage.getItem(saveId) == '') getPlayerData()
+      localStorage.setItem(saveId,btoa(JSON.stringify(player)))
+      console.log("Game saved at Timestamp " + (Date.now()/1000).toLocaleString())
+    }
 }
 
 function load(x){
