@@ -247,3 +247,12 @@ function formatWhole(num) {
 function formatSmall(num, precision=2) { 
     return format(num, precision, true)    
 }
+
+function formatTime(num, precision=2){
+    num = new ExpantaNum(num)
+    if (num.lt(0)) return "Negative Time"
+    else if (num.lt(1e-6)) return format(0, precision) + " microseconds"
+    else if (num.lt(1e-3)) return format(num.mul(1e6), precision) + " microseconds"
+    else if (num.lt(1)) return format(num.mul(1e3), precision) + " milliseconds"
+    else return format(num, precision) + " seconds"
+}

@@ -1,67 +1,115 @@
 const saveId = "dimensionincremental"
 
-function reset(){
-  player = {
+function ENify(x){
+    let nx = new ExpantaNum(0);
+    nx.array = x.array;
+    nx.sign = x.sign;
+    nx.layer = x.layer;
+    return nx;
+}
+
+function calc(dt, dt_offline){
+  player.points = player.points.add(getPointsGain().mul(dt))
+  player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
+}
+
+function getPlayerData(){
+  let s = {
     points: new ExpantaNum(1),
-    lastTick: Date.now(),
     tab: 1,
-    subtab1: 1,
-    prestige1: new ExpantaNum(0),
-    upgrade1: [false,false,false,false],
+    subtab: [null,1],
+    prestige: [null,new ExpantaNum(0)],
+    upgrade: [null,[]],
+    version: 0,
+    version2: 0,
+    offline: {
+      current: Date.now(),
+      time: 0,
+    },
+  }
+  return s
+}
+
+function wipe() {
+  player = getPlayerData()
+}
+
+function save(){
+    if (tmp.offlineActive) return alert("Saving is disabled due to offline simulation")
+    if (localStorage.getItem(saveId) == '') getPlayerData()
+    localStorage.setItem(saveId,btoa(JSON.stringify(player)))
+    console.log("Game saved at Timestamp " + (Date.now()/1000).toLocaleString())
+}
+
+function load(x){
+    if(typeof x == "string" & x != ''){
+      loadPlayer(JSON.parse(atob(x)))
+    } else {
+      wipe()
+    }
+}
+
+function loadPlayer(load) {
+  //getPlayerData()
+  player = Object.assign(getPlayerData(), player)
+  for (let x = 0; x < Object.keys(player).length; x++) {
+    let k = Object.keys(player)[x]
+    if (typeof player[k] == 'object' && getPlayerData()[k]) player[k] = Object.assign(getPlayerData()[k], load[k])
+  }
+  convertToExpNum()
+  tab(player.tab)
+  for (let i=1;i<=player.subtab.length-1;i++){
+    subtab(i,player.subtab[i])
+  }
+  let off_time = (Date.now() - player.offline.current)/1000
+  if (off_time >= 10) player.offline.time += off_time
+  console.log("Game loaded at Timestamp " + (Date.now()/1000).toLocaleString())
+}
+
+function convertToExpNum(){
+  player.points = ENify(player.points)
+  for (let i=1;i<=player.prestige.length-1;i++){
+    player.prestige[i] = ENify(player.prestige[i])
   }
 }
 
-function loadGame(loadgame) {
-  //Sets each variable in 'player' to the equivalent variable in 'loadgame' (the saved file)
-  for (i=0; i<Object.keys(loadgame).length; i++) {
-    if (loadgame[Object.keys(loadgame)[i]] != "undefined") {
-      if (typeof loadgame[Object.keys(loadgame)[i]] == "string") {player[Object.keys(loadgame)[i]] = new ExpantaNum(loadgame[Object.keys(loadgame)[i]])}
-      else {player[Object.keys(player)[i]] = loadgame[Object.keys(loadgame)[i]]}
-    }
-  }
+function loadGame() {
+  wipe()
+  load(localStorage.getItem(saveId))
+  updateTemp()
+  updateHTML()
 }
+
+window.setInterval(function() {
+  if (!tmp.offlineActive) save()
+}, 5000)
 
 function hardReset() {
   if (confirm("Are you sure you want to reset? You will lose everything!")) {
     reset()
     save()
+    console.log("Save resetted at Timestamp " + (Date.now()/1000).toLocaleString())
     location.reload()
   }
 }
-
-function save() {localStorage.setItem(saveId, JSON.stringify(player))}
-
-setInterval(save, 5000)
 
 function exportGame() {
   save()
   navigator.clipboard.writeText(btoa(JSON.stringify(player))).then(function() {
     alert("Copied to clipboard!")
+    console.log("Save exported at Timestamp " + (Date.now()/1000).toLocaleString())
   }, function() {
     alert("Error copying to clipboard, try again...")
+    console.log("Save failed to export at Timestamp " + (Date.now()/1000).toLocaleString())
   });
 }
 
 function importGame() {
-  loadgame = JSON.parse(atob(prompt("Input your save here:")))
-  if (loadgame && loadgame != null && loadgame != "") {
-    reset()
-    loadGame(loadgame)
-    save()
-  }
-  else {
-    alert("Invalid input.")
-  }
+  let loadgame = prompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE")
+  if (loadgame != null) {
+      load(loadgame)
+      save()
+      console.log("Save imported at Timestamp " + (Date.now()/1000).toLocaleString())
+      location.reload()
+  } else console.log("Save failed to import at Timestamp " + (Date.now()/1000).toLocaleString())
 }
-
-function load() {
-	reset()
-	let loadgame = JSON.parse(localStorage.getItem(saveId))
-	if (loadgame != null) {
-		loadGame(loadgame)
-    tab(player.tab)
-    subtab(1,player.subtab1)
-	}
-}
-
-load()

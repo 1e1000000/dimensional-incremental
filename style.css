@@ -32,11 +32,28 @@ button {
   cursor: pointer;
   transition-duration: 0.1s;
   height: 50px;
-  width: 90px;
+  width: 120px;
   font-weight: bold;  
 }
 
 .tabButton:hover {
+  background: #CCCCCC;
+}
+
+.tabButtonWide {
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 1000px;
+  border-color: #000000;
+  border-weight: 10px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  height: 50px;
+  width: 200px;
+  font-weight: bold;  
+}
+
+.tabButtonWide:hover {
   background: #CCCCCC;
 }
 
@@ -49,7 +66,7 @@ button {
   cursor: pointer;
   transition-duration: 0.1s;
   height: 30px;
-  width: 60px;
+  width: 75px;
   font-weight: bold;  
 }
 
@@ -79,6 +96,7 @@ button {
   border-color: #000000;
   border-weight: 10px;
   cursor: pointer;
+  font-size: 13px;
   transition-duration: 0.1s;
   height: 30px;
   width: 80px;

@@ -37,7 +37,7 @@ function prestigeReqBase(layer){ //1st require
     switch(layer) {
     case 1:
       let x = new ExpantaNum(1)
-      if (player.upgrade1[2]) x = x.mul(upgradeEffect(1,2))
+      if (player.upgrade[1].includes(3)) x = x.mul(upgradeEffect(1,3))
       return x
     break;
     default:
@@ -72,7 +72,7 @@ function prestigeReqBase(layer){ //1st require
   function prestigeReq(layer){
     switch(layer) {
     case 1:
-      let x = player.prestige1.div(prestigeMulti(layer))
+      let x = player.prestige[1].div(prestigeMulti(layer))
       if (x.gte(prestigeSoftcapStart(layer))) x = x.div(prestigeSoftcapStart(layer)).pow(prestigeSoftcapExp(layer)).mul(prestigeSoftcapStart(layer))
       let req = prestigeReqScaling(layer).pow(x.pow(prestigeReqExp(layer))).mul(prestigeReqBase(layer))
       return req
@@ -85,7 +85,7 @@ function prestigeReqBase(layer){ //1st require
   function nextPrestigeReq(layer){
     switch(layer) {
     case 1:
-      let x = player.prestige1.add(canGainMax(layer)?prestigeGain(layer):0).div(prestigeMulti(layer))
+      let x = player.prestige[1].add(canGainMax(layer)?prestigeGain(layer):0).div(prestigeMulti(layer))
       if (x.gte(prestigeSoftcapStart(layer))) x = x.div(prestigeSoftcapStart(layer)).pow(prestigeSoftcapExp(layer)).mul(prestigeSoftcapStart(layer))
       let req = prestigeReqScaling(layer).pow(x.pow(prestigeReqExp(layer))).mul(prestigeReqBase(layer))
       return req
@@ -110,7 +110,7 @@ function prestigeReqBase(layer){ //1st require
     case 1:
       let x = player.points.div(prestigeReqBase(layer)).logBase(prestigeReqScaling(layer)).pow(prestigeReqExp(layer).rec()).mul(prestigeMulti(layer)).add(1)
       if (x.gte(prestigeSoftcapStart(layer))) x = x.div(prestigeSoftcapStart(layer)).pow(prestigeSoftcapExp(layer).rec()).mul(prestigeSoftcapStart(layer))
-      let gain = x.sub(player.prestige1)
+      let gain = x.sub(player.prestige[1])
       if (!canGainMax(layer)) return new ExpantaNum(1)
       return gain.max(0).floor()
     break;
@@ -122,7 +122,7 @@ function prestigeReqBase(layer){ //1st require
   function canGainMax(layer){
     switch(layer) {
     case 1:
-      return player.upgrade1[3]
+      return player.upgrade[1].includes(4)
     break;
     default:
       return false
@@ -153,7 +153,7 @@ function prestigeReqBase(layer){ //1st require
     switch(layer) {
     case 1:
       if (canReset(layer)){
-        player.prestige1 = player.prestige1.add(prestigeGain(layer))
+        player.prestige[1] = player.prestige[1].add(prestigeGain(layer))
         if (resetNothing(layer)) return
         player.points = new ExpantaNum(0)
       }
@@ -166,10 +166,10 @@ function prestigeReqBase(layer){ //1st require
   function layerEff(layer){
     switch(layer) {
     case 1:
-        let x = new ExpantaNum(player.prestige1)
-        if (player.upgrade1[0]) x = x.mul(upgradeEffect(1,0))
-        if (player.upgrade1[1]) x = x.mul(upgradeEffect(1,1))
-        if (player.upgrade1[3] && x.gte(10)) x = new ExpantaNum(10).pow(x.logBase(10).pow(upgradeEffect(1,3)))
+        let x = player.prestige[1]
+        if (player.upgrade[1].includes(1)) x = x.mul(upgradeEffect(1,1))
+        if (player.upgrade[1].includes(2)) x = x.mul(upgradeEffect(1,2))
+        if (player.upgrade[1].includes(4) && x.gte(10)) x = new ExpantaNum(10).pow(x.logBase(10).pow(upgradeEffect(1,4)))
         return x
     break;
     default:

@@ -19,7 +19,7 @@
         // 
         // JSON   0 JSON object
         // STRING 1 String
-        serializeMode: 1,
+        serializeMode: 0,
         
         // Level of debug information printed in console
         // 

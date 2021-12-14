@@ -7,7 +7,7 @@ function tab(x){
   }
   
   function subtab(x,y){
-    player["subtab" + x] = y
+    player.subtab[x] = y
     for (let i=1;i<=loadSubtabs[x];i++){
       document.getElementById("Tab" + x + "St" + i).style.display = "none";
     }
