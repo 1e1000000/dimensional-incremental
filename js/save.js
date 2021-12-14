@@ -57,9 +57,9 @@ function loadPlayer(load) {
     if (typeof player[k] == 'object' && getPlayerData()[k]) player[k] = Object.assign(getPlayerData()[k], load[k])
   }
   convertToExpNum()
-  tab(player.tab)
+  tab(1)
   for (let i=1;i<=player.subtab.length-1;i++){
-    subtab(i,player.subtab[i])
+    subtab(i,1)
   }
   let off_time = (Date.now() - player.offline.current)/1000
   if (off_time >= 10) player.offline.time += off_time
