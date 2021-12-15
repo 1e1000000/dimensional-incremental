@@ -49,7 +49,7 @@
       }
       document.getElementById("tab2").style.display = (player.points.gte("e17500")?"inline-block":"none")
       document.getElementById("tab1st2").style.display = (false?"inline-block":"none")
-      document.getElementById("ver").innerHTML = player.version + (player.version2 ? "." + player.version2 : "")
+      document.getElementById("ver").innerHTML = player.majorVer + "." + player.version + (player.version2 || player.version3 ? "." + player.version2 + (player.version3 ? "." + player.version3 : "") : "") + (player.patchVer ? " Patch " + player.patch : "") 
     }
       
 const loadUpgrades=[null,4]

@@ -20,8 +20,11 @@ function getPlayerData(){
     subtab: [null,1],
     prestige: [null,new ExpantaNum(0)],
     upgrade: [null,[]],
-    version: 0,
-    version2: 0,
+    majorVer: 1, // usually meta-layer
+    version: 0, // usually a layer
+    version2: 0, // usually a new content on a layer
+    version3: 0, // usually more content on existing content
+    patchVer: 0, // usually a bug fix
     offline: {
       current: Date.now(),
       time: 0,
