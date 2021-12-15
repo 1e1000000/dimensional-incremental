@@ -35,7 +35,7 @@ function wipe() {
 }
 
 function save(){
-    if (tmp.offlineActive) return alert("Saving is disabled due to offline simulation")
+    if (tmp.offlineActive) return
     else {
       if (localStorage.getItem(saveId) == '') getPlayerData()
       localStorage.setItem(saveId,btoa(JSON.stringify(player)))
