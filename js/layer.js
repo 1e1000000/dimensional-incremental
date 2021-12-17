@@ -149,12 +149,12 @@ function prestigeReqBase(layer){ //1st require
     }
   }
   
-  function layerReset(layer){
+  function layerReset(layer, forced = false){
     switch(layer) {
     case 1:
-      if (canReset(layer)){
-        player.prestige[1] = player.prestige[1].add(prestigeGain(layer))
-        if (resetNothing(layer)) return
+      if (canReset(layer) || forced){
+        if (!forced) player.prestige[1] = player.prestige[1].add(prestigeGain(layer))
+        if (resetNothing(layer) && !forced) return
         player.points = new ExpantaNum(0)
       }
     break;
