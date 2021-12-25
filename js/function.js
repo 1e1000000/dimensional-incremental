@@ -142,7 +142,7 @@ function canGainMilestone(layer, id){
                 return player.prestige[2].gte(2)
             break;
             case 3:
-                return false
+                return player.prestige[2].gte(3)
             break;
             default: // milestone not found
                 return false
