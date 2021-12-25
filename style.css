@@ -124,3 +124,18 @@ button {
   margin-left: auto;
   margin-right: auto;
 }
+
+.milestoneTable td{
+  border: 1px solid black;
+  padding: 5px;
+  width: 300px
+}
+
+.milestoneTable tr:nth-child(even){
+  background-color: #e7e7e7;
+}
+
+.milestoneTable tr:hover {
+  background-color: #CCCCCC;
+}
+

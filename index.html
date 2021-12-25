@@ -13,6 +13,7 @@
     <!-- import the webpage's javascript file -->
     <script src="js/ExpantaNum.js" defer></script>
     <script src="js/format-expantanum.js" defer></script>
+    <script src="js/mathfunc.js" defer></script>
     <script src="js/tab.js" defer></script>
     <script src="js/save.js" defer></script>
     <script src="js/layer.js" defer></script>
@@ -49,36 +50,95 @@
       </table><br>
     <div id="Tab1St1" class="center">
       You have <b id="layer1amt" style="font-size: 24px;"></b> Dots, which generate <b id="layer1eff" style="font-size: 24px;"></b> points per second.<br>
-      <button onclick="layerReset(1)" id="layer1reset" class="layerButton">
+      <button onclick="LAYERS.doReset(1)" id="layer1reset" class="layerButton">
         Reset for <b id="layer1gain"></b> Dots<br>
-        <span id="layer1extra">Require</span> <b id="layer1req"></b> points
+        <span id="layer1extra">Require</span> <b id="layer1base"></b>/<b id="layer1req"></b> points
       </button>
       <br><br>
       <table class="center"><tr>
         <td>
           <button onclick="buyUpgrade(1,1)" id="layer1upg1" class="upgradeButton">
-            Multiply Dot effect by Dots^Dots.<br>Currently: <span id="layer1upg1eff"></span>x<br><br>Cost: 30 points and 3 dots.
+            Multiply Dot effect by Dots^<span id="layer1upgExtra1">Dots</span>.<br>Currently: <span id="layer1upg1eff"></span>x<br><br>Cost: <span id="layer1upg1cost"></span>.
           </button>
         </td>
         <td>
           <button onclick="buyUpgrade(1,2)" id="layer1upg2" class="upgradeButton">
-            Multiply Dot effect by log10(points)^Dots.<br>Currently: <span id="layer1upg2eff"></span>x<br><br>Cost: 15,000 points and 4 dots.
+            Multiply Dot effect by log10(points)^Dots.<br>Currently: <span id="layer1upg2eff"></span>x<br><br>Cost: <span id="layer1upg2cost"></span>.
           </button>
         </td>
         <td>
           <button onclick="buyUpgrade(1,3)" id="layer1upg3" class="upgradeButton">
-            Multiply Dot gain by log10(log10(points)).<br>Currently: <span id="layer1upg3eff"></span>x<br><br>Cost: 1.000e23 points and 9 dots.
+            Multiply Dot gain by log10(log10(points)).<br>Currently: <span id="layer1upg3eff"></span>x<br><br>Cost: <span id="layer1upg3cost"></span>.
           </button>
         </td>
         <td>
           <button onclick="buyUpgrade(1,4)" id="layer1upg4" class="upgradeButton">
-            You can buy max Dots, Dot effect exponent ^(1+0.032*log10(Dot)).<br>Currently: ^<span id="layer1upg4eff"></span><br><br>Cost: 2.000e643 points and 130 dots.
+            You can buy max Dots, Dot effect exponent ^(1+0.032*log10(Dot)), softcap at ^1.16.<br>Currently: ^<span id="layer1upg4eff"></span><br><br>Cost: <span id="layer1upg4cost"></span>.
           </button>
         </td>
-      </tr></table>
+      </tr>
+      <tr>
+        <td>
+          <button onclick="buyUpgrade(1,5)" id="layer1upg5" class="upgradeButton">
+            Raise the above upgrade effect by log(Dot)^0.5.<br>Currently: ^<span id="layer1upg5eff"></span><br><br>Cost: <span id="layer1upg5cost"></span>.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,6)" id="layer1upg6" class="upgradeButton">
+            Raise Line effect by Dots^0.35.<br>Currently: ^<span id="layer1upg6eff"></span><br><br>Cost: <span id="layer1upg6cost"></span>.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,7)" id="layer1upg7" class="upgradeButton">
+            Add 1 to OoM of Dots to Line Segments gain exponent.<br><br>Cost: <span id="layer1upg7cost"></span>.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,8)" id="layer1upg8" class="upgradeButton">
+            Raise Line effect by slog10(points)^1.625.<br>Currently: ^<span id="layer1upg8eff"></span><br><br>Cost: <span id="layer1upg8cost"></span>.
+          </button>
+        </td>
+      </tr>
+    </table>
     </div>
     <div id="Tab1St2" class="center">
-      The tab is Work in Progress.
+      You have <b id="layer2amt" style="font-size: 24px;"></b> Lines, which multiply points gain by <b id="layer2eff" style="font-size: 24px;"></b> (based on points).<br>
+      <button onclick="LAYERS.doReset(2)" id="layer2reset" class="layerButton">
+        Reset for <b id="layer2gain"></b> Lines<br>
+        <span id="layer2extra">Require</span> <b id="layer2base"></b>/<b id="layer2req"></b> Dots
+      </button>
+      <br><br>
+      <table class="center milestoneTable">
+        <tr id="layer2milestone1">
+          <td>
+            1 Line
+          </td>
+          <td>
+            Unlock more Dot Upgrades
+          </td>
+        </tr>
+        <tr id="layer2milestone2">
+          <td>
+            2 Lines
+          </td>
+          <td>
+            Unlock Line Segments
+          </td>
+        </tr>
+        <tr id="layer2milestone3">
+          <td>
+            3 Lines
+          </td>
+          <td>
+            You always can buy max dots
+          </td>
+        </tr>
+      </table>
+      <br><br>
+      <div id="lineSegALL">
+        You have <b id="lineSegAmt" style="font-size: 24px;"></b> Line Segments (<span id="lineSegProd"></span>/s), which raise points gain by <b id="lineSegEff" style="font-size: 24px;"></b>.<br>
+        Line Segments gain formula: <b>log10(Dots)<sup id="lineSegExp1">0</sup>*Lines<sup id="lineSegExp2">1</sup></b>.<br>Line Segments cap at 10 seconds worth of production.<br>
+      </div>
     </div>
       
     </div>
@@ -100,11 +160,15 @@
         </tr>
       </table><br><br>
       Scripts used: <a href="https://github.com/Naruyoko/ExpantaNum.js">ExpantaNum.js</a>, <a href="https://github.com/cloudytheconqueror/letter-notation-format">format-expantanum.js</a><br>
-      Endgame: 1.000e17,610 points, 1,027 Dots.<br><br>
+      Endgame: 1.000e50,780,555 points, 100,082 Dots, 2 Line, 100.00 Line Segments.<br><br>
       Game Version: <a href="https://1e1000000.github.io/dimensional-incremental/changelog.html">v<span id="ver"></span></a> (Click the version to see change log)
     </div>
     <div id="Tab2" class="center">
-      The tab is Work in Progress.
+      You have <b id="dimShiftAmt" style="font-size: 24px;"></b> Dimensional Shifts.<br>
+      <button onclick="buyDimShift()" id="dimShift" class="layerButton">
+        Buy a Dimensional Shift<br>
+        Require: <b id="dimShiftReq"></b> points
+      </button>
     </div>
     <br><br>
   </body>
