@@ -79,7 +79,7 @@ function loadPlayer(load) {
   player.version = 1
   player.version2 = 0
   player.version3 = 0
-  player.patchVer = 0
+  player.patchVer = 1
   console.log("Game loaded at Timestamp " + (Date.now()/1000).toLocaleString())
 }
 
@@ -131,7 +131,7 @@ window.setInterval(function() {
 
 function hardReset() {
   if (confirm("Are you sure you want to reset? You will lose everything!")) {
-    reset()
+    wipe()
     save()
     console.log("Save resetted at Timestamp " + (Date.now()/1000).toLocaleString())
     location.reload()
