@@ -108,8 +108,9 @@ const LAYERS = {
     switch(layer) {
       case 1:
       case 2:
-        x = player.prestige[layer].div(LAYERS.gainMulti(layer))
+        x = player.prestige[layer]
         if (x.gte(LAYERS.gainSoftcap(layer))) x = x.div(LAYERS.gainSoftcap(layer)).pow(LAYERS.softcapExp(layer)).mul(LAYERS.gainSoftcap(layer))
+        x = x.div(LAYERS.gainMulti(layer))
         req = LAYERS.reqScaling(layer).pow(x.pow(LAYERS.reqExp(layer))).mul(LAYERS.reqBase(layer))
         return req
       break;
@@ -123,8 +124,9 @@ const LAYERS = {
     switch(layer) {
       case 1:
       case 2:
-        x = player.prestige[layer].add(LAYERS.canGainMax(layer)?LAYERS.gain(layer):0).div(LAYERS.gainMulti(layer))
+        x = player.prestige[layer].add(LAYERS.canGainMax(layer)?LAYERS.gain(layer):0)
         if (x.gte(LAYERS.gainSoftcap(layer))) x = x.div(LAYERS.gainSoftcap(layer)).pow(LAYERS.softcapExp(layer)).mul(LAYERS.gainSoftcap(layer))
+        x = x.div(LAYERS.gainMulti(layer))
         req = LAYERS.reqScaling(layer).pow(x.pow(LAYERS.reqExp(layer))).mul(LAYERS.reqBase(layer))
         return req
       break;
