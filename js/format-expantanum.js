@@ -135,12 +135,35 @@ function formatSmall(num, precision=2) {
 }
 
 function formatTime(num, precision=2){
+    let y = new ExpantaNum(86400*365)
+    let d = new ExpantaNum(86400)
+    let h = new ExpantaNum(3600)
+    let m = new ExpantaNum(60)
+    let s = new ExpantaNum(1)
     num = new ExpantaNum(num)
-    if (num.lt(0)) return "Negative Time"
-    else if (num.lt(1e-6)) return format(0, precision) + " microseconds"
-    else if (num.lt(1e-3)) return format(num.mul(1e6), precision) + " microseconds"
-    else if (num.lt(1)) return format(num.mul(1e3), precision) + " milliseconds"
-    else return format(num, precision) + " seconds"
+    if (num.lt(s)){
+      return regularFormat(num.mul(1000), precision) + " milliseconds"
+    } else if (num.lt(m)) {
+      return regularFormat(num, precision) + " seconds"
+    } else if (num.lt(h)) {
+      let modS = num.sub(num.div(m).floor().mul(m)) // seconds
+      return formatWhole(num.div(m).floor()) + " minutes and " + regularFormat(modS, precision) + " seconds"
+    } else if (num.lt(d)) {
+      let modS = num.sub(num.div(m).floor().mul(m)) // seconds
+      let modM = num.sub(num.div(h).floor().mul(h)) // minutes
+      return formatWhole(num.div(h).floor()) + " hours, " + formatWhole(modM.div(m).floor()) + " minutes and " + regularFormat(modS, precision) + " seconds"
+    } else if (num.lt(y)) {
+      let modS = num.sub(num.div(m).floor().mul(m)) // seconds
+      let modM = num.sub(num.div(h).floor().mul(h)) // minutes
+      let modH = num.sub(num.div(d).floor().mul(d)) // hours
+      return formatWhole(num.div(d).floor()) + " days, " + formatWhole(modH.div(h).floor()) + " hours, " + formatWhole(modM.div(m).floor()) + " minutes and " + regularFormat(modS, precision) + " seconds"
+    } else if (num.lt(y.mul(1e9))){
+      let modS = num.sub(num.div(m).floor().mul(m)) // seconds
+      let modM = num.sub(num.div(h).floor().mul(h)) // minutes
+      let modH = num.sub(num.div(d).floor().mul(d)) // hours
+      let modD = num.sub(num.div(y).floor().mul(y)) // days
+      return commaFormat(num.div(y).floor()) + " years, " + formatWhole(modD.div(d).floor()) + " days, " + formatWhole(modH.div(h).floor()) + " hours, " + formatWhole(modM.div(m).floor()) + " minutes and " + regularFormat(modS, precision) + " seconds"
+    } else return format(num.div(y), precision) + " years"
 }
 
 function format(num, precision=2, small=false){
