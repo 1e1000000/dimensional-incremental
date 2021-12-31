@@ -126,7 +126,74 @@ function setToZero(array, height) {
     if (i<array.length) array[i][1] = 0
 }
 
-function format(num, precision=2, small=false) {
+function formatWhole(num) {
+    return format(num, 0)
+}
+
+function formatSmall(num, precision=2) { 
+    return format(num, precision, true)    
+}
+
+function formatTime(num, precision=2){
+    num = new ExpantaNum(num)
+    if (num.lt(0)) return "Negative Time"
+    else if (num.lt(1e-6)) return format(0, precision) + " microseconds"
+    else if (num.lt(1e-3)) return format(num.mul(1e6), precision) + " microseconds"
+    else if (num.lt(1)) return format(num.mul(1e3), precision) + " milliseconds"
+    else return format(num, precision) + " seconds"
+}
+
+function format(num, precision=2, small=false){
+    switch(player.options.notation) {
+        case 0:
+        case 1:
+            return formatDefault(num, precision, small)
+        break;
+        case 2:
+            return formatUpArrow(num, precision, small)
+        break;
+        case 3:
+            return formatBAN(num, precision, small)
+        break;
+        case 4:
+            return formatLetter(num, precision, small)
+        break;
+        case 5:
+            return formatNumTroll(num, precision, small)
+        break;
+        case 6:
+            return formatLetterTroll(num, precision, small)
+        break;
+        case 7:
+            return btoa(formatDefault(num, precision, small))
+        break;
+        case 8:
+            return reverseString(formatDefault(num, precision, small))
+        break;
+        case 9:
+        default: // notation not found, or notation #9
+            return "???"
+        }
+}
+
+function reverseString(str) {
+    // Step 1. Use the split() method to return a new array
+    var splitString = str.split(""); // var splitString = "hello".split("");
+    // ["h", "e", "l", "l", "o"]
+ 
+    // Step 2. Use the reverse() method to reverse the new created array
+    var reverseArray = splitString.reverse(); // var reverseArray = ["h", "e", "l", "l", "o"].reverse();
+    // ["o", "l", "l", "e", "h"]
+ 
+    // Step 3. Use the join() method to join all elements of the array into a string
+    var joinArray = reverseArray.join(""); // var joinArray = ["o", "l", "l", "e", "h"].join("");
+    // "olleh"
+    
+    //Step 4. Return the reversed string
+    return joinArray; // "olleh"
+}
+
+function formatDefault(num, precision=2, small=false) {
     if (ExpantaNum.isNaN(num)) return "NaN"
     let precision2 = Math.max(3, precision) // for e
     let precision3 = Math.max(4, precision) // for F, G, H
@@ -150,7 +217,7 @@ function format(num, precision=2, small=false) {
         let m = 10**(bottom-Math.floor(bottom))
         let e = Math.floor(bottom)
         let p = precision2
-        return "e".repeat(rep) + regularFormat(m, p) + "e" + commaFormat(e)
+        return "e".repeat(rep) + (player.options.notation == 1 ? standardize(ExpantaNum.pow(10,e).mul(m), p) : regularFormat(m, p) + "e" + commaFormat(e))
     }
     else if (num.lt("10^^1e9")) { // 1F5 ~ F1,000,000,000
         let pol = polarize(array)
@@ -240,19 +307,723 @@ function format(num, precision=2, small=false) {
     return "K" + format(n, precision)
 }
 
-function formatWhole(num) {
-    return format(num, 0)
-}
-
-function formatSmall(num, precision=2) { 
-    return format(num, precision, true)    
-}
-
-function formatTime(num, precision=2){
+function formatUpArrow(num, precision=2, small=false) {
+    if (ExpantaNum.isNaN(num)) return "NaN"
+    let precision2 = Math.max(3, precision) // for e
+    let precision3 = Math.max(4, precision) // for F, G, H
+    let precision4 = Math.max(6, precision) // for J, K
     num = new ExpantaNum(num)
-    if (num.lt(0)) return "Negative Time"
-    else if (num.lt(1e-6)) return format(0, precision) + " microseconds"
-    else if (num.lt(1e-3)) return format(num.mul(1e6), precision) + " microseconds"
-    else if (num.lt(1)) return format(num.mul(1e3), precision) + " milliseconds"
-    else return format(num, precision) + " seconds"
+    let array = num.array
+    if (num.abs().lt(1e-308)) return (0).toFixed(precision)
+    if (num.sign < 0) return "-" + format(num.neg(), precision, small)
+    if (num.isInfinite()) return "Infinity"
+    if (num.lt("0.0001")) { return "(" + format(num.rec(), precision) + ")⁻¹" }
+    else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
+    else if (num.lt(1000)) return regularFormat(num, precision)
+    else if (num.lt(1e9)) return commaFormat(num)
+    else if (num.lt("10^^5")) { // 1e9 ~ 1F5
+        let bottom = arraySearch(array, 0)
+        let rep = arraySearch(array, 1)-1
+        if (bottom >= 1e9) {
+            bottom = Math.log10(bottom)
+            rep += 1
+        }
+        let m = 10**(bottom-Math.floor(bottom))
+        let e = Math.floor(bottom)
+        let p = precision2
+        return "10^(".repeat(rep) + regularFormat(m, p) + "*10^" + commaFormat(e) + ")".repeat(rep)
+    }
+    else if (num.lt("10^^1e9")) { // 1F5 ~ F1,000,000,000
+        let pol = polarize(array)
+        return "(10^)^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
+    }
+    else if (num.lt("10^^^5")) { // F1,000,000,000 ~ 1G5
+        let rep = arraySearch(array, 2)
+        if (rep >= 1) {
+            setToZero(array, 2)
+            return "10^^".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 1) + 1
+        if (num.gte("10^^" + (n + 1))) n += 1
+        return "10^^" + format(n, precision)
+    }
+    else if (num.lt("10^^^1e9")) { // 1G5 ~ G1,000,000,000
+        let pol = polarize(array)
+        return "(10^^)^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
+    }
+    else if (num.lt("10^^^^5")) { // G1,000,000,000 ~ 1H5
+        let rep = arraySearch(array, 3)
+        if (rep >= 1) {
+            setToZero(array, 3)
+            return "10^^^".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 2) + 1
+        if (num.gte("10^^^" + (n + 1))) n += 1
+        return "10^^^" + format(n, precision)
+    }
+    else if (num.lt("10^^^^1e9")) { // 1H5 ~ H1,000,000,000
+        let pol = polarize(array)
+        return "(10^^^)^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
+    }
+    else if (num.lt("10^^^^^5")) { // H1,000,000,000 ~ 5J4
+        let rep = arraySearch(array, 4)
+        if (rep >= 1) {
+            setToZero(array, 4)
+            return "10^^^^".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 3) + 1
+        if (num.gte("10^^^^" + (n + 1))) n += 1
+        return "10^^^^" + format(n, precision)
+    }
+    else if (num.lt("10^^^^^1e9")) { // 5J4 ~ J4$1,000,000,000
+        let pol = polarize(array)
+        return "(10^^^^)^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
+    }
+    else if (num.lt("10^^^^^^5")) { // J4$1,000,000,000 ~ 5J5
+        let rep = arraySearch(array, 5)
+        if (rep >= 1) {
+            setToZero(array, 5)
+            return "10{5}".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 4) + 1
+        if (num.gte("10^^^^^" + (n + 1))) n += 1
+        return "10{5}" + format(n, precision)
+    }
+    else if (num.lt("10^^^^^^1e9")) { // 5J5 ~ J5$1,000,000,000
+        let pol = polarize(array)
+        return "(10{5})^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
+    }
+    else if (num.lt("10^^^^^^^5")) { // J5$1,000,000,000 ~ 5J6
+        let rep = arraySearch(array, 6)
+        if (rep >= 1) {
+            setToZero(array, 6)
+            return "10{6}".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 5) + 1
+        if (num.gte("10^^^^^^" + (n + 1))) n += 1
+        return "10{6}" + format(n, precision)
+    }
+    else if (num.lt("10^^^^^^^1e9")) { // 5J6 ~ J6$1,000,000,000
+        let pol = polarize(array)
+        return "(10{6})^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
+    }
+    else if (num.lt("10^^^^^^^^5")) { // J6$1,000,000,000 ~ 5J7
+        let rep = arraySearch(array, 7)
+        if (rep >= 1) {
+            setToZero(array, 7)
+            return "10{7}".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 6) + 1
+        if (num.gte("10^^^^^^^" + (n + 1))) n += 1
+        return "10{7}" + format(n, precision)
+    }
+    else if (num.lt("10^^^^^^^^1e9")) { // 5J7 ~ J7$1,000,000,000
+        let pol = polarize(array)
+        return "(10{7})^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
+    }
+    else if (num.lt("10^^^^^^^^^5")) { // J7$1,000,000,000 ~ 5J8
+        let rep = arraySearch(array, 8)
+        if (rep >= 1) {
+            setToZero(array, 8)
+            return "10{8}".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 7) + 1
+        if (num.gte("10^^^^^^^^" + (n + 1))) n += 1
+        return "10{8}" + format(n, precision)
+    }
+    else if (num.lt("10^^^^^^^^^1e9")) { // 5J8 ~ J8$1,000,000,000
+        let pol = polarize(array)
+        return "(10{8})^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
+    }
+    else if (num.lt("10^^^^^^^^^^5")) { // J8$1,000,000,000 ~ 5J9
+        let rep = arraySearch(array, 9)
+        if (rep >= 1) {
+            setToZero(array, 9)
+            return "10{9}".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 8) + 1
+        if (num.gte("10^^^^^^^^^" + (n + 1))) n += 1
+        return "10{9}" + format(n, precision)
+    }
+    else if (num.lt("10^^^^^^^^^^10")) { // 5J9 ~ J10
+        let pol = polarize(array)
+        return "(10{9})^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
+    }
+    else if (num.lt("J1e9")) { // J10 ~ J1,000,000,000
+        let pol = polarize(array, true)
+        return "10{" + commaFormat(pol.height) + "}" + regularFormat(Math.log10(pol.bottom) + pol.top, precision4)
+    }
+    else if (num.lt("J^4 10")) { // J1,000,000,000 ~ 1K5
+        let rep = num.layer
+        if (rep >= 1) return "10{".repeat(rep) + format(array, precision) + "}10".repeat(rep)
+        let n = array[array.length-1][0]
+        if (num.gte("J" + (n + 1))) n += 1
+        return "10{" + format(n, precision) + "}10"
+    }
+    else if (num.lt("J^999999999 10")) { // 1K5 ~ K1,000,000,000
+        // https://googology.wikia.org/wiki/User_blog:PsiCubed2/Letter_Notation_Part_II
+        // PsiCubed2 defined Jx as Gx for x < 2, resulting in J1 = 10 rather than 10^10, to
+        // prevent issues when defining K and beyond. Therefore, there should be separate
+        // cases for when the "top value" is below 2, and above 2.
+        // ExpantaNum.js considers J1 to be equal to 1e10 rather than 10,
+        // hence num.lt("J^999999 10") rather than num.lt("J^1000000 1").
+        let pol = polarize(array, true)
+        let layerLess = new ExpantaNum(array)
+        let layer = num.layer
+        let topJ
+        if (layerLess.lt("10^^10")) { // Below J2: use Jx = Gx
+            // layerLess is equal to (10^)^top bottom here, so calculate x in Gx directly.
+            topJ = 1 + Math.log10(Math.log10(pol.bottom) + pol.top)
+            layer += 1
+        }
+        else if (layerLess.lt("10{10}10")) { // J2 ~ J10
+            topJ = pol.height + Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E
+            layer += 1
+        }
+        else { // J10 and above: an extra layer is added, thus becoming JJ1 and above, where Jx = Gx also holds
+            let nextToTopJ = pol.height + Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E
+            let bottom = nextToTopJ >= 1e10 ? Math.log10(Math.log10(nextToTopJ)) : Math.log10(nextToTopJ)
+            let top = nextToTopJ >= 1e10 ? 2 : 1
+            topJ = 1 + Math.log10(Math.log10(bottom) + top)
+            layer += 2
+        }
+        return "10{10{10{...10{" + regularFormat(topJ, precision4) + "}10...}10}10}10 (" + commaFormat(layer) + " layers)" // might buggy
+    }
+    // K1,000,000,000 and beyond
+    let n = num.layer + 1
+    if (num.gte("J^" + n + " 10")) n += 1
+    return "10{{1}}" + format(n, precision)
+}
+
+function formatBAN(num, precision=2, small=false) {
+    if (ExpantaNum.isNaN(num)) return "NaN"
+    let precision2 = Math.max(3, precision) // for e
+    let precision3 = Math.max(4, precision) // for F, G, H
+    let precision4 = Math.max(6, precision) // for J, K
+    num = new ExpantaNum(num)
+    let array = num.array
+    if (num.abs().lt(1e-308)) return (0).toFixed(precision)
+    if (num.sign < 0) return "-" + format(num.neg(), precision, small)
+    if (num.isInfinite()) return "Infinity"
+    if (num.lt("0.0001")) { return format(num.rec(), precision) + "⁻¹" }
+    else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
+    else if (num.lt(1000)) return regularFormat(num, precision)
+    else if (num.lt(1e9)) return commaFormat(num)
+    else if (num.lt("10^^5")) { // 1e9 ~ 1F5
+        let bottom = arraySearch(array, 0)
+        let rep = arraySearch(array, 1)-1
+        if (bottom >= 1e9) {
+            bottom = Math.log10(bottom)
+            rep += 1
+        }
+        let m = 10**(bottom-Math.floor(bottom))
+        let e = Math.floor(bottom)
+        let p = precision2
+        return "{10, ".repeat(rep) + regularFormat(m, p) + "{10, " + formatWhole(e, p) + "}" + "}".repeat(rep)
+    }
+    else if (num.lt("10^^1000000000")) { // 1F5 ~ F1,000,000,000
+        let pol = polarize(array)
+        return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 2}"
+    }
+    else if (num.lt("10^^^5")) { // F1,000,000,000 ~ 1G5
+        let rep = arraySearch(array, 2)
+        if (rep >= 1) {
+            setToZero(array, 2)
+            return "{10, ".repeat(rep) + format(array, precision) + ", 2}".repeat(rep)
+        }
+        let n = arraySearch(array, 1) + 1
+        if (num.gte("10^^" + (n + 1))) n += 1
+        return "{10, " + format(n, precision) + ", 2}"
+    }
+    else if (num.lt("10^^^1000000000")) { // 1G5 ~ G1,000,000,000
+        let pol = polarize(array)
+        return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 3}"
+    }
+    else if (num.lt("10^^^^5")) { // G1,000,000,000 ~ 1H5
+        let rep = arraySearch(array, 3)
+        if (rep >= 1) {
+            setToZero(array, 3)
+            return "{10, ".repeat(rep) + format(array, precision) + ", 3}".repeat(rep)
+        }
+        let n = arraySearch(array, 2) + 1
+        if (num.gte("10^^^" + (n + 1))) n += 1
+        return "{10, " + format(n, precision) + ", 3}"
+    }
+    else if (num.lt("10^^^^1000000000")) { // 1H5 ~ H1,000,000,000
+        let pol = polarize(array)
+        return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 4}"
+    }
+    else if (num.lt("10^^^^^5")) { // H1,000,000,000 ~ 5J4
+        let rep = arraySearch(array, 4)
+        if (rep >= 1) {
+            setToZero(array, 4)
+            return "{10, ".repeat(rep) + format(array, precision) + ", 4}".repeat(rep)
+        }
+        let n = arraySearch(array, 3) + 1
+        if (num.gte("10^^^^" + (n + 1))) n += 1
+        return "{10, " + format(n, precision) + ", 4}"
+    }
+    else if (num.lt("10^^^^^1000000000")) { // 5J4 ~ J4$1,000,000,000
+        let pol = polarize(array)
+        return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 5}"
+    }
+    else if (num.lt("10^^^^^^5")) { // J4$1,000,000,000 ~ 5J5
+        let rep = arraySearch(array, 5)
+        if (rep >= 1) {
+            setToZero(array, 5)
+            return "{10, ".repeat(rep) + format(array, precision) + ", 5}".repeat(rep)
+        }
+        let n = arraySearch(array, 4) + 1
+        if (num.gte("10^^^^^" + (n + 1))) n += 1
+        return "{10, " + format(n, precision) + ", 5}"
+    }
+    else if (num.lt("10^^^^^^1000000000")) { // 5J5 ~ J5$1,000,000,000
+        let pol = polarize(array)
+        return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 6}"
+    }
+    else if (num.lt("10^^^^^^^5")) { // J5$1,000,000,000 ~ 5J6
+        let rep = arraySearch(array, 6)
+        if (rep >= 1) {
+            setToZero(array, 6)
+            return "{10, ".repeat(rep) + format(array, precision) + ", 6}".repeat(rep)
+        }
+        let n = arraySearch(array, 5) + 1
+        if (num.gte("10^^^^^^" + (n + 1))) n += 1
+        return "{10, " + format(n, precision) + ", 6}"
+    }
+    else if (num.lt("10^^^^^^^1000000000")) { // 5J6 ~ J6$1,000,000,000
+        let pol = polarize(array)
+        return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 7}"
+    }
+    else if (num.lt("10^^^^^^^^5")) { // J6$1,000,000,000 ~ 5J7
+        let rep = arraySearch(array, 7)
+        if (rep >= 1) {
+            setToZero(array, 7)
+            return "{10, ".repeat(rep) + format(array, precision) + ", 7}".repeat(rep)
+        }
+        let n = arraySearch(array, 6) + 1
+        if (num.gte("10^^^^^^^" + (n + 1))) n += 1
+        return "{10, " + format(n, precision) + ", 7}"
+    }
+    else if (num.lt("10^^^^^^^^1000000000")) { // 5J7 ~ J7$1,000,000,000
+        let pol = polarize(array)
+        return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 8}"
+    }
+    else if (num.lt("10^^^^^^^^^5")) { // J7$1,000,000,000 ~ 5J8
+        let rep = arraySearch(array, 8)
+        if (rep >= 1) {
+            setToZero(array, 8)
+            return "{10, ".repeat(rep) + format(array, precision) + ", 8}".repeat(rep)
+        }
+        let n = arraySearch(array, 7) + 1
+        if (num.gte("10^^^^^^^^" + (n + 1))) n += 1
+        return "{10, " + format(n, precision) + ", 8}"
+    }
+    else if (num.lt("10^^^^^^^^^1000000000")) { // 5J8 ~ J8$1,000,000,000
+        let pol = polarize(array)
+        return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 9}"
+    }
+    else if (num.lt("10^^^^^^^^^^5")) { // J8$1,000,000,000 ~ 5J9
+        let rep = arraySearch(array, 9)
+        if (rep >= 1) {
+            setToZero(array, 9)
+            return "{10, ".repeat(rep) + format(array, precision) + ", 9}".repeat(rep)
+        }
+        let n = arraySearch(array, 8) + 1
+        if (num.gte("10^^^^^^^^^" + (n + 1))) n += 1
+        return "{10, " + format(n, precision) + ", 9}"
+    }
+    else if (num.lt("10^^^^^^^^^^1000000000")) { // 5J9 ~ J9$1,000,000,000
+        let pol = polarize(array)
+        return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 10}"
+    }
+    else if (num.lt("10^^^^^^^^^^10")) { // J9$1,000,000,000 ~ J10, up to J10 is prevent stack error
+        let rep = arraySearch(array, 10)
+        if (rep >= 1) {
+            setToZero(array, 9)
+            return "{10, ".repeat(rep) + format(array, precision) + ", 10}".repeat(rep)
+        }
+        let n = arraySearch(array, 9) + 1
+        if (num.gte("10^^^^^^^^^^" + (n + 1))) n += 1
+        return "{10, " + format(n, precision) + ", 10}"
+    }
+    else if (num.lt("J1000000000")) { // J10 ~ J1,000,000,000
+        let pol = polarize(array, true)
+        return "{10, " + regularFormat(Math.log10(pol.bottom) + pol.top, precision4) + ", " + commaFormat(pol.height+1) + "}"
+    }
+    else if (num.lt("J^4 10")) { // J1,000,000,000 ~ 1K5
+        let rep = num.layer
+        if (rep >= 1) return "{10, 10, ".repeat(rep) + format(array, precision) + "}".repeat(rep)
+        let n = array[array.length-1][0]
+        if (num.gte("J" + (n + 1))) n += 1
+        return "{10, 10, " + format(n, precision) + "}"
+    }
+    else if (num.lt("J^999999999 10")) { // 1K5 ~ K1,000,000,000
+        // https://googology.wikia.org/wiki/User_blog:PsiCubed2/Letter_Notation_Part_II
+        // PsiCubed2 defined Jx as Gx for x < 2, resulting in J1 = 10 rather than 10^10, to
+        // prevent issues when defining K and beyond. Therefore, there should be separate
+        // cases for when the "top value" is below 2, and above 2.
+        // ExpantaNum.js considers J1 to be equal to 1e10 rather than 10,
+        // hence num.lt("J^999999 10") rather than num.lt("J^1000000 1").
+        let pol = polarize(array, true)
+        let layerLess = new ExpantaNum(array)
+        let layer = num.layer
+        return "{" + format(layerLess, precision4) + ", " + commaFormat(layer) + ", 1, 2}"
+    }
+    // K1,000,000,000 and beyond
+    let n = num.layer + 1
+    if (num.gte("J^" + n + " 10")) n += 1
+    return "{10, " + format(n, precision4) + ", 1, 2}"
+}
+
+function formatLetter(num, precision=2, small=false) {
+    num = new ExpantaNum(num)
+    if (num.gte(10)) precision += 2
+    if (ExpantaNum.isNaN(num)) return "NaN"
+    let precision2 = Math.max(4, precision) // for e
+    let precision3 = Math.max(6, precision) // for F, G, H
+    let precision4 = Math.max(8, precision) // for J, K
+    let array = num.array
+    if (num.abs().lt(1e-308)) return (0).toFixed(precision)
+    if (num.sign < 0) return "-" + format(num.neg(), precision, small)
+    if (num.isInfinite()) return "Infinity"
+    if (num.lt("0.0001")) { return format(num.rec(), precision) + "⁻¹" }
+    else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
+    else if (num.lt(10)) return regularFormat(num, precision)
+    else if (num.lt(1e10)) return "E" + regularFormat(num.log10(),precision2)
+    else if (num.lt("10^^10")) { // F10
+        let pol = polarize(array)
+        return "F" + regularFormat(pol.top + Math.log10(pol.bottom), precision3)
+    }
+    else if (num.lt("10^^^10")) { // G10
+        let pol = polarize(array)
+        return "G" + regularFormat(pol.top + Math.log10(pol.bottom), precision3)
+    }
+    else if (num.lt("10^^^^10")) { // H10
+        let pol = polarize(array)
+        return "H" + regularFormat(pol.top + Math.log10(pol.bottom), precision3)
+    }
+    else if (num.lt("J10")) { // J10
+        let pol = polarize(array, true)
+        return "J" + regularFormat(pol.height + Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E, precision4)
+    }
+    else { // K10
+        // https://googology.wikia.org/wiki/User_blog:PsiCubed2/Letter_Notation_Part_II
+        // PsiCubed2 defined Jx as Gx for x < 2, resulting in J1 = 10 rather than 10^10, to
+        // prevent issues when defining K and beyond. Therefore, there should be separate
+        // cases for when the "top value" is below 2, and above 2.
+        // ExpantaNum.js considers J1 to be equal to 1e10 rather than 10,
+        // hence num.lt("J^999999 10") rather than num.lt("J^1000000 1").
+        let pol = polarize(array, true)
+        let layerLess = new ExpantaNum(array)
+        let layer = num.layer
+        let topJ
+        if (layerLess.lt("10^^10")) { // Below J2: use Jx = Gx
+            // layerLess is equal to (10^)^top bottom here, so calculate x in Gx directly.
+            topJ = 1 + Math.log10(Math.log10(pol.bottom) + pol.top)
+            layer += 1
+        }
+        else if (layerLess.lt("10{10}10")) { // J2 ~ J10
+            topJ = pol.height + Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E
+            layer += 1
+        }
+        else { // J10 and above: an extra layer is added, thus becoming JJ1 and above, where Jx = Gx also holds
+            let nextToTopJ = pol.height + Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E
+            let bottom = nextToTopJ >= 1e10 ? Math.log10(Math.log10(nextToTopJ)) : Math.log10(nextToTopJ)
+            let top = nextToTopJ >= 1e10 ? 2 : 1
+            topJ = 1 + Math.log10(Math.log10(bottom) + top)
+            layer += 2
+        }
+        if (num.lt("J^9 10")) return "K" + regularFormat(layer + Math.log10(topJ), precision4)
+        else if (num.lt("J^9999999999 10")) return "L" + regularFormat(2 + Math.log10(1 + Math.log10(1 + Math.log10(1 + Math.log10(Math.log10(layer + Math.log10(topJ)))))), precision4)
+        else return "L" + regularFormat(2 + Math.log10(1 + Math.log10(1 + Math.log10(2 + Math.log10(Math.log10(Math.log10(layer + Math.log10(topJ))))))), precision4)
+    }
+}
+
+function formatNumTroll(num, precision=2, small=false) {
+    if (ExpantaNum.isNaN(num)) return "NaN"
+    let precision2 = Math.max(3, precision) // for e
+    let precision3 = Math.max(4, precision) // for F, G, H
+    let precision4 = Math.max(6, precision) // for J, K
+    num = new ExpantaNum(num)
+    let array = num.array
+    if (num.abs().lt(1e-308)) return (0).toFixed(precision)
+    if (num.sign < 0) return "-" + format(num.neg(), precision, small)
+    if (num.isInfinite()) return "Infinity"
+    if (num.lt("0.0001")) { return format(num.rec(), precision) + "⁻¹" }
+    else if (num.lt(1)) return regularFormat(num.pow(2), precision + (small ? 2 : 0))
+    else if (num.lt(1000**0.5)) return regularFormat(num.pow(2), precision)
+    else if (num.lt(1e6)) return commaFormat(num.pow(2))
+    else if (num.lt("10^^5")) { // 1e9 ~ 1F5
+        let bottom = arraySearch(array, 0)
+        let rep = arraySearch(array, 1)-1
+        if (bottom >= 1e6) {
+            bottom = Math.log10(bottom)
+            rep += 1
+        }
+        let m = 10**(bottom-Math.floor(bottom))
+        let e = Math.floor(bottom)
+        let p = precision2
+        return "e".repeat(rep) + regularFormat(m**2, p) + "e" + commaFormat(e**2)
+    }
+    else if (num.lt("10^^1e6")) { // 1F5 ~ F1,000,000,000
+        let pol = polarize(array)
+        return regularFormat(pol.bottom**2, precision3) + "F" + commaFormat(pol.top**2)
+    }
+    else if (num.lt("10^^^5")) { // F1,000,000,000 ~ 1G5
+        let rep = arraySearch(array, 2)
+        if (rep >= 1) {
+            setToZero(array, 2)
+            return "F".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 1) + 1
+        if (num.gte("10^^" + (n + 1))) n += 1
+        return "F" + format(n, precision)
+    }
+    else if (num.lt("10^^^1e6")) { // 1G5 ~ G1,000,000,000
+        let pol = polarize(array)
+        return regularFormat(pol.bottom**2, precision3) + "G" + commaFormat(pol.top**2)
+    }
+    else if (num.lt("10^^^^5")) { // G1,000,000,000 ~ 1H5
+        let rep = arraySearch(array, 3)
+        if (rep >= 1) {
+            setToZero(array, 3)
+            return "G".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 2) + 1
+        if (num.gte("10^^^" + (n + 1))) n += 1
+        return "G" + format(n, precision)
+    }
+    else if (num.lt("10^^^^1e6")) { // 1H5 ~ H1,000,000,000
+        let pol = polarize(array)
+        return regularFormat(pol.bottom**2, precision3) + "H" + commaFormat(pol.top**2)
+    }
+    else if (num.lt("10^^^^^5")) { // H1,000,000,000 ~ 5J4
+        let rep = arraySearch(array, 4)
+        if (rep >= 1) {
+            setToZero(array, 4)
+            return "H".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 3) + 1
+        if (num.gte("10^^^^" + (n + 1))) n += 1
+        return "H" + format(n, precision)
+    }
+    else if (num.lt("J1e6")) { // 5J4 ~ J1,000,000,000
+        let pol = polarize(array, true)
+        return regularFormat((Math.log10(pol.bottom) + pol.top)**2, precision4) + "J" + commaFormat(pol.height**2)
+    }
+    else if (num.lt("J^4 10")) { // J1,000,000,000 ~ 1K5
+        let rep = num.layer
+        if (rep >= 1) return "J".repeat(rep) + format(array, precision)
+        let n = array[array.length-1][0]
+        if (num.gte("J" + (n + 1))) n += 1
+        return "J" + format(n, precision)
+    }
+    else if (num.lt("J^999999 10")) { // 1K5 ~ K1,000,000,000
+        // https://googology.wikia.org/wiki/User_blog:PsiCubed2/Letter_Notation_Part_II
+        // PsiCubed2 defined Jx as Gx for x < 2, resulting in J1 = 10 rather than 10^10, to
+        // prevent issues when defining K and beyond. Therefore, there should be separate
+        // cases for when the "top value" is below 2, and above 2.
+        // ExpantaNum.js considers J1 to be equal to 1e10 rather than 10,
+        // hence num.lt("J^999999 10") rather than num.lt("J^1000000 1").
+        let pol = polarize(array, true)
+        let layerLess = new ExpantaNum(array)
+        let layer = num.layer
+        let topJ
+        if (layerLess.lt("10^^10")) { // Below J2: use Jx = Gx
+            // layerLess is equal to (10^)^top bottom here, so calculate x in Gx directly.
+            topJ = 1 + Math.log10(Math.log10(pol.bottom) + pol.top)
+            layer += 1
+        }
+        else if (layerLess.lt("10{10}10")) { // J2 ~ J10
+            topJ = pol.height + Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E
+            layer += 1
+        }
+        else { // J10 and above: an extra layer is added, thus becoming JJ1 and above, where Jx = Gx also holds
+            let nextToTopJ = pol.height + Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E
+            let bottom = nextToTopJ >= 1e10 ? Math.log10(Math.log10(nextToTopJ)) : Math.log10(nextToTopJ)
+            let top = nextToTopJ >= 1e10 ? 2 : 1
+            topJ = 1 + Math.log10(Math.log10(bottom) + top)
+            layer += 2
+        }
+        return regularFormat(topJ**2, precision4) + "K" + commaFormat(layer**2)
+    }
+    // K1,000,000,000 and beyond
+    let n = num.layer + 1
+    if (num.gte("J^" + n + " 10")) n += 1
+    return "K" + format(n, precision)
+}
+
+function formatLetterTroll(num, precision=2, small=false) {
+    if (ExpantaNum.isNaN(num)) return "NaN"
+    let precision2 = Math.max(3, precision) // for e
+    let precision3 = Math.max(4, precision) // for F, G, H
+    let precision4 = Math.max(6, precision) // for J, K
+    num = new ExpantaNum(num)
+    let array = num.array
+    if (num.abs().lt(1e-308)) return (0).toFixed(precision)
+    if (num.sign < 0) return "-" + format(num.neg(), precision, small)
+    if (num.isInfinite()) return "Infinity"
+    if (num.lt("0.0001")) { return format(num.rec(), precision) + "⁻¹" }
+    else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
+    else if (num.lt(1000)) return regularFormat(num, precision)
+    else if (num.lt(1e9)) return commaFormat(num)
+    else if (num.lt("10^^5")) { // 1e9 ~ 1F5
+        let bottom = arraySearch(array, 0)
+        let rep = arraySearch(array, 1)-1
+        if (bottom >= 1e9) {
+            bottom = Math.log10(bottom)
+            rep += 1
+        }
+        let m = 10**(bottom-Math.floor(bottom))
+        let e = Math.floor(bottom)
+        let p = precision2
+        return "J".repeat(rep) + regularFormat(m, p) + "J" + commaFormat(e)
+    }
+    else if (num.lt("10^^1e9")) { // 1F5 ~ F1,000,000,000
+        let pol = polarize(array)
+        return regularFormat(pol.bottom, precision3) + "K" + commaFormat(pol.top)
+    }
+    else if (num.lt("10^^^5")) { // F1,000,000,000 ~ 1G5
+        let rep = arraySearch(array, 2)
+        if (rep >= 1) {
+            setToZero(array, 2)
+            return "K".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 1) + 1
+        if (num.gte("10^^" + (n + 1))) n += 1
+        return "K" + format(n, precision)
+    }
+    else if (num.lt("10^^^1e9")) { // 1G5 ~ G1,000,000,000
+        let pol = polarize(array)
+        return regularFormat(pol.bottom, precision3) + "L" + commaFormat(pol.top)
+    }
+    else if (num.lt("10^^^^5")) { // G1,000,000,000 ~ 1H5
+        let rep = arraySearch(array, 3)
+        if (rep >= 1) {
+            setToZero(array, 3)
+            return "L".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 2) + 1
+        if (num.gte("10^^^" + (n + 1))) n += 1
+        return "L" + format(n, precision)
+    }
+    else if (num.lt("10^^^^1e9")) { // 1H5 ~ H1,000,000,000
+        let pol = polarize(array)
+        return regularFormat(pol.bottom, precision3) + "M" + commaFormat(pol.top)
+    }
+    else if (num.lt("10^^^^^5")) { // H1,000,000,000 ~ 5J4
+        let rep = arraySearch(array, 4)
+        if (rep >= 1) {
+            setToZero(array, 4)
+            return "M".repeat(rep) + format(array, precision)
+        }
+        let n = arraySearch(array, 3) + 1
+        if (num.gte("10^^^^" + (n + 1))) n += 1
+        return "M" + format(n, precision)
+    }
+    else if (num.lt("J1e9")) { // 5J4 ~ J1,000,000,000
+        let pol = polarize(array, true)
+        return regularFormat(Math.log10(pol.bottom) + pol.top, precision4) + "N" + commaFormat(pol.height)
+    }
+    else if (num.lt("J^4 10")) { // J1,000,000,000 ~ 1K5
+        let rep = num.layer
+        if (rep >= 1) return "N".repeat(rep) + format(array, precision)
+        let n = array[array.length-1][0]
+        if (num.gte("J" + (n + 1))) n += 1
+        return "N" + format(n, precision)
+    }
+    else if (num.lt("J^999999999 10")) { // 1K5 ~ K1,000,000,000
+        // https://googology.wikia.org/wiki/User_blog:PsiCubed2/Letter_Notation_Part_II
+        // PsiCubed2 defined Jx as Gx for x < 2, resulting in J1 = 10 rather than 10^10, to
+        // prevent issues when defining K and beyond. Therefore, there should be separate
+        // cases for when the "top value" is below 2, and above 2.
+        // ExpantaNum.js considers J1 to be equal to 1e10 rather than 10,
+        // hence num.lt("J^999999 10") rather than num.lt("J^1000000 1").
+        let pol = polarize(array, true)
+        let layerLess = new ExpantaNum(array)
+        let layer = num.layer
+        let topJ
+        if (layerLess.lt("10^^10")) { // Below J2: use Jx = Gx
+            // layerLess is equal to (10^)^top bottom here, so calculate x in Gx directly.
+            topJ = 1 + Math.log10(Math.log10(pol.bottom) + pol.top)
+            layer += 1
+        }
+        else if (layerLess.lt("10{10}10")) { // J2 ~ J10
+            topJ = pol.height + Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E
+            layer += 1
+        }
+        else { // J10 and above: an extra layer is added, thus becoming JJ1 and above, where Jx = Gx also holds
+            let nextToTopJ = pol.height + Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E
+            let bottom = nextToTopJ >= 1e10 ? Math.log10(Math.log10(nextToTopJ)) : Math.log10(nextToTopJ)
+            let top = nextToTopJ >= 1e10 ? 2 : 1
+            topJ = 1 + Math.log10(Math.log10(bottom) + top)
+            layer += 2
+        }
+        return regularFormat(topJ, precision4) + "P" + commaFormat(layer)
+    }
+    // K1,000,000,000 and beyond
+    let n = num.layer + 1
+    if (num.gte("J^" + n + " 10")) n += 1
+    return "P" + format(n, precision)
+}
+
+const standardPreE33 = ["K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No"]
+const standardUnits = ["", "U", "D", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No"]
+const standardTens = ["", "Dc", "Vg", "Tg", "Qag", "Qig", "Sxg", "Spg", "Ocg", "Nog"]
+const standardHundreds = ["", "Ct", "Dct", "Tct", "Qact", "Qict", "Sxct", "Spct", "Occt", "Noct"]
+const standardMilestonePreEE33 = ["", "Mi", "Mc", "Na", "Pc", "Fm", "At", "Zp", "Yc", "Xn", "Ve"]
+const standardMilestoneUnits = ["", "M", "Du", "Tr", "Te", "P", "Hx", "He", "O", "E", "Ve"]
+const standardMilestoneTens = ["", "e", "Is", "Trn", "Ten", "Pn", "Hxn", "Hen", "On", "En"]
+const standardMilestoneHundreds = ["", "Ht", "Dt", "Trt", "Tet", "Pt", "Hxt", "Het", "Ot", "Et"]
+
+function standard(t1, t2, more){
+    t1 = t1 % 1000
+    t2 = t2 % 1000
+    if (t1 == 0) return ""
+    let output1 = ""
+    let output2 = ""
+    if (t1 !== 1 || (t1 == 1 && t2 == 0)){
+      let ones1 = t1 % 10
+      let tens1 = Math.floor(t1 / 10) % 10
+      let hundreds1 = Math.floor(t1 / 100)
+      output1 = standardUnits[ones1] + standardTens[tens1] + standardHundreds[hundreds1]
+    }
+    if (t2 < 10.5) output2 = standardMilestonePreEE33[t2]
+    else{
+      let mod100 = t2 % 100
+      let ones2 = t2 % 10
+      let tens2 = Math.floor(t2 / 10) % 10
+      let hundreds2 = Math.floor(t2 / 100)
+      if (mod100 < 10.5) output2 = standardMilestoneUnits[mod100] + standardMilestoneHundreds[hundreds2]
+      else output2 = standardMilestoneUnits[ones2] + standardMilestoneTens[tens2] + standardMilestoneHundreds[hundreds2]
+    }
+    return output1 + output2 + (more && t2 !== 0 ? "-" : "")
+}
+
+function standardize(num, precision=2){
+    num = new ExpantaNum(num)
+    if (num.gte(ExpantaNum.mul("e1e3000",1000))) return format(num, precision)
+    let exponent = num.log10().div(3).floor();
+    let mantissa = num.div(new ExpantaNum(1000).pow(exponent))
+    let maxT1 = num.log10().sub(3).div(3).floor()
+    let maxT2 = maxT1.log10().div(3).floor().toNumber()
+    if (maxT1.lt(1e15)) maxT1 = maxT1.toNumber()
+    else maxT1 = maxT1.div(new ExpantaNum(1000).pow(maxT2 - 4)).floor().toNumber()
+    let tril = Math.floor(maxT1/1e12)
+    let bill = Math.floor(maxT1/1e9) % 1000
+    let mill = Math.floor(maxT1/1e6) % 1000
+    let kill = Math.floor(maxT1/1e3) % 1000
+    let ones = maxT1 % 1000
+    if (mantissa.gte(1000 - 10 ** (-1 * precision) / 2)){
+      mantissa = mantissa.div(1000)
+      exponent = exponent.add(1)
+    }
+    if (num.lt(new ExpantaNum(1e33))) {
+      return mantissa.toFixed(precision) + " " + standardPreE33[maxT1]
+    } else if (num.lt(new ExpantaNum(10).pow(3e15).mul(1000))) {
+      return mantissa.toFixed(precision) + " " + standard(tril, 4, 1) + standard(bill, 3, 1) + standard(mill, 2, 1) + standard(kill, 1, 1) + standard(ones, 0, 0)
+    } else {
+      return standard(tril, maxT2, (ones + kill + mill + bill !== 0 ? 1 : 0)) + standard(bill, maxT2 - 1, (ones + kill + mill !== 0 ? 1 : 0)) + standard(mill, maxT2 - 2, (ones + kill !== 0 ? 1 : 0)) + standard(kill, maxT2 - 3, (ones !== 0 ? 1 : 0)) + standard(ones, maxT2 - 4, 0) + "s"
+    }
 }

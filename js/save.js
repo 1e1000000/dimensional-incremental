@@ -12,6 +12,9 @@ function calc(dt, dt_offline){
   player.points = player.points.add(getPointsGain().mul(dt))
   player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
   player.lineSegments = player.lineSegments.add(LAYERS.lineSegGain().mul(dt)).min(LAYERS.lineSegGain().mul(10))
+  for (let i=1;i<=amtLayers;i++){
+    if (LAYERS.autoGain(i)) LAYERS.doReset(i)
+  }
   updateMilestones()
 }
 
@@ -28,9 +31,14 @@ function getPlayerData(){
     version2: 0, // usually a new content on a layer
     version3: 0, // usually more content on existing content
     patchVer: 0, // usually a bug fix
+    updateName: "",
     offline: {
       current: Date.now(),
       time: 0,
+    },
+    options: {
+      notation: 0,
+      debug: 0,
     },
     dimShift: 0,
     lineSegments: new ExpantaNum(0),
@@ -47,7 +55,7 @@ function save(){
     else {
       if (localStorage.getItem(saveId) == '') getPlayerData()
       localStorage.setItem(saveId,btoa(JSON.stringify(player)))
-      console.log("Game saved at Timestamp " + (Date.now()/1000).toLocaleString())
+      if (player.options.debug) console.log("Game saved at Timestamp " + (Date.now()/1000).toLocaleString())
     }
 }
 
@@ -78,8 +86,9 @@ function loadPlayer(load) {
   player.majorVer = 1
   player.version = 1
   player.version2 = 0
-  player.version3 = 0
-  player.patchVer = 1
+  player.version3 = 1
+  player.patchVer = 0
+  player.updateName = "Notation Update"
   console.log("Game loaded at Timestamp " + (Date.now()/1000).toLocaleString())
 }
 

@@ -158,9 +158,12 @@
             <button onclick="hardReset()" class="saveButton" style="width: 120px;border-color: #FF0000">HARD RESET</button>
           </td>
         </tr>
-      </table><br><br>
+      </table><br>
+      <button onclick="changeOption(0)" class="saveButton" style="width: 180px;height: 50px;">Notation:<br><span id="option0">Default</span></button>
+      <button onclick="changeOption(1)" class="saveButton" style="width: 240px;height: 50px;">Show saved on console:<br><span id="option1">Default</span></button>
+      <br><br>
       Scripts used: <a href="https://github.com/Naruyoko/ExpantaNum.js">ExpantaNum.js</a>, <a href="https://github.com/cloudytheconqueror/letter-notation-format">format-expantanum.js</a><br>
-      Endgame: 1.000e50,780,555 points, 100,082 Dots, 2 Line, 100.00 Line Segments.<br><br>
+      Endgame: <span id="endgame">1.000e50,780,555 points, 100,082 Dots, 2 Line, 100.00 Line Segments.</span><br><br>
       Game Version: <a href="https://1e1000000.github.io/dimensional-incremental/changelog.html">v<span id="ver"></span></a> (Click the version to see change log)
     </div>
     <div id="Tab2" class="center">

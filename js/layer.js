@@ -156,7 +156,7 @@ const LAYERS = {
         return false
     }
   },
-  autoGain(layer){ // not implemented
+  autoGain(layer){
     switch(layer) {
       case 1:
         return false

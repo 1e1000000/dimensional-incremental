@@ -160,3 +160,27 @@ function updateMilestones(){
         }
     }
 }
+
+// other
+
+function getProductionRateDisplay(curr, gain){
+    let now = new ExpantaNum(curr)
+    let next = new ExpantaNum(curr).add(gain)
+    let rate
+    if (next.div(now).gte(10) && now.gte(1e10)) rate = format(next.div(now).log10()) + " OoM"
+    else rate = format(next.sub(now))
+    return rate
+}
+
+function changeOption(id){
+    switch(id){
+        case 0:
+            player.options.notation = (player.options.notation+1)%10
+        break;
+        case 1:
+            player.options.debug = (player.options.debug+1)%2
+        break;
+        default: // option not found
+        return 
+    }
+}

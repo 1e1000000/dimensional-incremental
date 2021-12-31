@@ -18,6 +18,14 @@ function powExp3(n, exp){
 	return ExpantaNum.pow(10,ExpantaNum.pow(10,ExpantaNum.pow(10,n.log10().log10().log10().pow(exp))))
 }
 
+function inf(x = 1){
+	return new ExpantaNum(Number.MAX_VALUE).pow(x)
+}
+
+function inflog(x = 1){
+	return new ExpantaNum(Number.MAX_VALUE).log10().pow(x)
+}
+
 function slog(n){
 	n = new ExpantaNum(n)
 	return n.slog()

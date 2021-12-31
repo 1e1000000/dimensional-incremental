@@ -26,8 +26,8 @@ function updateHTML(){
   }
   document.getElementById("points").innerHTML = format(player.points)
   document.getElementById("pps").innerHTML = format(getPointsGain())
-  document.getElementById("z").innerHTML = format(player.points) + " points, " + formatWhole(player.prestige[1]) + " dots"
-  for (let i=1;i<=2;i++){
+  document.getElementById("z").innerHTML = format(player.points) + " points, " + formatWhole(player.prestige[player.subtab[1]]) + " " + resourceName[player.subtab[1]]
+  for (let i=1;i<=amtLayers;i++){
     document.getElementById("layer" + i + "amt").innerHTML = formatWhole(player.prestige[i])
     document.getElementById("layer" + i + "reset").style.borderColor = (LAYERS.canReset(i)?"#00FF00":"#FF0000")
     document.getElementById("layer" + i + "gain").innerHTML = formatWhole(LAYERS.gain(i))
@@ -72,11 +72,20 @@ function updateHTML(){
 
   document.getElementById("tab2").style.display = (player.prestige[1].gte(1027) || player.dimShift >= 1?"inline-block":"none")
   document.getElementById("tab1st2").style.display = (player.dimShift >= 1?"inline-block":"none")
-  document.getElementById("ver").innerHTML = player.majorVer + "." + player.version + (player.version2 || player.version3 ? "." + player.version2 + (player.version3 ? "." + player.version3 : "") : "") + (player.patchVer ? " Patch " + player.patchVer : "") 
+  document.getElementById("ver").innerHTML = player.majorVer + "." + player.version + (player.version2 || player.version3 ? "." + player.version2 + (player.version3 ? "." + player.version3 : "") : "") + 
+  (player.patchVer ? " Patch " + player.patchVer : "") + (player.updateName ? " - " + player.updateName : "") 
+  for (let i=0;i<=1;i++){
+    document.getElementById("option" + i).innerHTML = optionList[i][player.options[optionName[i]]]
+  }
+  document.getElementById("endgame").innerHTML = format("e50780555") + " points, " + formatWhole(100082) + " Dots, " + formatWhole(2) + " Lines and " + format(100) + " Line Segments."
 }
       
 const loadUpgrades=[null,8,0]
 const doesntLoadEff=[null,[7],[]]
 const loadMilestones=[null,0,3]
+const amtLayers=2
+const resourceName=[null,"dots","lines"]
+const optionList=[["Default","Standard","Up arrow","Bird array","Letter","Number Troll","Letter Troll","Base64","Reverse","???"],["Off","On"]]
+const optionName=["notation","debug"]
 
 loadGame(localStorage.getItem(saveId))
