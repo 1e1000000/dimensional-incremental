@@ -19,7 +19,7 @@ function loop(){
 function updateHTML(){
   if (tmp.offlineActive){
     document.getElementById("offMsg").style.display = "block"
-    document.getElementById("offSpeed").innerHTML = format(tmp.offlineMult,3)
+    document.getElementById("offSpeed").innerHTML = formatDefault(tmp.offlineMult,3)
   } else {
     document.getElementById("offMsg").style.display = "none"
     document.getElementById("offSpeed").innerHTML = ""

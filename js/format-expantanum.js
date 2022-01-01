@@ -716,14 +716,18 @@ function formatLetter(num, precision=2, small=false) {
     else if (num.lt(1e10)) return "E" + regularFormat(num.log10(),precision2)
     else if (num.lt("10^^10")) { // F10
         let pol = polarize(array)
-        return "F" + regularFormat(pol.top + Math.log10(pol.bottom), precision3)
+        return "F" + regularFormat(num.slog(10), precision3)
     }
     else if (num.lt("10^^^10")) { // G10
         let pol = polarize(array)
-        return "G" + regularFormat(pol.top + Math.log10(pol.bottom), precision3)
+        if (num.lt("10^^1e10")) return "G" + regularFormat(2+Math.log10(1+Math.log10(Math.log10(pol.top+Math.log10(pol.bottom)))), precision3)
+        else if (num.lt(ExpantaNum.tetr(10, ExpantaNum.MAX_SAFE_INTEGER))) return "G" + regularFormat(2+Math.log10(2+Math.log10(Math.log10(Math.log10(pol.top+Math.log10(pol.bottom))))), precision3)
+      return "G" + regularFormat(pol.top + Math.log10(pol.bottom), precision3)
     }
     else if (num.lt("10^^^^10")) { // H10
         let pol = polarize(array)
+        if (num.lt("10^^^1e10")) return "H" + regularFormat(2+Math.log10(1+Math.log10(1+Math.log10(Math.log10(pol.top+Math.log10(pol.bottom))))), precision3)
+        else if (num.lt(ExpantaNum.pent(10, ExpantaNum.MAX_SAFE_INTEGER))) return "H" + regularFormat(2+Math.log10(1+Math.log10(2+Math.log10(Math.log10(Math.log10(pol.top+Math.log10(pol.bottom)))))), precision3)
         return "H" + regularFormat(pol.top + Math.log10(pol.bottom), precision3)
     }
     else if (num.lt("J10")) { // J10

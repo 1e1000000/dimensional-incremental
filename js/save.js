@@ -87,7 +87,7 @@ function loadPlayer(load) {
   player.version = 1
   player.version2 = 0
   player.version3 = 1
-  player.patchVer = 0
+  player.patchVer = 1
   player.updateName = "Notation Update"
   console.log("Game loaded at Timestamp " + (Date.now()/1000).toLocaleString())
 }
