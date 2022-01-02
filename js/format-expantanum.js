@@ -233,7 +233,7 @@ function formatDefault(num, precision=2, small=false) {
     else if (num.lt("10^^5")) { // 1e9 ~ 1F5
         let bottom = arraySearch(array, 0)
         let rep = arraySearch(array, 1)-1
-        if (bottom >= 1e9) {
+        if (bottom >= (player.options.notation == 1 && rep >= 0 ? 3e9+3 : 1e9)) {
             bottom = Math.log10(bottom)
             rep += 1
         }
