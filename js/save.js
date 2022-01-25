@@ -69,8 +69,14 @@ function load(x){
     } else {
       wipe()
       tab(1)
-      subtab(1,1)
-      subsubtab(1,2,1)
+      for (let i=1;i<=player.subtab.length-1;i++){
+        subtab(i,1)
+        for (let j=1;j<=player.subsubtab[i].length-1;j++){
+          if ([2].includes(j)){
+            subsubtab(i,j,1)
+          }
+        }
+      }
     }
 }
 
