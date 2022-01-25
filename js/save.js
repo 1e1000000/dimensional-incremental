@@ -68,6 +68,9 @@ function load(x){
       loadPlayer(JSON.parse(atob(x)))
     } else {
       wipe()
+      tab(1)
+      subtab(1,1)
+      subsubtab(1,2,1)
     }
 }
 
