@@ -9,6 +9,7 @@ function ENify(x){
 }
 
 function calc(dt, dt_offline){
+  AFactived = Boolean(new Date().getMonth() == 3 && new Date().getDate() == 1)
   player.points = player.points.add(getPointsGain().mul(dt))
   player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
   player.lineSegments = player.lineSegments.add(LAYERS.lineSegGain().mul(dt)).min(LAYERS.lineSegGain().mul(10))
@@ -23,8 +24,10 @@ function getPlayerData(){
     points: new ExpantaNum(1),
     tab: 1,
     subtab: [null,1],
+    subsubtab: [null,[null,1,1]],
     prestige: [null,new ExpantaNum(0),new ExpantaNum(0)],
     upgrade: [null,[],[]],
+    buyables: [null,[],[null,new ExpantaNum(0),new ExpantaNum(0),new ExpantaNum(0)]],
     milestone: [null,[],[]],
     majorVer: 1, // usually meta-layer
     version: 0, // usually a layer
@@ -39,6 +42,7 @@ function getPlayerData(){
     options: {
       notation: 0,
       debug: 0,
+      notationOption: [2,3,4,6,5,9], // from left to right are base, e, FGH, JK, Letters to next, Exp of Num to next
     },
     dimShift: 0,
     lineSegments: new ExpantaNum(0),
@@ -73,9 +77,17 @@ function loadPlayer(load) {
   player = deepNaN(load, DATA)
   player = deepUndefinedAndExpantaNum(player, DATA)
   convertToExpNum()
-  tab(player.tab)
+  for (let i=1;i<=10;i++){
+    updateTemp()
+  }
+  tab(player.tab === undefined ? 1 : player.tab)
   for (let i=1;i<=player.subtab.length-1;i++){
-    subtab(i,player.subtab[i])
+    subtab(i,player.subtab[i] === undefined ? 1 : player.subtab[i])
+    for (let j=1;j<=player.subsubtab[i].length-1;j++){
+      if ([2].includes(j)){
+        subsubtab(i,j,player.subsubtab[j] === undefined ? 1 : player.subsubtab[j])
+      }
+    }
   }
   // fix issues, empty yet
 
@@ -85,11 +97,12 @@ function loadPlayer(load) {
   // set version
   player.majorVer = 1
   player.version = 1
-  player.version2 = 0
-  player.version3 = 1
-  player.patchVer = 1
-  player.updateName = "Notation Update"
+  player.version2 = 1
+  player.version3 = 0
+  player.patchVer = 0
+  player.updateName = "Line Segments Update"
   console.log("Game loaded at Timestamp " + (Date.now()/1000).toLocaleString())
+  scrollNextMessage()
 }
 
 function deepNaN(obj, data) {
@@ -123,6 +136,9 @@ function convertToExpNum(){
   player.points = ENify(player.points)
   for (let i=1;i<=player.prestige.length-1;i++){
     player.prestige[i] = ENify(player.prestige[i])
+    for (let j=1;j<=player.buyables[i].length-1;j++){
+      player.buyables[i][j] = ENify(player.buyables[i][j])
+    }
   }
   player.lineSegments = ENify(player.lineSegments)
 }

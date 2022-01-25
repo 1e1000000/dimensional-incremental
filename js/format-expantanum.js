@@ -1,3 +1,5 @@
+var AFactived = false
+
 // format-expantanum.js by cloudytheconqueror
 // Code snippets from NumberFormating.js of ducdat0507's The Communitree,
 // which is based on The Modding Tree by Acamaeda (and ported to OmegaNum by upvoid),
@@ -15,6 +17,7 @@ let MAX_LOGP1_REPEATS = 48
 let LOG5E = 0.6213349345596119 // 1 / Math.log(5)
 
 function commaFormat(num, precision) {
+    if (AFactived) return ""
     if (num === null || num === undefined) return "NaN"
     let zeroCheck = num.array ? num.array[0][1] : num
     if (zeroCheck < 0.001) return (0).toFixed(precision)
@@ -25,6 +28,7 @@ function commaFormat(num, precision) {
 }
 
 function regularFormat(num, precision) {
+    if (AFactived) return ""
     if (isNaN(num)) return "NaN"
     let zeroCheck = num.array ? num.array[0][1] : num
     if (zeroCheck < 0.001) return (0).toFixed(precision)
@@ -127,14 +131,21 @@ function setToZero(array, height) {
 }
 
 function formatWhole(num) {
-    return format(num, 0)
+    if (AFactived) return ""
+    num = new ExpantaNum(num)
+    if (player.options.notation >= 7) return format(num, 0, false, true)
+    if (num.lt(Math.min(1000,10**player.options.notationOption[5]))) return regularFormat(num, 0)
+    else if (num.lt(10**player.options.notationOption[5])) return commaFormat(num)
+    else return format(num)
 }
 
 function formatSmall(num, precision=2) { 
+    if (AFactived) return ""
     return format(num, precision, true)    
 }
 
 function formatTime(num, precision=2){
+    if (AFactived) return ""
     let y = new ExpantaNum(86400*365)
     let d = new ExpantaNum(86400)
     let h = new ExpantaNum(3600)
@@ -166,35 +177,42 @@ function formatTime(num, precision=2){
     } else return format(num.div(y), precision) + " years"
 }
 
-function format(num, precision=2, small=false){
+function format(num, precision=0, small=false, fixed0=false){
+    if (AFactived) return ""
+    precision = Math.max(player.options.notationOption[0], precision)
+    if (fixed0) precision = 0
     switch(player.options.notation) {
         case 0:
         case 1:
+        case 2:
             return formatDefault(num, precision, small)
         break;
-        case 2:
+        case 3:
+        case 4:
+        case 5:
             return formatUpArrow(num, precision, small)
         break;
-        case 3:
+        case 6:
             return formatBAN(num, precision, small)
         break;
-        case 4:
+        case 7:
+        case 8:
             return formatLetter(num, precision, small)
         break;
-        case 5:
+        case 9:
             return formatNumTroll(num, precision, small)
         break;
-        case 6:
+        case 10:
             return formatLetterTroll(num, precision, small)
         break;
-        case 7:
+        case 11:
             return btoa(formatDefault(num, precision, small))
         break;
-        case 8:
+        case 12:
             return reverseString(formatDefault(num, precision, small))
         break;
-        case 9:
-        default: // notation not found, or notation #9
+        case 13:
+        default: // notation not found, or notation #12
             return "???"
         }
 }
@@ -216,11 +234,12 @@ function reverseString(str) {
     return joinArray; // "olleh"
 }
 
-function formatDefault(num, precision=2, small=false) {
+function formatDefault(num, precision=0, small=false) {
+    if (AFactived) return ""
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(3, precision) // for e
-    let precision3 = Math.max(4, precision) // for F, G, H
-    let precision4 = Math.max(6, precision) // for J, K
+    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
+    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
+    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
     num = new ExpantaNum(num)
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
@@ -228,25 +247,25 @@ function formatDefault(num, precision=2, small=false) {
     if (num.isInfinite()) return "Infinity"
     if (num.lt("0.0001")) { return format(num.rec(), precision) + "⁻¹" }
     else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
-    else if (num.lt(1000)) return regularFormat(num, precision)
-    else if (num.lt(1e9)) return commaFormat(num)
-    else if (num.lt("10^^5")) { // 1e9 ~ 1F5
+    else if (num.lt(Math.min(1000,10**player.options.notationOption[5]))) return regularFormat(num, precision)
+    else if (num.lt(10**player.options.notationOption[5])) return commaFormat(num)
+    else if (num.lt("10^^" + player.options.notationOption[4])) { // 1e9 ~ 1F5
         let bottom = arraySearch(array, 0)
         let rep = arraySearch(array, 1)-1
-        if (bottom >= (player.options.notation == 1 && rep >= 0 ? 3e9+3 : 1e9)) {
+        if (bottom >= (player.options.notation == 1 && rep >= 0 ? 10**player.options.notationOption[5]*3+3 : 10**player.options.notationOption[5])) {
             bottom = Math.log10(bottom)
             rep += 1
         }
         let m = 10**(bottom-Math.floor(bottom))
         let e = Math.floor(bottom)
-        let p = precision2
-        return "e".repeat(rep) + (player.options.notation == 1 ? standardize(ExpantaNum.pow(10,e).mul(m), p) : regularFormat(m, p) + "e" + commaFormat(e))
+        let p = num.lt(1000) ? precision : precision2
+        return "e".repeat(rep) + (player.options.notation == 1 || (player.options.notation == 2 && e < 33) ? standardize(ExpantaNum.pow(10,e).mul(m), p) : regularFormat(m, p) + "e" + commaFormat(e))
     }
-    else if (num.lt("10^^1e9")) { // 1F5 ~ F1,000,000,000
+    else if (num.lt("10^^" + 10**player.options.notationOption[5])) { // 1F5 ~ F1,000,000,000
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "F" + commaFormat(pol.top)
     }
-    else if (num.lt("10^^^5")) { // F1,000,000,000 ~ 1G5
+    else if (num.lt("10^^^" + player.options.notationOption[4])) { // F1,000,000,000 ~ 1G5
         let rep = arraySearch(array, 2)
         if (rep >= 1) {
             setToZero(array, 2)
@@ -256,11 +275,11 @@ function formatDefault(num, precision=2, small=false) {
         if (num.gte("10^^" + (n + 1))) n += 1
         return "F" + format(n, precision)
     }
-    else if (num.lt("10^^^1e9")) { // 1G5 ~ G1,000,000,000
+    else if (num.lt("10^^^" + 10**player.options.notationOption[5])) { // 1G5 ~ G1,000,000,000
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "G" + commaFormat(pol.top)
     }
-    else if (num.lt("10^^^^5")) { // G1,000,000,000 ~ 1H5
+    else if (num.lt("10^^^^" + player.options.notationOption[4])) { // G1,000,000,000 ~ 1H5
         let rep = arraySearch(array, 3)
         if (rep >= 1) {
             setToZero(array, 3)
@@ -270,11 +289,11 @@ function formatDefault(num, precision=2, small=false) {
         if (num.gte("10^^^" + (n + 1))) n += 1
         return "G" + format(n, precision)
     }
-    else if (num.lt("10^^^^1e9")) { // 1H5 ~ H1,000,000,000
+    else if (num.lt("10^^^^" + 10**player.options.notationOption[5])) { // 1H5 ~ H1,000,000,000
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "H" + commaFormat(pol.top)
     }
-    else if (num.lt("10^^^^^5")) { // H1,000,000,000 ~ 5J4
+    else if (num.lt("10^^^^^" + player.options.notationOption[4])) { // H1,000,000,000 ~ 5J4
         let rep = arraySearch(array, 4)
         if (rep >= 1) {
             setToZero(array, 4)
@@ -284,18 +303,18 @@ function formatDefault(num, precision=2, small=false) {
         if (num.gte("10^^^^" + (n + 1))) n += 1
         return "H" + format(n, precision)
     }
-    else if (num.lt("J1e9")) { // 5J4 ~ J1,000,000,000
+    else if (num.lt("J" + 10**player.options.notationOption[5])) { // 5J4 ~ J1,000,000,000
         let pol = polarize(array, true)
         return regularFormat(Math.log10(pol.bottom) + pol.top, precision4) + "J" + commaFormat(pol.height)
     }
-    else if (num.lt("J^4 10")) { // J1,000,000,000 ~ 1K5
+    else if (num.lt("J^" + (player.options.notationOption[4]-1) + " 10")) { // J1,000,000,000 ~ 1K5
         let rep = num.layer
         if (rep >= 1) return "J".repeat(rep) + format(array, precision)
         let n = array[array.length-1][0]
         if (num.gte("J" + (n + 1))) n += 1
         return "J" + format(n, precision)
     }
-    else if (num.lt("J^999999999 10")) { // 1K5 ~ K1,000,000,000
+    else if (num.lt("J^" + (10**player.options.notationOption[5]-1) + " 10")) { // 1K5 ~ K1,000,000,000
         // https://googology.wikia.org/wiki/User_blog:PsiCubed2/Letter_Notation_Part_II
         // PsiCubed2 defined Jx as Gx for x < 2, resulting in J1 = 10 rather than 10^10, to
         // prevent issues when defining K and beyond. Therefore, there should be separate
@@ -330,11 +349,12 @@ function formatDefault(num, precision=2, small=false) {
     return "K" + format(n, precision)
 }
 
-function formatUpArrow(num, precision=2, small=false) {
+function formatUpArrow(num, precision=0, small=false) {
+    if (AFactived) return ""
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(3, precision) // for e
-    let precision3 = Math.max(4, precision) // for F, G, H
-    let precision4 = Math.max(6, precision) // for J, K
+    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
+    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
+    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
     num = new ExpantaNum(num)
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
@@ -342,25 +362,25 @@ function formatUpArrow(num, precision=2, small=false) {
     if (num.isInfinite()) return "Infinity"
     if (num.lt("0.0001")) { return "(" + format(num.rec(), precision) + ")⁻¹" }
     else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
-    else if (num.lt(1000)) return regularFormat(num, precision)
-    else if (num.lt(1e9)) return commaFormat(num)
-    else if (num.lt("10^^5")) { // 1e9 ~ 1F5
+    else if (num.lt(Math.min(1000,10**player.options.notationOption[5]))) return regularFormat(num, precision)
+    else if (num.lt(10**player.options.notationOption[5])) return commaFormat(num)
+    else if (num.lt("10^^" + player.options.notationOption[4])) { // 1e9 ~ 1F5
         let bottom = arraySearch(array, 0)
         let rep = arraySearch(array, 1)-1
-        if (bottom >= 1e9) {
+        if (bottom >= (player.options.notation == 4 && rep >= 0 ? 10**player.options.notationOption[5]*3+3 : 10**player.options.notationOption[5])) {
             bottom = Math.log10(bottom)
             rep += 1
         }
         let m = 10**(bottom-Math.floor(bottom))
         let e = Math.floor(bottom)
-        let p = precision2
-        return "10^(".repeat(rep) + regularFormat(m, p) + "*10^" + commaFormat(e) + ")".repeat(rep)
+        let p = num.lt(1000) ? precision : precision2
+        return "10^(".repeat(rep) + (player.options.notation == 4 || (player.options.notation == 5 && e < 33) ? standardize(ExpantaNum.pow(10,e).mul(m), p) : regularFormat(m, p) + "*10^" + commaFormat(e)) + ")".repeat(rep)
     }
-    else if (num.lt("10^^1e9")) { // 1F5 ~ F1,000,000,000
+    else if (num.lt("10^^" + 10**player.options.notationOption[5])) { // 1F5 ~ F1,000,000,000
         let pol = polarize(array)
         return "(10^)^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
     }
-    else if (num.lt("10^^^5")) { // F1,000,000,000 ~ 1G5
+    else if (num.lt("10^^^" + player.options.notationOption[4])) { // F1,000,000,000 ~ 1G5
         let rep = arraySearch(array, 2)
         if (rep >= 1) {
             setToZero(array, 2)
@@ -370,11 +390,11 @@ function formatUpArrow(num, precision=2, small=false) {
         if (num.gte("10^^" + (n + 1))) n += 1
         return "10^^" + format(n, precision)
     }
-    else if (num.lt("10^^^1e9")) { // 1G5 ~ G1,000,000,000
+    else if (num.lt("10^^^" + 10**player.options.notationOption[5])) { // 1G5 ~ G1,000,000,000
         let pol = polarize(array)
         return "(10^^)^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
     }
-    else if (num.lt("10^^^^5")) { // G1,000,000,000 ~ 1H5
+    else if (num.lt("10^^^^" + player.options.notationOption[4])) { // G1,000,000,000 ~ 1H5
         let rep = arraySearch(array, 3)
         if (rep >= 1) {
             setToZero(array, 3)
@@ -384,11 +404,11 @@ function formatUpArrow(num, precision=2, small=false) {
         if (num.gte("10^^^" + (n + 1))) n += 1
         return "10^^^" + format(n, precision)
     }
-    else if (num.lt("10^^^^1e9")) { // 1H5 ~ H1,000,000,000
+    else if (num.lt("10^^^^" + 10**player.options.notationOption[5])) { // 1H5 ~ H1,000,000,000
         let pol = polarize(array)
         return "(10^^^)^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
     }
-    else if (num.lt("10^^^^^5")) { // H1,000,000,000 ~ 5J4
+    else if (num.lt("10^^^^^" + player.options.notationOption[4])) { // H1,000,000,000 ~ 5J4
         let rep = arraySearch(array, 4)
         if (rep >= 1) {
             setToZero(array, 4)
@@ -398,11 +418,11 @@ function formatUpArrow(num, precision=2, small=false) {
         if (num.gte("10^^^^" + (n + 1))) n += 1
         return "10^^^^" + format(n, precision)
     }
-    else if (num.lt("10^^^^^1e9")) { // 5J4 ~ J4$1,000,000,000
+    else if (num.lt("10^^^^^" + 10**player.options.notationOption[5])) { // 5J4 ~ J4$1,000,000,000
         let pol = polarize(array)
         return "(10^^^^)^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
     }
-    else if (num.lt("10^^^^^^5")) { // J4$1,000,000,000 ~ 5J5
+    else if (num.lt("10^^^^^^" + player.options.notationOption[4])) { // J4$1,000,000,000 ~ 5J5
         let rep = arraySearch(array, 5)
         if (rep >= 1) {
             setToZero(array, 5)
@@ -412,11 +432,11 @@ function formatUpArrow(num, precision=2, small=false) {
         if (num.gte("10^^^^^" + (n + 1))) n += 1
         return "10{5}" + format(n, precision)
     }
-    else if (num.lt("10^^^^^^1e9")) { // 5J5 ~ J5$1,000,000,000
+    else if (num.lt("10^^^^^^" + 10**player.options.notationOption[5])) { // 5J5 ~ J5$1,000,000,000
         let pol = polarize(array)
         return "(10{5})^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
     }
-    else if (num.lt("10^^^^^^^5")) { // J5$1,000,000,000 ~ 5J6
+    else if (num.lt("10^^^^^^^" + player.options.notationOption[4])) { // J5$1,000,000,000 ~ 5J6
         let rep = arraySearch(array, 6)
         if (rep >= 1) {
             setToZero(array, 6)
@@ -426,11 +446,11 @@ function formatUpArrow(num, precision=2, small=false) {
         if (num.gte("10^^^^^^" + (n + 1))) n += 1
         return "10{6}" + format(n, precision)
     }
-    else if (num.lt("10^^^^^^^1e9")) { // 5J6 ~ J6$1,000,000,000
+    else if (num.lt("10^^^^^^^" + 10**player.options.notationOption[5])) { // 5J6 ~ J6$1,000,000,000
         let pol = polarize(array)
         return "(10{6})^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
     }
-    else if (num.lt("10^^^^^^^^5")) { // J6$1,000,000,000 ~ 5J7
+    else if (num.lt("10^^^^^^^^" + player.options.notationOption[4])) { // J6$1,000,000,000 ~ 5J7
         let rep = arraySearch(array, 7)
         if (rep >= 1) {
             setToZero(array, 7)
@@ -440,11 +460,11 @@ function formatUpArrow(num, precision=2, small=false) {
         if (num.gte("10^^^^^^^" + (n + 1))) n += 1
         return "10{7}" + format(n, precision)
     }
-    else if (num.lt("10^^^^^^^^1e9")) { // 5J7 ~ J7$1,000,000,000
+    else if (num.lt("10^^^^^^^^" + 10**player.options.notationOption[5])) { // 5J7 ~ J7$1,000,000,000
         let pol = polarize(array)
         return "(10{7})^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
     }
-    else if (num.lt("10^^^^^^^^^5")) { // J7$1,000,000,000 ~ 5J8
+    else if (num.lt("10^^^^^^^^^" + player.options.notationOption[4])) { // J7$1,000,000,000 ~ 5J8
         let rep = arraySearch(array, 8)
         if (rep >= 1) {
             setToZero(array, 8)
@@ -454,11 +474,11 @@ function formatUpArrow(num, precision=2, small=false) {
         if (num.gte("10^^^^^^^^" + (n + 1))) n += 1
         return "10{8}" + format(n, precision)
     }
-    else if (num.lt("10^^^^^^^^^1e9")) { // 5J8 ~ J8$1,000,000,000
+    else if (num.lt("10^^^^^^^^^" + 10**player.options.notationOption[5])) { // 5J8 ~ J8$1,000,000,000
         let pol = polarize(array)
         return "(10{8})^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
     }
-    else if (num.lt("10^^^^^^^^^^5")) { // J8$1,000,000,000 ~ 5J9
+    else if (num.lt("10^^^^^^^^^^" + player.options.notationOption[4])) { // J8$1,000,000,000 ~ 5J9
         let rep = arraySearch(array, 9)
         if (rep >= 1) {
             setToZero(array, 9)
@@ -472,18 +492,18 @@ function formatUpArrow(num, precision=2, small=false) {
         let pol = polarize(array)
         return "(10{9})^" + commaFormat(pol.top) + " " + regularFormat(pol.bottom, precision3)
     }
-    else if (num.lt("J1e9")) { // J10 ~ J1,000,000,000
+    else if (num.lt("J" + 10**player.options.notationOption[5])) { // J10 ~ J1,000,000,000
         let pol = polarize(array, true)
         return "10{" + commaFormat(pol.height) + "}" + regularFormat(Math.log10(pol.bottom) + pol.top, precision4)
     }
-    else if (num.lt("J^4 10")) { // J1,000,000,000 ~ 1K5
+    else if (num.lt("J^" + (player.options.notationOption[4]-1) + " 10")) { // J1,000,000,000 ~ 1K5
         let rep = num.layer
         if (rep >= 1) return "10{".repeat(rep) + format(array, precision) + "}10".repeat(rep)
         let n = array[array.length-1][0]
         if (num.gte("J" + (n + 1))) n += 1
         return "10{" + format(n, precision) + "}10"
     }
-    else if (num.lt("J^999999999 10")) { // 1K5 ~ K1,000,000,000
+    else if (num.lt("J^" + (10**player.options.notationOption[5]-1) + " 10")) { // 1K5 ~ K1,000,000,000
         // https://googology.wikia.org/wiki/User_blog:PsiCubed2/Letter_Notation_Part_II
         // PsiCubed2 defined Jx as Gx for x < 2, resulting in J1 = 10 rather than 10^10, to
         // prevent issues when defining K and beyond. Therefore, there should be separate
@@ -518,11 +538,12 @@ function formatUpArrow(num, precision=2, small=false) {
     return "10{{1}}" + format(n, precision)
 }
 
-function formatBAN(num, precision=2, small=false) {
+function formatBAN(num, precision=0, small=false) {
+    if (AFactived) return ""
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(3, precision) // for e
-    let precision3 = Math.max(4, precision) // for F, G, H
-    let precision4 = Math.max(6, precision) // for J, K
+    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
+    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
+    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
     num = new ExpantaNum(num)
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
@@ -530,25 +551,25 @@ function formatBAN(num, precision=2, small=false) {
     if (num.isInfinite()) return "Infinity"
     if (num.lt("0.0001")) { return format(num.rec(), precision) + "⁻¹" }
     else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
-    else if (num.lt(1000)) return regularFormat(num, precision)
-    else if (num.lt(1e9)) return commaFormat(num)
-    else if (num.lt("10^^5")) { // 1e9 ~ 1F5
+    else if (num.lt(Math.min(1000,10**player.options.notationOption[5]))) return regularFormat(num, precision)
+    else if (num.lt(10**player.options.notationOption[5])) return commaFormat(num)
+    else if (num.lt("10^^" + player.options.notationOption[4])) { // 1e9 ~ 1F5
         let bottom = arraySearch(array, 0)
         let rep = arraySearch(array, 1)-1
-        if (bottom >= 1e9) {
+        if (bottom >= 10**player.options.notationOption[5]) {
             bottom = Math.log10(bottom)
             rep += 1
         }
         let m = 10**(bottom-Math.floor(bottom))
         let e = Math.floor(bottom)
-        let p = precision2
+        let p = num.lt(1000) ? precision : precision2
         return "{10, ".repeat(rep) + regularFormat(m, p) + "{10, " + formatWhole(e, p) + "}" + "}".repeat(rep)
     }
-    else if (num.lt("10^^1000000000")) { // 1F5 ~ F1,000,000,000
+    else if (num.lt("10^^" + 10**player.options.notationOption[5])) { // 1F5 ~ F1,000,000,000
         let pol = polarize(array)
         return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 2}"
     }
-    else if (num.lt("10^^^5")) { // F1,000,000,000 ~ 1G5
+    else if (num.lt("10^^^" + player.options.notationOption[4])) { // F1,000,000,000 ~ 1G5
         let rep = arraySearch(array, 2)
         if (rep >= 1) {
             setToZero(array, 2)
@@ -558,11 +579,11 @@ function formatBAN(num, precision=2, small=false) {
         if (num.gte("10^^" + (n + 1))) n += 1
         return "{10, " + format(n, precision) + ", 2}"
     }
-    else if (num.lt("10^^^1000000000")) { // 1G5 ~ G1,000,000,000
+    else if (num.lt("10^^^" + 10**player.options.notationOption[5])) { // 1G5 ~ G1,000,000,000
         let pol = polarize(array)
         return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 3}"
     }
-    else if (num.lt("10^^^^5")) { // G1,000,000,000 ~ 1H5
+    else if (num.lt("10^^^^" + player.options.notationOption[4])) { // G1,000,000,000 ~ 1H5
         let rep = arraySearch(array, 3)
         if (rep >= 1) {
             setToZero(array, 3)
@@ -572,11 +593,11 @@ function formatBAN(num, precision=2, small=false) {
         if (num.gte("10^^^" + (n + 1))) n += 1
         return "{10, " + format(n, precision) + ", 3}"
     }
-    else if (num.lt("10^^^^1000000000")) { // 1H5 ~ H1,000,000,000
+    else if (num.lt("10^^^^" + 10**player.options.notationOption[5])) { // 1H5 ~ H1,000,000,000
         let pol = polarize(array)
         return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 4}"
     }
-    else if (num.lt("10^^^^^5")) { // H1,000,000,000 ~ 5J4
+    else if (num.lt("10^^^^^" + player.options.notationOption[4])) { // H1,000,000,000 ~ 5J4
         let rep = arraySearch(array, 4)
         if (rep >= 1) {
             setToZero(array, 4)
@@ -586,11 +607,11 @@ function formatBAN(num, precision=2, small=false) {
         if (num.gte("10^^^^" + (n + 1))) n += 1
         return "{10, " + format(n, precision) + ", 4}"
     }
-    else if (num.lt("10^^^^^1000000000")) { // 5J4 ~ J4$1,000,000,000
+    else if (num.lt("10^^^^^" + 10**player.options.notationOption[5])) { // 5J4 ~ J4$1,000,000,000
         let pol = polarize(array)
         return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 5}"
     }
-    else if (num.lt("10^^^^^^5")) { // J4$1,000,000,000 ~ 5J5
+    else if (num.lt("10^^^^^^" + player.options.notationOption[4])) { // J4$1,000,000,000 ~ 5J5
         let rep = arraySearch(array, 5)
         if (rep >= 1) {
             setToZero(array, 5)
@@ -600,11 +621,11 @@ function formatBAN(num, precision=2, small=false) {
         if (num.gte("10^^^^^" + (n + 1))) n += 1
         return "{10, " + format(n, precision) + ", 5}"
     }
-    else if (num.lt("10^^^^^^1000000000")) { // 5J5 ~ J5$1,000,000,000
+    else if (num.lt("10^^^^^^" + 10**player.options.notationOption[5])) { // 5J5 ~ J5$1,000,000,000
         let pol = polarize(array)
         return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 6}"
     }
-    else if (num.lt("10^^^^^^^5")) { // J5$1,000,000,000 ~ 5J6
+    else if (num.lt("10^^^^^^^" + player.options.notationOption[4])) { // J5$1,000,000,000 ~ 5J6
         let rep = arraySearch(array, 6)
         if (rep >= 1) {
             setToZero(array, 6)
@@ -614,11 +635,11 @@ function formatBAN(num, precision=2, small=false) {
         if (num.gte("10^^^^^^" + (n + 1))) n += 1
         return "{10, " + format(n, precision) + ", 6}"
     }
-    else if (num.lt("10^^^^^^^1000000000")) { // 5J6 ~ J6$1,000,000,000
+    else if (num.lt("10^^^^^^^" + 10**player.options.notationOption[5])) { // 5J6 ~ J6$1,000,000,000
         let pol = polarize(array)
         return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 7}"
     }
-    else if (num.lt("10^^^^^^^^5")) { // J6$1,000,000,000 ~ 5J7
+    else if (num.lt("10^^^^^^^^" + player.options.notationOption[4])) { // J6$1,000,000,000 ~ 5J7
         let rep = arraySearch(array, 7)
         if (rep >= 1) {
             setToZero(array, 7)
@@ -628,11 +649,11 @@ function formatBAN(num, precision=2, small=false) {
         if (num.gte("10^^^^^^^" + (n + 1))) n += 1
         return "{10, " + format(n, precision) + ", 7}"
     }
-    else if (num.lt("10^^^^^^^^1000000000")) { // 5J7 ~ J7$1,000,000,000
+    else if (num.lt("10^^^^^^^^" + 10**player.options.notationOption[5])) { // 5J7 ~ J7$1,000,000,000
         let pol = polarize(array)
         return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 8}"
     }
-    else if (num.lt("10^^^^^^^^^5")) { // J7$1,000,000,000 ~ 5J8
+    else if (num.lt("10^^^^^^^^^" + player.options.notationOption[4])) { // J7$1,000,000,000 ~ 5J8
         let rep = arraySearch(array, 8)
         if (rep >= 1) {
             setToZero(array, 8)
@@ -642,11 +663,11 @@ function formatBAN(num, precision=2, small=false) {
         if (num.gte("10^^^^^^^^" + (n + 1))) n += 1
         return "{10, " + format(n, precision) + ", 8}"
     }
-    else if (num.lt("10^^^^^^^^^1000000000")) { // 5J8 ~ J8$1,000,000,000
+    else if (num.lt("10^^^^^^^^^" + 10**player.options.notationOption[5])) { // 5J8 ~ J8$1,000,000,000
         let pol = polarize(array)
         return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 9}"
     }
-    else if (num.lt("10^^^^^^^^^^5")) { // J8$1,000,000,000 ~ 5J9
+    else if (num.lt("10^^^^^^^^^^" + player.options.notationOption[4])) { // J8$1,000,000,000 ~ 5J9
         let rep = arraySearch(array, 9)
         if (rep >= 1) {
             setToZero(array, 9)
@@ -656,32 +677,32 @@ function formatBAN(num, precision=2, small=false) {
         if (num.gte("10^^^^^^^^^" + (n + 1))) n += 1
         return "{10, " + format(n, precision) + ", 9}"
     }
-    else if (num.lt("10^^^^^^^^^^1000000000")) { // 5J9 ~ J9$1,000,000,000
+    else if (num.lt("10^^^^^^^^^^" + 10**player.options.notationOption[5])) { // 5J9 ~ J9$1,000,000,000
         let pol = polarize(array)
         return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 10}"
     }
     else if (num.lt("10^^^^^^^^^^10")) { // J9$1,000,000,000 ~ J10, up to J10 is prevent stack error
         let rep = arraySearch(array, 10)
         if (rep >= 1) {
-            setToZero(array, 9)
+            setToZero(array, 10)
             return "{10, ".repeat(rep) + format(array, precision) + ", 10}".repeat(rep)
         }
         let n = arraySearch(array, 9) + 1
         if (num.gte("10^^^^^^^^^^" + (n + 1))) n += 1
         return "{10, " + format(n, precision) + ", 10}"
     }
-    else if (num.lt("J1000000000")) { // J10 ~ J1,000,000,000
+    else if (num.lt("J" + 10**player.options.notationOption[5])) { // J10 ~ J1,000,000,000
         let pol = polarize(array, true)
         return "{10, " + regularFormat(Math.log10(pol.bottom) + pol.top, precision4) + ", " + commaFormat(pol.height+1) + "}"
     }
-    else if (num.lt("J^4 10")) { // J1,000,000,000 ~ 1K5
+    else if (num.lt("J^" + (player.options.notationOption[4]-1) + " 10")) { // J1,000,000,000 ~ 1K5
         let rep = num.layer
         if (rep >= 1) return "{10, 10, ".repeat(rep) + format(array, precision) + "}".repeat(rep)
         let n = array[array.length-1][0]
         if (num.gte("J" + (n + 1))) n += 1
         return "{10, 10, " + format(n, precision) + "}"
     }
-    else if (num.lt("J^999999999 10")) { // 1K5 ~ K1,000,000,000
+    else if (num.lt("J^" + (10**player.options.notationOption[5]-1) + " 10")) { // 1K5 ~ K1,000,000,000
         // https://googology.wikia.org/wiki/User_blog:PsiCubed2/Letter_Notation_Part_II
         // PsiCubed2 defined Jx as Gx for x < 2, resulting in J1 = 10 rather than 10^10, to
         // prevent issues when defining K and beyond. Therefore, there should be separate
@@ -699,13 +720,13 @@ function formatBAN(num, precision=2, small=false) {
     return "{10, " + format(n, precision4) + ", 1, 2}"
 }
 
-function formatLetter(num, precision=2, small=false) {
+function formatLetter(num, precision=0, small=false) {
+    if (AFactived) return ""
     num = new ExpantaNum(num)
-    if (num.gte(10)) precision += 2
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(4, precision) // for e
-    let precision3 = Math.max(6, precision) // for F, G, H
-    let precision4 = Math.max(8, precision) // for J, K
+    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
+    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
+    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
     if (num.sign < 0) return "-" + format(num.neg(), precision, small)
@@ -713,26 +734,48 @@ function formatLetter(num, precision=2, small=false) {
     if (num.lt("0.0001")) { return format(num.rec(), precision) + "⁻¹" }
     else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
     else if (num.lt(10)) return regularFormat(num, precision)
-    else if (num.lt(1e10)) return "E" + regularFormat(num.log10(),precision2)
+    else if (num.lt(1e10)) {
+        let base = num.log10()
+        let int = base.floor()
+        let rem = ExpantaNum.pow(10,base.sub(int))
+        return (player.options.notation==8 ? regularFormat(rem,precision2) : "") + "E" + (player.options.notation==8 ? formatWhole(int) : regularFormat(base,precision2))
+    }
     else if (num.lt("10^^10")) { // F10
         let pol = polarize(array)
-        return "F" + regularFormat(num.slog(10), precision3)
+        let base = num.slog(10)
+        let int = base.floor()
+        let rem = ExpantaNum.pow(10,base.sub(int))
+        return (player.options.notation==8 ? regularFormat(rem,precision3) : "") + "F" + (player.options.notation==8 ? formatWhole(int) : regularFormat(base,precision3))
     }
     else if (num.lt("10^^^10")) { // G10
         let pol = polarize(array)
-        if (num.lt("10^^1e10")) return "G" + regularFormat(2+Math.log10(1+Math.log10(Math.log10(pol.top+Math.log10(pol.bottom)))), precision3)
-        else if (num.lt(ExpantaNum.tetr(10, ExpantaNum.MAX_SAFE_INTEGER))) return "G" + regularFormat(2+Math.log10(2+Math.log10(Math.log10(Math.log10(pol.top+Math.log10(pol.bottom))))), precision3)
-      return "G" + regularFormat(pol.top + Math.log10(pol.bottom), precision3)
+        if (num.lt(ExpantaNum.tetr(10, ExpantaNum.MAX_SAFE_INTEGER))){
+            let base
+            if (num.lt("10^^1e10")) base = 2+Math.log10(1+Math.log10(Math.log10(pol.top+Math.log10(pol.bottom))))
+            else base = 2+Math.log10(2+Math.log10(Math.log10(Math.log10(pol.top+Math.log10(pol.bottom)))))
+            base = new ExpantaNum(base)
+            let int = base.floor()
+            let rem = ExpantaNum.pow(10,base.sub(int))
+            return (player.options.notation==8 ? regularFormat(rem,precision3) : "") + "G" + (player.options.notation==8 ? formatWhole(int) : regularFormat(base,precision3))
+        }
+        return (player.options.notation==8 ? regularFormat(pol.bottom,precision3) : "") + "G" + (player.options.notation==8 ? formatWhole(pol.top) : regularFormat(pol.top + Math.log10(pol.bottom), precision3))
     }
     else if (num.lt("10^^^^10")) { // H10
         let pol = polarize(array)
-        if (num.lt("10^^^1e10")) return "H" + regularFormat(2+Math.log10(1+Math.log10(1+Math.log10(Math.log10(pol.top+Math.log10(pol.bottom))))), precision3)
-        else if (num.lt(ExpantaNum.pent(10, ExpantaNum.MAX_SAFE_INTEGER))) return "H" + regularFormat(2+Math.log10(1+Math.log10(2+Math.log10(Math.log10(Math.log10(pol.top+Math.log10(pol.bottom)))))), precision3)
-        return "H" + regularFormat(pol.top + Math.log10(pol.bottom), precision3)
+        if (num.lt(ExpantaNum.pent(10, ExpantaNum.MAX_SAFE_INTEGER))){
+            let base
+            if (num.lt("10^^^1e10")) base = 2+Math.log10(1+Math.log10(1+Math.log10(Math.log10(pol.top+Math.log10(pol.bottom)))))
+            else base = 2+Math.log10(1+Math.log10(2+Math.log10(Math.log10(Math.log10(pol.top+Math.log10(pol.bottom))))))
+            base = new ExpantaNum(base)
+            let int = base.floor()
+            let rem = ExpantaNum.pow(10,base.sub(int))
+            return (player.options.notation==8 ? regularFormat(rem,precision3) : "") + "H" + (player.options.notation==8 ? formatWhole(int) : regularFormat(base,precision3))
+        }
+        return (player.options.notation==8 ? regularFormat(pol.bottom,precision3) : "") + "H" + (player.options.notation==8 ? formatWhole(pol.top) : regularFormat(pol.top + Math.log10(pol.bottom), precision3))
     }
     else if (num.lt("J10")) { // J10
         let pol = polarize(array, true)
-        return "J" + regularFormat(pol.height + Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E, precision4)
+        return (player.options.notation==8 ? regularFormat(2*5**(Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E),precision4) : "") + "J" + (player.options.notation==8 ? formatWhole(pol.height) : regularFormat(pol.height + Math.log((Math.log10(pol.bottom) + pol.top) / 2) * LOG5E, precision4))
     }
     else { // K10
         // https://googology.wikia.org/wiki/User_blog:PsiCubed2/Letter_Notation_Part_II
@@ -761,17 +804,25 @@ function formatLetter(num, precision=2, small=false) {
             topJ = 1 + Math.log10(Math.log10(bottom) + top)
             layer += 2
         }
-        if (num.lt("J^9 10")) return "K" + regularFormat(layer + Math.log10(topJ), precision4)
-        else if (num.lt("J^9999999999 10")) return "L" + regularFormat(2 + Math.log10(1 + Math.log10(1 + Math.log10(1 + Math.log10(Math.log10(layer + Math.log10(topJ)))))), precision4)
-        else return "L" + regularFormat(2 + Math.log10(1 + Math.log10(1 + Math.log10(2 + Math.log10(Math.log10(Math.log10(layer + Math.log10(topJ))))))), precision4)
+        if (num.lt("J^9 10")) return (player.options.notation==8 ? regularFormat(topJ,precision4) : "") + "K" + (player.options.notation==8 ? formatWhole(layer) : regularFormat(layer + Math.log10(topJ), precision4))
+        else {
+            let base
+            if (num.lt("J^9999999999 10")) base = 2 + Math.log10(1 + Math.log10(1 + Math.log10(1 + Math.log10(Math.log10(layer + Math.log10(topJ))))))
+            else base = 2 + Math.log10(1 + Math.log10(1 + Math.log10(2 + Math.log10(Math.log10(Math.log10(layer + Math.log10(topJ)))))))
+            base = new ExpantaNum(base)
+            let int = base.floor()
+            let rem = ExpantaNum.pow(10,base.sub(int)) // idk it is 10^x or 2*5^x
+            return (player.options.notation==8 ? regularFormat(rem,precision4) : "") + "L" + (player.options.notation==8 ? formatWhole(int) : regularFormat(base,precision4))
+        }
     }
 }
 
-function formatNumTroll(num, precision=2, small=false) {
+function formatNumTroll(num, precision=0, small=false) {
+    if (AFactived) return ""
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(3, precision) // for e
-    let precision3 = Math.max(4, precision) // for F, G, H
-    let precision4 = Math.max(6, precision) // for J, K
+    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
+    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
+    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
     num = new ExpantaNum(num)
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
@@ -781,7 +832,7 @@ function formatNumTroll(num, precision=2, small=false) {
     else if (num.lt(1)) return regularFormat(num.pow(2), precision + (small ? 2 : 0))
     else if (num.lt(1000**0.5)) return regularFormat(num.pow(2), precision)
     else if (num.lt(1e6)) return commaFormat(num.pow(2))
-    else if (num.lt("10^^5")) { // 1e9 ~ 1F5
+    else if (num.lt("10^^" + player.options.notationOption[4])) { // 1e9 ~ 1F5
         let bottom = arraySearch(array, 0)
         let rep = arraySearch(array, 1)-1
         if (bottom >= 1e6) {
@@ -790,14 +841,14 @@ function formatNumTroll(num, precision=2, small=false) {
         }
         let m = 10**(bottom-Math.floor(bottom))
         let e = Math.floor(bottom)
-        let p = precision2
+        let p = num.lt(1000) ? precision : precision2
         return "e".repeat(rep) + regularFormat(m**2, p) + "e" + commaFormat(e**2)
     }
     else if (num.lt("10^^1e6")) { // 1F5 ~ F1,000,000,000
         let pol = polarize(array)
         return regularFormat(pol.bottom**2, precision3) + "F" + commaFormat(pol.top**2)
     }
-    else if (num.lt("10^^^5")) { // F1,000,000,000 ~ 1G5
+    else if (num.lt("10^^^" + player.options.notationOption[4])) { // F1,000,000,000 ~ 1G5
         let rep = arraySearch(array, 2)
         if (rep >= 1) {
             setToZero(array, 2)
@@ -811,7 +862,7 @@ function formatNumTroll(num, precision=2, small=false) {
         let pol = polarize(array)
         return regularFormat(pol.bottom**2, precision3) + "G" + commaFormat(pol.top**2)
     }
-    else if (num.lt("10^^^^5")) { // G1,000,000,000 ~ 1H5
+    else if (num.lt("10^^^^" + player.options.notationOption[4])) { // G1,000,000,000 ~ 1H5
         let rep = arraySearch(array, 3)
         if (rep >= 1) {
             setToZero(array, 3)
@@ -825,7 +876,7 @@ function formatNumTroll(num, precision=2, small=false) {
         let pol = polarize(array)
         return regularFormat(pol.bottom**2, precision3) + "H" + commaFormat(pol.top**2)
     }
-    else if (num.lt("10^^^^^5")) { // H1,000,000,000 ~ 5J4
+    else if (num.lt("10^^^^^" + player.options.notationOption[4])) { // H1,000,000,000 ~ 5J4
         let rep = arraySearch(array, 4)
         if (rep >= 1) {
             setToZero(array, 4)
@@ -839,7 +890,7 @@ function formatNumTroll(num, precision=2, small=false) {
         let pol = polarize(array, true)
         return regularFormat((Math.log10(pol.bottom) + pol.top)**2, precision4) + "J" + commaFormat(pol.height**2)
     }
-    else if (num.lt("J^4 10")) { // J1,000,000,000 ~ 1K5
+    else if (num.lt("J^" + (player.options.notationOption[4]-1) + " 10")) { // J1,000,000,000 ~ 1K5
         let rep = num.layer
         if (rep >= 1) return "J".repeat(rep) + format(array, precision)
         let n = array[array.length-1][0]
@@ -881,11 +932,12 @@ function formatNumTroll(num, precision=2, small=false) {
     return "K" + format(n, precision)
 }
 
-function formatLetterTroll(num, precision=2, small=false) {
+function formatLetterTroll(num, precision=0, small=false) {
+    if (AFactived) return ""
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(3, precision) // for e
-    let precision3 = Math.max(4, precision) // for F, G, H
-    let precision4 = Math.max(6, precision) // for J, K
+    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
+    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
+    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
     num = new ExpantaNum(num)
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
@@ -893,25 +945,25 @@ function formatLetterTroll(num, precision=2, small=false) {
     if (num.isInfinite()) return "Infinity"
     if (num.lt("0.0001")) { return format(num.rec(), precision) + "⁻¹" }
     else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
-    else if (num.lt(1000)) return regularFormat(num, precision)
-    else if (num.lt(1e9)) return commaFormat(num)
-    else if (num.lt("10^^5")) { // 1e9 ~ 1F5
+    else if (num.lt(Math.min(1000,10**player.options.notationOption[5]))) return regularFormat(num, precision)
+    else if (num.lt(10**player.options.notationOption[5])) return commaFormat(num)
+    else if (num.lt("10^^" + player.options.notationOption[4])) { // 1e9 ~ 1F5
         let bottom = arraySearch(array, 0)
         let rep = arraySearch(array, 1)-1
-        if (bottom >= 1e9) {
+        if (bottom >= 10**player.options.notationOption[5]) {
             bottom = Math.log10(bottom)
             rep += 1
         }
         let m = 10**(bottom-Math.floor(bottom))
         let e = Math.floor(bottom)
-        let p = precision2
+        let p = num.lt(1000) ? precision : precision2
         return "J".repeat(rep) + regularFormat(m, p) + "J" + commaFormat(e)
     }
-    else if (num.lt("10^^1e9")) { // 1F5 ~ F1,000,000,000
+    else if (num.lt("10^^" + 10**player.options.notationOption[5])) { // 1F5 ~ F1,000,000,000
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "K" + commaFormat(pol.top)
     }
-    else if (num.lt("10^^^5")) { // F1,000,000,000 ~ 1G5
+    else if (num.lt("10^^^" + player.options.notationOption[4])) { // F1,000,000,000 ~ 1G5
         let rep = arraySearch(array, 2)
         if (rep >= 1) {
             setToZero(array, 2)
@@ -921,11 +973,11 @@ function formatLetterTroll(num, precision=2, small=false) {
         if (num.gte("10^^" + (n + 1))) n += 1
         return "K" + format(n, precision)
     }
-    else if (num.lt("10^^^1e9")) { // 1G5 ~ G1,000,000,000
+    else if (num.lt("10^^^" + 10**player.options.notationOption[5])) { // 1G5 ~ G1,000,000,000
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "L" + commaFormat(pol.top)
     }
-    else if (num.lt("10^^^^5")) { // G1,000,000,000 ~ 1H5
+    else if (num.lt("10^^^^" + player.options.notationOption[4])) { // G1,000,000,000 ~ 1H5
         let rep = arraySearch(array, 3)
         if (rep >= 1) {
             setToZero(array, 3)
@@ -935,11 +987,11 @@ function formatLetterTroll(num, precision=2, small=false) {
         if (num.gte("10^^^" + (n + 1))) n += 1
         return "L" + format(n, precision)
     }
-    else if (num.lt("10^^^^1e9")) { // 1H5 ~ H1,000,000,000
+    else if (num.lt("10^^^^" + 10**player.options.notationOption[5])) { // 1H5 ~ H1,000,000,000
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "M" + commaFormat(pol.top)
     }
-    else if (num.lt("10^^^^^5")) { // H1,000,000,000 ~ 5J4
+    else if (num.lt("10^^^^^" + player.options.notationOption[4])) { // H1,000,000,000 ~ 5J4
         let rep = arraySearch(array, 4)
         if (rep >= 1) {
             setToZero(array, 4)
@@ -949,18 +1001,18 @@ function formatLetterTroll(num, precision=2, small=false) {
         if (num.gte("10^^^^" + (n + 1))) n += 1
         return "M" + format(n, precision)
     }
-    else if (num.lt("J1e9")) { // 5J4 ~ J1,000,000,000
+    else if (num.lt("J" + 10**player.options.notationOption[5])) { // 5J4 ~ J1,000,000,000
         let pol = polarize(array, true)
         return regularFormat(Math.log10(pol.bottom) + pol.top, precision4) + "N" + commaFormat(pol.height)
     }
-    else if (num.lt("J^4 10")) { // J1,000,000,000 ~ 1K5
+    else if (num.lt("J^" + (player.options.notationOption[4]-1) + " 10")) { // J1,000,000,000 ~ 1K5
         let rep = num.layer
         if (rep >= 1) return "N".repeat(rep) + format(array, precision)
         let n = array[array.length-1][0]
         if (num.gte("J" + (n + 1))) n += 1
         return "N" + format(n, precision)
     }
-    else if (num.lt("J^999999999 10")) { // 1K5 ~ K1,000,000,000
+    else if (num.lt("J^" + (10**player.options.notationOption[5]-1) + " 10")) { // 1K5 ~ K1,000,000,000
         // https://googology.wikia.org/wiki/User_blog:PsiCubed2/Letter_Notation_Part_II
         // PsiCubed2 defined Jx as Gx for x < 2, resulting in J1 = 10 rather than 10^10, to
         // prevent issues when defining K and beyond. Therefore, there should be separate
@@ -1028,8 +1080,9 @@ function standard(t1, t2, more){
     return output1 + output2 + (more && t2 !== 0 ? "-" : "")
 }
 
-function standardize(num, precision=2){
+function standardize(num, precision=0){
     num = new ExpantaNum(num)
+    if (num.lt(1000)) return regularFormat(num, precision)
     if (num.gte(ExpantaNum.mul("e1e3000",1000))) return format(num, precision)
     let exponent = num.log10().div(3).floor();
     let mantissa = num.div(new ExpantaNum(1000).pow(exponent))

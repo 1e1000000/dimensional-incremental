@@ -10,20 +10,13 @@
     <link rel="stylesheet" href="style.css" />
     <style>@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');</style>
 
-    <!-- import the webpage's javascript file -->
-    <script src="js/ExpantaNum.js" defer></script>
-    <script src="js/format-expantanum.js" defer></script>
-    <script src="js/mathfunc.js" defer></script>
-    <script src="js/tab.js" defer></script>
-    <script src="js/save.js" defer></script>
-    <script src="js/layer.js" defer></script>
-    <script src="js/temp.js" defer></script>
-    <script src="js/function.js" defer></script>
-    <script src="js/script.js" defer></script>
   </head>
   <body>
     <!-- this is the start of content -->
     <div class="center">
+      <div id="topbar">
+        <div id="news"></div>
+      </div>
       <span id="offMsg" style="font-size: 15px;">Simulation speed: <b id="offSpeed" style="font-size: 20px;"></b>x<br></span>
       <span style="font-size: 20px;">You have <b id="points" style="font-size: 30px;"></b> points<br>(<b id="pps"></b>/s)</span>
     </div>
@@ -37,7 +30,11 @@
       </td>
       <td>
         <button onclick="tab(0)" id="tab0" class="tabButton">Options</button>
-      </td></tr>
+      </td>
+      <td>
+        <button onclick="tab(100)" id="tab100" class="tabButton">Statistics</button>
+      </td>
+    </tr>
     </table><br>
     <div id="Tab1" class="center">
       <table class="center"><tr>
@@ -50,6 +47,7 @@
       </table><br>
     <div id="Tab1St1" class="center">
       You have <b id="layer1amt" style="font-size: 24px;"></b> Dots, which generate <b id="layer1eff" style="font-size: 24px;"></b> points per second.<br>
+      <span id="layer1sc" class="resSoftcap"></span>
       <button onclick="LAYERS.doReset(1)" id="layer1reset" class="layerButton">
         Reset for <b id="layer1gain"></b> Dots<br>
         <span id="layer1extra">Require</span> <b id="layer1base"></b>/<b id="layer1req"></b> points
@@ -58,7 +56,7 @@
       <table class="center"><tr>
         <td>
           <button onclick="buyUpgrade(1,1)" id="layer1upg1" class="upgradeButton">
-            Multiply Dot effect by Dots^<span id="layer1upgExtra1">Dots</span>.<br>Currently: <span id="layer1upg1eff"></span>x<br><br>Cost: <span id="layer1upg1cost"></span>.
+            Multiply Dot effect by Dots^<span id="layer1upg1extra">Dots</span>.<br>Currently: <span id="layer1upg1eff"></span>x<br><br>Cost: <span id="layer1upg1cost"></span>.
           </button>
         </td>
         <td>
@@ -95,7 +93,29 @@
         </td>
         <td>
           <button onclick="buyUpgrade(1,8)" id="layer1upg8" class="upgradeButton">
-            Raise Line effect by slog10(points)^1.625.<br>Currently: ^<span id="layer1upg8eff"></span><br><br>Cost: <span id="layer1upg8cost"></span>.
+            Raise Line effect by slog10(points)^<span id="layer1upg8extra">1.625</span>.<br>Currently: ^<span id="layer1upg8eff"></span><br><br>Cost: <span id="layer1upg8cost"></span>.
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button onclick="buyUpgrade(1,9)" id="layer1upg9" class="upgradeButton">
+            Raise Line effect exponent by 1+log10(log10(Dot))/5.<br>Currently: ^<span id="layer1upg9eff"></span><br><br>Cost: <span id="layer1upg9cost"></span>.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,10)" id="layer1upg10" class="upgradeButton">
+            Multiply Dots gain by (Lines+1)^0.475.<br>Currently: <span id="layer1upg10eff"></span>x<br><br>Cost: <span id="layer1upg10cost"></span>.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,11)" id="layer1upg11" class="upgradeButton">
+            Each OoM^2 of points increase points gain exponent by 0.02.<br>Currently: ^<span id="layer1upg11eff"></span><br><br>Cost: <span id="layer1upg11cost"></span>.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,12)" id="layer1upg12" class="upgradeButton">
+            Raise the above upgrade effect by Lines^0.910413.<br>Currently: ^<span id="layer1upg12eff"></span><br><br>Cost: <span id="layer1upg12cost"></span>.
           </button>
         </td>
       </tr>
@@ -103,47 +123,105 @@
     </div>
     <div id="Tab1St2" class="center">
       You have <b id="layer2amt" style="font-size: 24px;"></b> Lines, which multiply points gain by <b id="layer2eff" style="font-size: 24px;"></b> (based on points).<br>
+      <span id="layer2sc" class="resSoftcap"></span>
       <button onclick="LAYERS.doReset(2)" id="layer2reset" class="layerButton">
         Reset for <b id="layer2gain"></b> Lines<br>
         <span id="layer2extra">Require</span> <b id="layer2base"></b>/<b id="layer2req"></b> Dots
       </button>
       <br><br>
-      <table class="center milestoneTable">
-        <tr id="layer2milestone1">
-          <td>
-            1 Line
-          </td>
-          <td>
-            Unlock more Dot Upgrades
-          </td>
-        </tr>
-        <tr id="layer2milestone2">
-          <td>
-            2 Lines
-          </td>
-          <td>
-            Unlock Line Segments
-          </td>
-        </tr>
-        <tr id="layer2milestone3">
-          <td>
-            3 Lines
-          </td>
-          <td>
-            You always can buy max dots
-          </td>
-        </tr>
-      </table>
-      <br><br>
-      <div id="lineSegALL">
+      <table class="center"><tr>
+        <td>
+          <button onclick="subsubtab(1,2,1)" id="tab1st2_1" class="subsubtabButton center">Milestones</button>
+        </td>
+        <td>
+          <button onclick="subsubtab(1,2,2)" id="tab1st2_2" class="subsubtabButton center">Line Segments</button>
+        </td></tr>
+      </table><br>
+      <div id="Tab1St2_1" class="center">
+        <table class="center milestoneTable">
+          <tr id="layer2milestone1">
+            <td>1 Line</td>
+            <td>Unlock more Dot Upgrades.</td>
+          </tr>
+          <tr id="layer2milestone2">
+            <td>2 Lines</td>
+            <td>Unlock Line Segments.</td>
+          </tr>
+          <tr id="layer2milestone3">
+            <td>3 Lines</td>
+            <td>You always can buy max dots.</td>
+          </tr>
+          <tr id="layer2milestone4">
+            <td>4 Lines</td>
+            <td>Autobuy Dots and resets nothing.<br>Multiply points gain by 10^10^Lines.</td>
+          </tr>
+          <tr id="layer2milestone5">
+            <td>5 Lines</td>
+            <td>Unlock ???.<br>You keep Dot Upgrades on Line Reset.</td>
+          </tr>
+        </table>
+      </div>
+      <div id="Tab1St2_2" class="center">
         You have <b id="lineSegAmt" style="font-size: 24px;"></b> Line Segments (<span id="lineSegProd"></span>/s), which raise points gain by <b id="lineSegEff" style="font-size: 24px;"></b>.<br>
-        Line Segments gain formula: <b>log10(Dots)<sup id="lineSegExp1">0</sup>*Lines<sup id="lineSegExp2">1</sup></b>.<br>Line Segments cap at 10 seconds worth of production.<br>
+        Line Segments gain formula: <b><span id="lineSegMulti">1.00</span>log10(Dots)<sup id="lineSegExp1">0</sup>Lines<sup id="lineSegExp2">1</sup></b>.<br>Line Segments cap at 10 seconds worth of production.<br>
+        <table class="center"><tr>
+          <td>
+            <button onclick="buyBuyable(2,1)" id="layer2buyable1" class="buyableButton">
+              Add 1 to Lines to Line Segments gain exponent per buyable level.<br>Currently: +<span id="layer2buyable1eff"></span><br>Level <span id="layer2buyable1level"></span><br><br>Cost: <span id="layer2buyable1cost"></span>.
+            </button>
+          </td>
+          <td>
+            <button onclick="buyBuyable(2,2)" id="layer2buyable2" class="buyableButton">
+              Add 0.5 to OoM of Dots to Line Segments gain exponent per buyable level.<br>Currently: +<span id="layer2buyable2eff"></span><br>Level <span id="layer2buyable2level"></span><br><br>Cost: <span id="layer2buyable2cost"></span>.
+            </button>
+          </td>
+          <td>
+            <button onclick="buyBuyable(2,3)" id="layer2buyable3" class="buyableButton">
+              Multiply Dots gain by 1.3 per square rooted buyable level.<br>Currently: <span id="layer2buyable3eff"></span>x<br>Level <span id="layer2buyable3level"></span><br><br>Cost: <span id="layer2buyable3cost"></span>.
+            </button>
+          </td>
+        </tr></table><br>
+        <table class="center"><tr>
+          <td>
+            <button onclick="buyUpgrade(2,1)" id="layer2upg1" class="upgradeButton">
+              Base Lines effect past <span id="layer2upg1extra">1.000e10,000</span> boost their effect base.<br>Currently: <span id="layer2upg1eff"></span>x<br><br>Cost: <span id="layer2upg1cost"></span>.
+            </button>
+          </td>
+          <td>
+            <button onclick="buyUpgrade(2,2)" id="layer2upg2" class="upgradeButton">
+              Multiply Line Segments gain by log10(Line Segments).<br>Currently: <span id="layer2upg2eff"></span>x<br><br>Cost: <span id="layer2upg2cost"></span>.
+            </button>
+          </td>
+          <td>
+            <button onclick="buyUpgrade(2,3)" id="layer2upg3" class="upgradeButton">
+              Multiply Line Segments gain by log10(log10(points)).<br>Currently: <span id="layer2upg3eff"></span>x<br><br>Cost: <span id="layer2upg3cost"></span>.
+            </button>
+          </td>
+          <td>
+            <button onclick="buyUpgrade(2,4)" id="layer2upg4" class="upgradeButton">
+              Multiply OoM of Dots to Line Segments gain exponent by 1.6, raise Line Segments effect by 1.097.<br><br>Cost: <span id="layer2upg4cost"></span>.
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="buyUpgrade(2,5)" id="layer2upg5" class="upgradeButton">
+              4th Dot Upgrade softcap is weaker based on Lines.<br>Currently: <span id="layer2upg5eff"></span>th rooted <br><br>Cost: <span id="layer2upg5cost"></span>.
+            </button>
+          </td>
+          <td>
+            <button onclick="buyUpgrade(2,6)" id="layer2upg6" class="upgradeButton">
+              Each Line buyable level increase Dots gain by 1%.<br>Currently: <span id="layer2upg6eff"></span>x <br><br>Cost: <span id="layer2upg6cost"></span>.
+            </button>
+          </td>
+        </tr></table>
       </div>
     </div>
       
     </div>
     <div id="Tab0" class="center">
       <table class="center">
+        <b style="font-size: 24px;">Saving</b>
         <tr>
           <td>
             <button onclick="save()" class="saveButton" style="border-color: #0000FF">Save</button>
@@ -159,11 +237,48 @@
           </td>
         </tr>
       </table><br>
-      <button onclick="changeOption(0)" class="saveButton" style="width: 180px;height: 50px;">Notation:<br><span id="option0">Default</span></button>
-      <button onclick="changeOption(1)" class="saveButton" style="width: 240px;height: 50px;">Show saved on console:<br><span id="option1">Default</span></button>
-      <br><br>
+      <table class="center">
+        <b style="font-size: 24px;">Number Formatting</b>
+        <tr>
+          <td></td>
+          <td>
+            <button onclick="changeOption(0)" class="saveButton" style="width: 180px;height: 50px;">Notation:<br><span id="option0">Default</span></button>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="changeAccuracyOptionButton(0)" class="saveButton" style="width: 180px;height: 50px;">Accuracy (Base):<br><span id="accuracy0">2</span></button>
+          </td>
+          <td>
+            <button onclick="changeAccuracyOptionButton(1)" class="saveButton" style="width: 180px;height: 50px;">Accuracy (e):<br><span id="accuracy1">3</span></button>
+          </td>
+          <td>
+            <button onclick="changeAccuracyOptionButton(2)" class="saveButton" style="width: 180px;height: 50px;">Accuracy (F,G,H):<br><span id="accuracy2">4</span></button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="changeAccuracyOptionButton(3)" class="saveButton" style="width: 180px;height: 50px;">Accuracy (J,K):<br><span id="accuracy3">6</span></button>
+          </td>
+          <td>
+            <button onclick="changeAccuracyOptionButton(4)" class="saveButton" style="width: 180px;height: 50px;">Amount of Letter to<br>next: <span id="accuracy4">5</span></button>
+          </td>
+          <td>
+            <button onclick="changeAccuracyOptionButton(5)" class="saveButton" style="width: 180px;height: 50px;">Exponent of Number to<br>next: <span id="accuracy5">9</span></button>
+          </td>
+        </tr>
+      </table><br>
+      <table class="center">
+        <b style="font-size: 24px;">Other</b>
+        <tr>
+          <td>
+            <button onclick="changeOption(1)" class="saveButton" style="width: 240px;height: 50px;">Show saved on console:<br><span id="option1">Off</span></button>
+          </td>
+        </tr>
+      </table><br>
       Scripts used: <a href="https://github.com/Naruyoko/ExpantaNum.js">ExpantaNum.js</a>, <a href="https://github.com/cloudytheconqueror/letter-notation-format">format-expantanum.js</a><br>
-      Endgame: <span id="endgame">1.000e50,780,555 points, 100,082 Dots, 2 Line, 100.00 Line Segments.</span><br><br>
+      Endgame: <span id="endgame"></span><br><br>
       Game Version: <a href="https://1e1000000.github.io/dimensional-incremental/changelog.html">v<span id="ver"></span></a> (Click the version to see change log)
     </div>
     <div id="Tab2" class="center">
@@ -173,6 +288,21 @@
         Require: <b id="dimShiftReq"></b> points
       </button>
     </div>
+    <div id="Tab100" class="center">
+      <text id="stats"></text>
+    </div>
     <br><br>
   </body>
 </html>
+
+    <!-- import the webpage's javascript file -->
+    <script src="js/ExpantaNum.js" defer></script>
+    <script src="js/format-expantanum.js" defer></script>
+    <script src="js/mathfunc.js" defer></script>
+    <script src="js/tab.js" defer></script>
+    <script src="js/save.js" defer></script>
+    <script src="js/layer.js" defer></script>
+    <script src="js/temp.js" defer></script>
+    <script src="js/function.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <script src="js/newsticker.js"></script>
