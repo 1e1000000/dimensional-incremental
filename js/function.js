@@ -568,7 +568,7 @@ function getStatHTML(){
     output = output + `Points: <b>` + format(player.points) + `</b><br>`
     output = output + `Dimensional Shifts: <b>` + formatWhole(player.dimShift) + `</b><br>`
     output = output + `Dots: <b>` + formatWhole(player.prestige[1]) + `</b> (Next require: <b>` + format(LAYERS.req(1)) + `</b> Points, Effect: +<b>` + format(LAYERS.eff(1)) + `</b> points/s)<br>`
-    if (player.dimShift>=1) output = output + `Lines: <b>` + formatWhole(player.prestige[2]) + `</b> (Next require: <b>` + format(LAYERS.req(2)) + `</b> Dots, Effect: +<b>` + format(LAYERS.eff(2)) + `</b>x points gain)<br>`
+    if (player.dimShift>=1) output = output + `Lines: <b>` + formatWhole(player.prestige[2]) + `</b> (Next require: <b>` + format(LAYERS.req(2)) + `</b> Dots, Effect: <b>` + format(LAYERS.eff(2)) + `</b>x points gain)<br>`
     if (player.milestone[2].includes(2)) output = output + `Line Segments: <b>` + format(player.lineSegments) + `</b> (Effect: ^<b>` + format(LAYERS.lineSegEff(),4) + `</b> points gain)<br>`
     return output
 }
