@@ -7,6 +7,41 @@ const laporteList = ["0936","3903","4362","5356","5419","5490","5545","5854","64
 const incrementalList = ["5038","9124","0298","6539","4002","2236","3898","2218","1821","4271"]
 const smacg13toGhgtMSG = ["Vandalism","Blocking","Final warning"]
 const wth05toGhgtMSG = ["NO","NEVER","ALWAYS FAIR"]
+const usertoEMRMSG = ["Permaban on Eliezer's marble race","The change of my username on EMR Committee"]
+const wth05toEMRMSG = ["YOU ARE ONLY MAKING THE WIKI WORSE","YOU ARE ONLY MAKING THE WIKI MORE WORSE","YOU ARE ONLY MAKING THE WIKI EVEN WORSE","THIS IS USELESS","THIS IS USELESS, YOU STILL CAN BANNED FOR EVADE THE BAN"]
+const wth05toSmacg13MSG = [ // may extended later
+  "Outdated Information on ML2020 Showdown Page",
+  "Vandalism report",
+  "Delete DNS page?",
+  "Algosonic putting false/unconfirmed information twice in ML2022 page",
+  "Jakekekekejej vandalism pages",
+  "a new user is coming",
+  "Incorrect Information found in couple pages",
+  "Underage user found", // really?
+  "Another Vandalizer",
+  "Algosonic doing low quality edits on Savage Speeders page for the third times",
+  "Can you block EMR forever?",
+  "Delete below page",
+  "Look below",
+  "Ban Jakekekekejej forever because underage",
+  "Ban Davidsew for spamming/harassing in a Thread",
+  "Spammer found",
+  "Block request",
+  "Block Davidsew for harassing FlameMr317",
+  "Check every edit that make by EMR",
+  "Block request (?)",
+  "Requests",
+  "Block request",
+  "Optical4937 should be blocked for edit warring",
+  "Request",
+  "Vandalism (yet again)",
+  ".",
+  "Hi", // request to delete 2 user pages
+  "Delete these messages",
+  "First request in 2022",
+  "Unblock these users",
+  "Delete this",
+]
 
 function randomMessageBy6844(){
   let list = [
@@ -155,7 +190,7 @@ function updateNewsArray() {
     // 1% if generate nonono with 160 repeat count or Jamie! with 20 repeat count
     [() => Math.random() < 0.01 ? "Postψ(Ω) post-ψ(Ω) are built on multiplication and Capital Omega (Ω), where copies of part of an Ordinal aren't added together; they are multiplied together. This doesn't really affect how Ordinals post-ψ(Ω) work, as they work mostly identical to Ordinals pre-ψ(Ω). If the amount of copies inside the Ordinal are equal to the value of the Base, they will fuse together and change to a form with its exponent added by 1. For example, ψ(ΩΩ2+Ω+1ψ(ΩΩ2+Ω+1ψ(ΩΩ2+Ω+1))) will be transformed to ψ(ΩΩ2+Ω+2). However there is a key difference between Ordinals post-ψ(Ω) and pre-ψ(Ω). When Ordinals post-ψ(Ω) have a number in them that equals the value of the Base, it doesn't go straight to maximised form. Where the number that had its value equal to the Base will be changed to the contents of the other values in the Ordinal. Say for example you had an Ordinal of ψ(ΩΩ2+Ω2+2ψ(ΩΩ2+Ω2+2ψ(ΩΩ2+Ω2+2))). This would be transformed to ψ(ΩΩ2+Ω2+ω), and 2 copies of it would look like ψ(ΩΩ2+Ω2+ψ(ΩΩ2+Ω2+ω))." : "Ordinal is UselessThis page is bad IP ban me", true],
     // 1% if generate super long text
-    [() => "You used to only be able to hit c8x2 with the double OP gain incrementy upgrade, but the quadrupler actually isn't disabled in c8 - NoHaxJust" + (Math.random() < 0.01 ? Math.PI : "Pi") + "#5200", true],
+    [() => "You used to only be able to hit c8x2 with the double OP gain incrementy upgrade, but the quadrupler actually isn't disabled in c8 - NoHaxJust" + (Math.random() < 0.01 ? Math.PI : "Pi"), true],
     // 1% if generate 3.14159...
     [() => "Patcail deleted page Post " + (Math.random() < 0.01 ? "Collapse" : "Factor Boost"), true],
     // 1% if generate Collapse
@@ -226,12 +261,15 @@ function updateNewsArray() {
     [() => Math.random() < 0.01 ? "Laporte 124#6836" : "Laporte124#" + laporteList[Math.floor(Math.random()*laporteList.length)] + " left", true],
     // 1% if text between Laporte and 124 have a space
     // Ref: On March 2021, a lot of Laporte joins Ordinal Markup discord server, then all but one of them left
-    [() => Math.random() < 0.01 ? "Increm" + ("e").repeat(Math.floor(Math.random()*48)+2) + "ntal#" : "Incremental#" + incrementalList[Math.floor(Math.random()*incrementalList.length)] + " left", true],
+    [() => Math.random() < 0.01 ? "Increm" + ("e").repeat(Math.floor(Math.random()*21)+2) + "ntal#" : "Incremental#" + incrementalList[Math.floor(Math.random()*incrementalList.length)] + " left", true],
     // 1% if Incremental contain more than 1 e's between m and n
     // Ref: On April 2021, a lot of Incremental joins Ordinal Markup discord server, then all but one of them left
     [() => "Where do you know if they were underage - " + (Math.random() < 0.01 ? "Kris" : "Lexi"), true],
     // 1% if generate Kris
     // Ref: The message was typed after XnoobSpeakable was banned due to underage
+    [() => "How do you even know if someone is underage??????? - Bullz " + number2digits(Math.floor(Math.random()*100)), true],
+    // 1% if generate 04
+    // Ref: The message was typed after I request Vepro ban Duuh and Duuh2.0 due to underage
     [() => "Hi my name is jake im 10 years old and im new here - Ja" + ("ke").repeat(Math.floor(Math.random()*100)+1) + "jej", true],
     // 1% if generate Jakekekekejej (4 ke's)
     // Ref: One of the message in Jelle's Marble Run wiki on Early November 2021, this is a message that reveal Jakekekekejej being underaged
@@ -240,7 +278,7 @@ function updateNewsArray() {
     // Ref: On Late October 2021, Jakekekekejej joined Jelle's Marble Run wiki, vandalism 2 pages and harassing 2 users, include me
     [() => "Pax de 2e blocked EMR Committee with an expiration time of indefinite " + (Math.random() < 0.01 ? "(ban evade)" : "(ban evasion)"), true],
     // 1% if generate evasion
-    // Ref: On Early December 2021, EMR Committee joined Jelle's Marble Run wiki, and the first edit was copying User:Eliezer's marble race, it was proven EMR Committee was same person as Eliezer's marble race
+    // Ref: On Early December 2021, EMR Committee joined Jelle's Marble Run wiki, and the first edit was copying User:Eliezer's marble race, it was proven EMR Committee is the same person as Eliezer's marble race
     [() => Math.random() < 0.01 ? "TikTok" : "Gray (Algicosathlon)", true],
     // 1% if generate TikTok
     // Ref: 2 spam pages where Orange boss created on Late December 2021 in Jelle's Marble Run wiki
@@ -260,9 +298,9 @@ function updateNewsArray() {
     [() => "WongTingHo05 replied to the message " + (Math.random() < 0.01 ? " im sorry on WongTingHo05's wall: sorry, you must ruining your life" : smacg13toGhgtMSG[Math.floor(Math.random()*smacg13toGhgtMSG.length)] + " on Ggghhhhggt's wall: " + wth05toGhgtMSG[Math.floor(Math.random()*wth05toGhgtMSG.length)]), true],
     // 1% if generate "sorry, you must ruining your life"
     // Ref: 3 joke message to Ggghhhhggt that sent on 2021/12/21 on 3 different message in Jelle's Marble Run wiki, plus an extra one
-    [() => "you should also look message Wall, he sent nonsense message into your Message Wall - me; me 9 minutes later: also found in " + (Math.random() < 0.01 ? "MaxTheBlob0112" : "my") + " Wall", true],
-    // 1% if generate MaxTheBlob0112
-    // Ref: Message sent along with Eliezer's marble race coming into Jelle's Marble Run wiki
+    [() => "you should also look message Wall, he sent " + (Math.random() < 0.01 ? "rude" : "nonsense") + " message into your Message Wall - me; me 9 minutes later: also found in my Wall", true],
+    // 1% if generate rude
+    // Ref: message that Jakekekejej coming into wiki and going to report due to vandalism and harassment
     [() => "Also, you should check message Wall, " + (Math.random() < 0.01 ? "Jakekekekejej did the same thing as Ggghhhhggt" : "G" + ("gghhhhgg").repeat(Math.floor(Math.random()*25+1)) + "t did the same thing as Jakekekekejej"), true],
     // 1% if Jakekekekejej show first
     // Ref: Message sent along with Eliezer's marble race coming into Jelle's Marble Run wiki
@@ -275,7 +313,7 @@ function updateNewsArray() {
     [() => "abilities = " + (Math.random() < 0.01 ? "hes" : "shes") + " a bat; affiliations = loooooooooooooool", true],
     // 1% if generate hes
     // Ref: Unnecessary text that Ggghhhhggt added on Whell of Time wiki
-    [() => "What is the first edit that " + (Math.random() < 0.01 ? "Jakekekekejej did? It is in Sand Marble Rally 2017 - Race 12 page, adding Marble League 2017 qualifier video at top, without leaving summary." : "Ggghhhhggt did? It is in Category:Marbula One Season 2, adding 'orangers' into page, with summary of 'look'."), true],
+    [() => "What is the first edit that " + (Math.random() < 0.01 ? "Jakekekekejej ever did? It is in Sand Marble Rally 2017 - Race 12 page, adding Marble League 2017 qualifier video at top, without leaving summary." : "Ggghhhhggt ever did? It is in Category:Marbula One Season 2, adding 'orangers' into page, with summary of 'look'."), true],
     // 1% if generate first edit for Jakekekekejej
     // Ref: Asking the edit where Ggghhhhggt did
     [() => "Fix Challenge multiplier row always being " + (Math.random() < 0.01 ? "1.25" : "1.250") + "x", true],
@@ -299,7 +337,13 @@ function updateNewsArray() {
     [() => "@rymino bto wtf stop trying to scam people - pg" + (Math.random() < 0.01 ? "11*12" : "132"), true],
     // 1% if generate 11*12
     // Ref: Message sent after rymino post scam link in #general on The Modding Tree discord server
-    [() => (Math.random() < 0.01 ? "Rickrolled" : "WongTingHo05") + ": no offline progress at all, then the chain starts: Is that a suggestion - Acamaeda; no it's a bug - upvoid; its a feature - Latorin; It's history - Acamaeda; It's chain - jakub; me fourty hours later: still no offline progress at all", true],
+    [() => "he also posted the scam in every channel on my server and CG's server - the" + (Math.random() < 0.01 ? "slow" : "paper") + "pilot", true],
+    // 1% if generate theslowpilot
+    // Ref: 69 (nice) minutes after the above message was sent
+    [() => "and he just did it in " + (Math.random() < 0.01 ? "Spotky1004's" : "spotky's") + " server, and now he's done it in the IGJ server - thepaperpilot", true],
+    // 1% if generate Spotky1004
+    // Ref: shortly after the above message was sent
+    [() => (Math.random() < 0.01 ? "Rickrolled" : "WongTingHo05") + ": no offline progress at all, then the chain starts: Is that a suggestion - Acamaeda; no it's a bug - upvoid; its a feature - Latorin; It's history - Acamaeda; It's chain - jakub; me 40 hours later: still no offline progress at all", true],
     // 1% if generate Rickrolled
     // Ref: Message sent after I report they were no offline progression when the mod was created on TMT version v2.6 onward
     [() => "let primes = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53," + (Math.random() < 0.01 ? "59" : "57") + ",61] pg subscribes to Grothendieck's theory of primes I see - ab", true],
@@ -314,25 +358,33 @@ function updateNewsArray() {
     [() => "Jelle's Marble Run Wiki was killed by " + (Math.random() < 0.01 ? "Davavvavavavavavavvevaaadivid" : "Eliezer's marble race"), true],
     // 1% if generate longer name
     // Ref: One of the Minecraft death message, what if JMR Wiki was closed due to EMR
-    [() => " → " + (Math.random() < 0.01 ? "EMR-Committee" : "Jakekekekejej"), true],
-    // 1% if generate EMR-Committee
-    // Ref: Tetr.io KO message, → leftside with nothing means the player is KO'd by yourself, due to limitation of username on Tetr.io, they were "-" in EMR Committee username
-    // Ref (Cont): Jakekekekejej were KO'd by yourself as he revealed yourself underage
+    [() => (Math.random() < 0.01 ? "Smacg13" : "") + " → Jakekekekejej", true],
+    // 1% if Smacg13 is generated
+    // Ref: Tetr.io KO message, → leftside with nothing means the player is KO'd by yourself
+    // Ref (Cont): Jakekekekejej were KO'd by yourself as he revealed yourself underage, and Smacg13 blocked him due to vandalism
     [() => "how dare you who tf add wong a f**king coward and even " + (Math.random() < 0.01 ? "f-word" : "f**k") + " you into pages?", true],
     // 1% if generate f**k
     // Ref: in Early December, Davavvavavavavavavvevaaadivid harassing on pages
-    [() => "How many Ggghhhhggt accounts did they created on fandom? It is 4, they were Ggghhhhggt, " + (Math.random() < 0.01 ? "Ggghhhhggt, Ggghhhhggt and Ggghhhhggt" : "Smacg the best, Wong stop banning me and Orange boss"), true],
+    [() => "How many Ggghhhhggt accounts did he created on fandom? It is 4, they were Ggghhhhggt, " + (Math.random() < 0.01 ? "Ggghhhhggt, Ggghhhhggt and Ggghhhhggt" : "Smacg the best, Wong stop banning me and Orange boss"), true],
     // 1% if generate four Ggghhhhggt
     // Ref: in December, Ggghhhhggt start to create alts
-    [() => "How many edits did Ggghhhhggt and alts makes on all wikis? It is " + Math.floor(Math.random()*100), true],
+    [() => "How many edits did Ggghhhhggt and alts did on all wikis? It is " + Math.floor(Math.random()*100), true],
     // 1% if generate 14 (11 from Ggghhhhggt, 3 from Orange boss)
     // Ref: similar as above
     [() => "(Removed protection from Marble League " + (Math.random() < 0.01 ? "2021)" : "2020)"), true],
     // 1% if generate 2021
     // Ref: in Late December, Smacg13 remove protection from Marble League 2020 page because it is unnecessary
     [() => "No, pretend of getting banned forever for " + (Math.random() < 0.01 ? "abusing multiple accounts; *evade the ban" : "evading the ban") + " - WongTingHo05", true],
-    // 1% if generate abusing multiple accounts; *evade the ban
+    // 1% if generate "abusing multiple accounts; *evade the ban"
     // Ref: in Early December, EMR Committee come into JMR wiki, and shortly blocked later due to evade the ban
+    [() => "I like fish, I also film marbles racing and watch it too, Please " + (Math.random() < 0.01 ? "" : "don't") + " question it - Dolphin0", true],
+    // 1% if don't didn't generate
+    // Ref: Random stuff
+    [() => "Sorry, What, Wheeee, Meh; " + (Math.random() < 0.01 ? "PLEASE" : "DONT") + " PING ME!! - Windows3point1", true],
+    // 1% if generate PLEASE
+    // Ref: Random stuff
+
+
 
 
 
@@ -348,6 +400,14 @@ function updateNewsArray() {
     [() => (Math.random() < 0.01 ? "KICK, NOT BAN" : "BAN, NOT KICK"), true],
     // 1% if generate KICK, NOT BAN
     // Ref: On Mid January 2022, I sent this message after scammer post scam link and later deleted
+    [() => "WongTingHo05 " + (Math.random() < 0.01 ? "left the message Group B isn't Group of Death on Eliezer's marble race's wall: Group A is" : "replied to the message " + usertoEMRMSG[Math.floor(Math.random()*usertoEMRMSG.length)] + "'s wall: " + wth05toEMRMSG[Math.floor(Math.random()*wth05toEMRMSG.length)]), true],
+    // 1% if generate "Group A is"
+    // Ref: 2+3 joke message to EMR that sent on 2022/1/3 on 2 different message in Jelle's Marble Run wiki, plus an extra one
+    [() => "WongTingHo05 Message on " + (Math.random() < 0.01 ? "Videodude13's " : "Smacg13's ") + "wall: " + wth05toSmacg13MSG[Math.floor(Math.random()*wth05toSmacg13MSG.length)], true],
+    // 1% if generate Videodude13
+    // Ref: So many messages
+
+
 
 
 
@@ -365,7 +425,12 @@ function updateNewsArray() {
     // 1% if generate 10^^x or above
     [() => "Smacg13 left the message PermaBan on Ggghhhhggt's wall: Hi Despite you not making edit you have been permanently banned for sending rude messages to myself.", true],
     // No 1% news for now
-    // Ref: Possibly message if Smacg13 sent a message to Ggghhhhggt wall that related to PremaBan
+    [() => "Newsticker rarity: " + format(1/Math.random()), true],
+    // 1% if generate number >=100
+
+
+
+
 
 
 
@@ -375,13 +440,15 @@ function updateNewsArray() {
     [() => "Number Generated: " + format(powExp(ExpantaNum.pow(10,player.prestige[1]), player.prestige[2].add(1).sqrt())) + " (based on dots and lines)", player.dimShift >= 1],
     [() => "Number Generated: " + format(player.lineSegments.add(1).pow(player.prestige[1])) + " (based on dots and line segments)", player.milestone[2].includes(2)],
     [() => "You are currently in " + formatWhole(player.dimShift) + " dimensional space", true],
-    [() => "You are having " + format(player.prestige[i].div(LAYERS.gainSoftcap(i)),4) + "x more dots than softcap, dots require now goes " + format(player.prestige[1].div(LAYERS.gainSoftcap(1)).pow(LAYERS.softcapExp(1).sub(1)),4) + "x faster", player.prestige[1].gte(LAYERS.gainSoftcap(1))],
-    [() => "Current tab: " + player.tab + ", Current subtab (Tab 1): " + player.subtab[1] + ", Current subsubtab (Tab 1): " + player.subsubtab[1], true],
+    [() => "You are having " + format(player.prestige[1].div(LAYERS.gainSoftcap(1)),4) + "x more dots than softcap, dots require now goes " + format(player.prestige[1].div(LAYERS.gainSoftcap(1)).pow(LAYERS.softcapExp(1).sub(1)),4) + "x faster", player.prestige[1].gte(LAYERS.gainSoftcap(1))],
     [() => "You are having " + format(player.prestige[1].div(LAYERS.req(2)).mul(100),4) + "% of dots than lines require", player.dimShift >= 1],
+    [() => "Current tab: " + player.tab + ", Current subtab (Tab 1): " + player.subtab[1] + ", Current subsubtab (Tab 1): " + player.subsubtab[1], true],
+    [() => "NaN(illion) Detected", player.points.gte("1e3000000003")],
+    [() => "Your points is equal to 2^^" + format(player.points.slog(2), 4) + " or 3^^" + format(player.points.slog(3), 4), true],
   ]
 }
 
-
+// 7 tickers are related to underages
 
 
 

@@ -524,8 +524,8 @@ function getProductionRateDisplay(curr, gain){
     let now = new ExpantaNum(curr)
     let next = new ExpantaNum(curr).add(gain)
     let rate
-    if (next.div(now).gte(10) && now.gte(1e10)) rate = format(next.div(now).log10()) + " OoM"
-    else rate = format(next.sub(now))
+    if (next.div(now).gte(10) && now.gte(1e100)) rate = format(next.div(now).log10().mul(20)) + " OoM"
+    else rate = format(gain)
     return rate
 }
 
@@ -564,7 +564,7 @@ function changeAccuracyOptionButton(id){
 }
 
 function getStatHTML(){
-    let output = `Resources:<br>`
+    let output = `<b style="font-size: 24px">Resources</b><br>`
     output = output + `Points: <b>` + format(player.points) + `</b><br>`
     output = output + `Dimensional Shifts: <b>` + formatWhole(player.dimShift) + `</b><br>`
     output = output + `Dots: <b>` + formatWhole(player.prestige[1]) + `</b> (Next require: <b>` + format(LAYERS.req(1)) + `</b> Points, Effect: +<b>` + format(LAYERS.eff(1)) + `</b> points/s)<br>`

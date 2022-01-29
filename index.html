@@ -9,7 +9,36 @@
     <!-- import the webpage's stylesheet -->
     <link rel="stylesheet" href="style.css" />
     <style>@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Overpass+Mono&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Nova+Mono&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Oxygen+Mono&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Cousine&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');</style>
 
+    <style>@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Play&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Chivo&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Recursive&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Quantico&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=B612&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Abel&display=swap');</style>
+
+    <style>@import url('https://fonts.googleapis.com/css2?family=Oxanium&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Offside&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Share&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Iceberg&display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap');</style>
   </head>
   <body>
     <!-- this is the start of content -->
@@ -18,7 +47,7 @@
         <div id="news"></div>
       </div>
       <span id="offMsg" style="font-size: 15px;">Simulation speed: <b id="offSpeed" style="font-size: 20px;"></b>x<br></span>
-      <span style="font-size: 20px;">You have <b id="points" style="font-size: 30px;"></b> points<br>(<b id="pps"></b>/s)</span>
+      <span style="font-size: 20px;"><text id="ptsPrefix">You have </text><b id="points" style="font-size: 30px;"></b><text id="ptsSuffix"> points</text><br>(<b id="pps"></b>/s)</span>
     </div>
     <br>
     <table class="center"><tr>
@@ -242,42 +271,193 @@
         <tr>
           <td></td>
           <td>
-            <button onclick="changeOption(0)" class="saveButton" style="width: 180px;height: 50px;">Notation:<br><span id="option0">Default</span></button>
+            <button onclick="changeOption(0)" class="optionButton">Notation:<br><b id="option0">Default</b></button>
           </td>
           <td></td>
         </tr>
         <tr>
           <td>
-            <button onclick="changeAccuracyOptionButton(0)" class="saveButton" style="width: 180px;height: 50px;">Accuracy (Base):<br><span id="accuracy0">2</span></button>
+            <button onclick="changeAccuracyOptionButton(0)" class="optionButton">Accuracy (Base): <b id="accuracy0">2</b></button>
           </td>
           <td>
-            <button onclick="changeAccuracyOptionButton(1)" class="saveButton" style="width: 180px;height: 50px;">Accuracy (e):<br><span id="accuracy1">3</span></button>
+            <button onclick="changeAccuracyOptionButton(1)" class="optionButton">Accuracy (e): <b id="accuracy1">3</b></button>
           </td>
           <td>
-            <button onclick="changeAccuracyOptionButton(2)" class="saveButton" style="width: 180px;height: 50px;">Accuracy (F,G,H):<br><span id="accuracy2">4</span></button>
+            <button onclick="changeAccuracyOptionButton(2)" class="optionButton">Accuracy (F,G,H): <b id="accuracy2">4</b></button>
           </td>
         </tr>
         <tr>
           <td>
-            <button onclick="changeAccuracyOptionButton(3)" class="saveButton" style="width: 180px;height: 50px;">Accuracy (J,K):<br><span id="accuracy3">6</span></button>
+            <button onclick="changeAccuracyOptionButton(3)" class="optionButton">Accuracy (J,K): <b id="accuracy3">6</b></button>
           </td>
           <td>
-            <button onclick="changeAccuracyOptionButton(4)" class="saveButton" style="width: 180px;height: 50px;">Amount of Letter to<br>next: <span id="accuracy4">5</span></button>
+            <button onclick="changeAccuracyOptionButton(4)" class="optionButton">Amount of Letter to next: <b id="accuracy4">5</b></button>
           </td>
           <td>
-            <button onclick="changeAccuracyOptionButton(5)" class="saveButton" style="width: 180px;height: 50px;">Exponent of Number to<br>next: <span id="accuracy5">9</span></button>
+            <button onclick="changeAccuracyOptionButton(5)" class="optionButton">Exponent of Number to next: <b id="accuracy5">9</b></button>
           </td>
+        </tr>
+      </table><br>
+      <table class="center">
+        <b style="font-size: 24px;">Font Settings</b><br>
+        Current Font: <span id="currFont"></span><br><br>
+        <tr>
+          <td></td>
+          <td><b style="font-size: 18px;">Monospace</b></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="player.options.font = 'Courier Prime'" class="saveButtonLong" style="font-family:'Courier Prime'"><b>Courier Prime</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Cousine'" class="saveButtonLong" style="font-family:'Cousine'"><b>Cousine</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'JetBrains Mono'" class="saveButtonLong" style="font-family:'JetBrains Mono'"><b>JetBrains Mono</b></button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="player.options.font = 'Monospace-Typewritter'" class="saveButtonLong" style="font-family:'Monospace-Typewritter'"><b>Monospace Typewritter</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Nova Mono'" class="saveButtonLong" style="font-family:'Nova Mono'"><b>Nova Mono</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Overpass Mono'" class="saveButtonLong" style="font-family:'Overpass Mono'"><b>Overpass Mono</b></button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="player.options.font = 'Oxygen Mono'" class="saveButtonLong" style="font-family:'Oxygen Mono'"><b>Oxygen Mono</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Roboto Mono'" class="saveButtonLong" style="font-family:'Roboto Mono'"><b>Roboto Mono</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Ubuntu Mono'" class="saveButtonLong" style="font-family:'Ubuntu Mono'"><b>Ubuntu Mono</b></button>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><b style="font-size: 18px;">Sans Serif</b></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="player.options.font = 'Abel'" class="saveButtonLong" style="font-family:'Abel'"><b>Abel</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'B612'" class="saveButtonLong" style="font-family:'B612'"><b>B612</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Chivo'" class="saveButtonLong" style="font-family:'Chivo'"><b>Chivo</b></button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="player.options.font = 'IBM Plex Sans'" class="saveButtonLong" style="font-family:'IBM Plex Sans'"><b>IBM Plex Sans</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Inter'" class="saveButtonLong" style="font-family:'Inter'"><b>Inter</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Lato'" class="saveButtonLong" style="font-family:'Lato'"><b>Lato</b></button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="player.options.font = 'Monda'" class="saveButtonLong" style="font-family:'Monda'"><b>Monda</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Montserrat'" class="saveButtonLong" style="font-family:'Montserrat'"><b>Montserrat</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Open Sans'" class="saveButtonLong" style="font-family:'Open Sans'"><b>Open Sans</b></button>
+          </td>
+
+        </tr>
+        <tr>
+          <td>
+            <button onclick="player.options.font = 'Play'" class="saveButtonLong" style="font-family:'Play'"><b>Play</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Quantico'" class="saveButtonLong" style="font-family:'Quantico'"><b>Quantico</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Questrial'" class="saveButtonLong" style="font-family:'Questrial'"><b>Questrial</b></button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="player.options.font = 'Recursive'" class="saveButtonLong" style="font-family:'Recursive'"><b>Recursive</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Roboto'" class="saveButtonLong" style="font-family:'Roboto'"><b>Roboto</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Sawarabi Gothic'" class="saveButtonLong" style="font-family:'Sawarabi Gothic'"><b>Sawarabi Gothic</b></button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="player.options.font = 'Segoe UI'" class="saveButtonLong" style="font-family:'Segoe UI'"><b>Segoe UI</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Source Sans Pro'" class="saveButtonLong" style="font-family:'Source Sans Pro'"><b>Source Sans Pro</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Verdana'" class="saveButtonLong" style="font-family:'Verdana'"><b>Verdana</b></button>
+          </td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+          <td></td>
+          <td><b style="font-size: 18px;">Other</b></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="player.options.font = 'Iceberg'" class="saveButtonLong" style="font-family:'Iceberg'"><b>Iceberg</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Noto Serif'" class="saveButtonLong" style="font-family:'Noto Serif'"><b>Noto Serif</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Offside'" class="saveButtonLong" style="font-family:'Offside'"><b>Offside</b></button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="player.options.font = 'Oxanium'" class="saveButtonLong" style="font-family:'Oxanium'"><b>Oxanium</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = 'Share'" class="saveButtonLong" style="font-family:'Share'"><b>Share</b></button>
+          </td>
+          <td>
+            <button onclick="player.options.font = ''" class="saveButtonLong" style="font-family:''"><b>Google Default</b></button>
+          </td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
         </tr>
       </table><br>
       <table class="center">
         <b style="font-size: 24px;">Other</b>
         <tr>
           <td>
-            <button onclick="changeOption(1)" class="saveButton" style="width: 240px;height: 50px;">Show saved on console:<br><span id="option1">Off</span></button>
+            <button onclick="changeOption(1)" class="optionButton" style="width: 240px;height: 50px;">Show saved on console:<br><b id="option1">Off</b></button>
           </td>
         </tr>
       </table><br>
-      Scripts used: <a href="https://github.com/Naruyoko/ExpantaNum.js">ExpantaNum.js</a>, <a href="https://github.com/cloudytheconqueror/letter-notation-format">format-expantanum.js</a><br>
+      <b style="font-size: 18px;">Credits:</b><br>
+      Naruyoko for <a href="https://github.com/Naruyoko/ExpantaNum.js">ExpantaNum.js</a>.<br>
+      cloudytheconqueror for <a href="https://github.com/cloudytheconqueror/letter-notation-format">format-expantanum.js</a>, with extension by me.<br>
+      Hevipelle for newsticker code, with extension by Aarex.<br>
+      MrRedShark77 for multi-font code and save code.<br><br>
       Endgame: <span id="endgame"></span><br><br>
       Game Version: <a href="https://1e1000000.github.io/dimensional-incremental/changelog.html">v<span id="ver"></span></a> (Click the version to see change log)
     </div>

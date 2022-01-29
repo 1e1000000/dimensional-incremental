@@ -11,14 +11,33 @@ html {
 }
 
 /* adjust typography defaults */
+:root{
+  --font: 
+}
+
+@font-face {
+  font-family: "Monospace-Typewritter";
+  src: url('font/MonospaceTypewriter.ttf');
+}
+
+@font-face {
+  font-family: "Verdana";
+  src: url('font/verdana.ttf');
+}
+
+@font-face {
+  font-family: "Segoe UI";
+  src: url('font/SegoeUI.TTF');
+}
+
 body {
   margin: 1rem;
-  font-family: 'Courier Prime', monospace;
+  font-family: var(--font);
   line-height: 1.5;
 }
 
 button {
-  font-family: 'Courier Prime', monospace;
+  font-family: var(--font);
   line-height: 1.5;
   font-size: 16px;
 }
@@ -118,6 +137,44 @@ button {
   width: 80px;
 }
 
+.saveButton:hover {
+  background: #CCCCCC;
+}
+
+.saveButtonLong {
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 1000px;
+  border-color: #000000;
+  border-weight: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  transition-duration: 0.1s;
+  height: 30px;
+  width: 200px;
+}
+
+.saveButtonLong:hover {
+  background: #CCCCCC;
+}
+
+.optionButton {
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 1000px;
+  border-color: #000000;
+  border-weight: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  transition-duration: 0.1s;
+  height: 50px;
+  width: 200px;
+}
+
+.optionButton:hover {
+  background: #CCCCCC;
+}
+
 .upgradeButton {
   color: #000000;
   background: #FFFFFF;
@@ -129,10 +186,6 @@ button {
   height: 180px;
   width: 180px; 
   font-size: 12px;
-}
-
-.saveButton:hover {
-  background: #CCCCCC;
 }
 
 .center{
@@ -148,7 +201,7 @@ button {
 .milestoneTable td{
   border: 1px solid black;
   padding: 5px;
-  width: 360px;
+  width: 480px;
   display: table-cell;
 }
 

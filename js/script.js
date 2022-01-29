@@ -17,6 +17,8 @@ function loop(){
 }
 
 function updateHTML(){
+  document.documentElement.style.setProperty('--font', player.options.font)
+  document.getElementById("currFont").innerHTML = Boolean(player.options.font) ? player.options.font : "Google Default"
   if (tmp.offlineActive){
     document.getElementById("offMsg").style.display = "block"
     document.getElementById("offSpeed").innerHTML = formatDefault(tmp.offlineMult,3)
@@ -25,8 +27,10 @@ function updateHTML(){
     document.getElementById("offSpeed").innerHTML = ""
   }
   document.getElementById("points").innerHTML = format(player.points)
-  document.getElementById("pps").innerHTML = format(getPointsGain())
-  document.getElementById("z").innerHTML = format(player.points) + " points, " + formatWhole(player.prestige[player.subtab[1]]) + " " + resourceName[player.subtab[1]]
+  document.getElementById("ptsPrefix").style.display = (player.points.gte("ee3") ? "none" : "initial")
+  document.getElementById("ptsSuffix").style.display = (player.points.gte("ee6") ? "none" : "initial")
+  document.getElementById("pps").innerHTML = getProductionRateDisplay(player.points, getPointsGain())
+  document.getElementById("z").innerHTML = "Dimensional Incremental | " + format(player.points) + " points, " + formatWhole(player.prestige[player.subtab[1]]) + " " + resourceName[player.subtab[1]]
   document.getElementById("tab2").style.display = (player.prestige[1].gte(1027) || player.dimShift >= 1?"inline-block":"none")
   document.getElementById("tab1st2").style.display = (player.dimShift >= 1?"inline-block":"none")
   document.getElementById("tab1st2_2").style.display = (player.milestone[2].includes(2)?"inline-block":"none")

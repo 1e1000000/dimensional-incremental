@@ -43,6 +43,7 @@ function getPlayerData(){
       notation: 0,
       debug: 0,
       notationOption: [2,3,4,6,5,9], // from left to right are base, e, FGH, JK, Letters to next, Exp of Num to next
+      font: 'Courier Prime'
     },
     dimShift: 0,
     lineSegments: new ExpantaNum(0),
@@ -107,9 +108,9 @@ function loadPlayer(load) {
   player.majorVer = 1
   player.version = 1
   player.version2 = 1
-  player.version3 = 0
+  player.version3 = 1
   player.patchVer = 0
-  player.updateName = "Line Segments Update"
+  player.updateName = "Text Font Update"
   console.log("Game loaded at Timestamp " + (Date.now()/1000).toLocaleString())
   scrollNextMessage()
 }
