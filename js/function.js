@@ -237,6 +237,11 @@ function upgradeShow(layer,id){
         return false
     }
 }
+
+function upgradeStyle(layer, id){
+    document.getElementById("layer" + layer + "upg" + id).classList.remove("bought")
+    if (player.upgrade[layer].includes(id)) document.getElementById("layer" + layer + "upg" + id).classList.add("bought")
+}
   
 const displayUpgradeAccuracy = 
     [null,

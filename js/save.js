@@ -94,8 +94,8 @@ function loadPlayer(load) {
   for (let i=1;i<=player.subtab.length-1;i++){
     subtab(i,player.subtab[i] === undefined ? 1 : player.subtab[i])
     for (let j=1;j<=player.subsubtab[i].length-1;j++){
-      if ([2].includes(j)){
-        subsubtab(i,j,player.subsubtab[j] === undefined ? 1 : player.subsubtab[j])
+      if ([1].includes(i) && [2].includes(j)){
+        subsubtab(i,j,player.subsubtab[i][j] === undefined ? 1 : player.subsubtab[i][j])
       }
     }
   }

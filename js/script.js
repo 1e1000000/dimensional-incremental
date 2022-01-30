@@ -47,11 +47,9 @@ function updateHTML(){
       document.getElementById("layer" + i + "sc").innerHTML = LAYERS.softcapExp(i).eq(1/0) ? resourceNameCapital[i] + ` amount are hardcapped at <b>` + format(LAYERS.gainSoftcap(i)) + `</b><br>` : resourceNameCapital[i] + ` amount past <b>` + format(LAYERS.gainSoftcap(i)) + `</b> are <b>` + format(LAYERS.softcapExp(i),4) + `</b>th rooted.<br>`
       for (let j=1;j<=loadUpgrades[i];j++){ // upgrades
         // border
-        if (player.upgrade[i].includes(j)) document.getElementById("layer" + i + "upg" + j).style.borderColor = "#00FF00"
-        else if (canAffordUpgrade(i,j)) document.getElementById("layer" + i + "upg" + j).style.borderColor = "#00FF00"
-        else document.getElementById("layer" + i + "upg" + j).style.borderColor = "#FF0000"
+        document.getElementById("layer" + i + "upg" + j).style.borderColor = (player.upgrade[i].includes(j) || canAffordUpgrade(i,j) ? "#00FF00" : "#FF0000")
         // background
-        document.getElementById("layer" + i + "upg" + j).style.backgroundColor = player.upgrade[i].includes(j) ? "#00FF00" : "#FFFFFF"
+        upgradeStyle(i, j)
         // visibly
         document.getElementById("layer" + i + "upg" + j).style.display = (upgradeShow(i,j)?"inline-block":"none")
         if (!doesntLoadEff[i].includes(j)) document.getElementById("layer" + i + "upg" + j + "eff").innerHTML = format(upgradeEffect(i,j),displayUpgradeAccuracy[i][j])

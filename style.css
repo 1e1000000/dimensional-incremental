@@ -188,6 +188,14 @@ button {
   font-size: 12px;
 }
 
+.upgradeButton:not(.bought):hover{
+  background-color: #CCCCCC;
+}
+
+.upgradeButton.bought{
+  background-color: #00FF00;
+}
+
 .center{
   text-align: center;
   margin-left: auto;
