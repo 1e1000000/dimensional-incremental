@@ -1,3 +1,32 @@
+// Meta
+
+function effectDisplay(x, acc, type){
+    x = new ExpantaNum(x)
+    let y = `<br>Currently: `
+    switch(type) {
+        case "add":
+            return y + "+" + format(x,acc)
+        break;
+        case "sub":
+            return y + "-" + format(x,acc)
+        break;
+        case "mul":
+            return y + format(x,acc) + "x"
+        break;
+        case "div":
+            return y + "/" + format(x,acc)
+        break;
+        case "pow":
+            return y + "^" + format(x,acc)
+        break;
+        case "root":
+            return y + format(x,acc) + "th rooted"
+        break;
+        default: // none or other
+            return ""
+    }
+}
+
 // Upgrades
 
 const upgradeCost1 = 
@@ -33,6 +62,83 @@ _____________________________________________
 |  2  |       Dots       |   L. Segments    |
 |_____|__________________|__________________|
 */
+
+function upgradeDescription(layer, id){
+    switch(layer) {
+        case 1:
+            switch(id) {
+            case 1:
+                let x1 = new ExpantaNum(1)
+                if (player.upgrade[1].includes(5)) x1 = x1.mul(upgradeEffect(1,5))
+                return "Multiply Dot effect by Dots^" + (x1.eq(1) ? "Dots." : "(Dots*" + format(x1,4) + ")." )
+            break;
+            case 2:
+                return "Multiply Dot effect by log10(points)^Dots."
+            break;
+            case 3:
+                return "Multiply Dot gain by log10(log10(points))."
+            break;
+            case 4:
+                return "You can buy max Dots, Dot effect exponent ^(1+0.032*log10(Dot)), softcap at ^" + format(1.16,4) + "."
+            break;
+            case 5:
+                return "Raise the above upgrade effect by log(Dot)^0.5."
+            break;
+            case 6:
+                return "Raise Line effect by Dots^0.35."
+            break;
+            case 7:
+                return "Add 1 to OoM of Dots to Line Segments gain exponent."
+            break;
+            case 8:
+                let x2 = new ExpantaNum(1.625)
+                if (player.upgrade[1].includes(12)) x2 = x2.mul(upgradeEffect(1,12))
+                return "Raise Line effect by slog10(points)^" + format(x2,4)
+            break;
+            case 9:
+                return "Raise Line effect exponent by 1+log10(log10(Dot))/5."
+            break;
+            case 10:
+                return "Multiply Dots gain by (Lines+1)^0.475."
+            break;
+            case 11:
+                return "Each OoM^2 of points increase points gain exponent by 0.02."
+            break;
+            case 12:
+                return "Raise the above upgrade effect by Lines^0.910413."
+            break;
+            default: // upgrade not found
+                return ""
+            }
+        break;
+        case 2:
+            switch(id) {
+            case 1:
+                return "Base Lines effect past " + format("ee4") + " boost their effect base."
+            break;
+            case 2:
+                return "Multiply Line Segments gain by log10(Line Segments)."
+            break;
+            case 3:
+                return "Multiply Line Segments gain by log10(log10(points))."
+            break;
+            case 4:
+                return "Multiply OoM of Dots to Line Segments gain exponent by 1.6, raise Line Segments effect by 1.097."
+            break;
+            case 5:
+                return "4th Dot Upgrade softcap is weaker based on Lines."
+            break;
+            case 6:
+                return "Each Line buyable level increase Dots gain by 1%."
+            break;
+            default: // upgrade not found
+                return ""
+            }
+        break;
+        default: // layer not found
+            return ""
+        }
+}
 
 function canAffordUpgrade(layer,id){
 if (player.upgrade[layer].includes(id)) return false // upgrade already bought
@@ -238,51 +344,56 @@ function upgradeShow(layer,id){
     }
 }
 
-function upgradeStyle(layer, id){
-    document.getElementById("layer" + layer + "upg" + id).classList.remove("bought")
-    if (player.upgrade[layer].includes(id)) document.getElementById("layer" + layer + "upg" + id).classList.add("bought")
-}
-  
 const displayUpgradeAccuracy = 
     [null,
         [null,2,2,4,4,4,4,2,4,4,4,4,4],
         [null,2,4,4,2,4,2]
     ]
 
-function getUpgExtra(layer,id,x=0){
+function upgradeEffectType(layer,id){
+    let array = 
+        [null,
+            [null,
+                "mul","mul","mul","pow",
+                "pow","pow","none","pow",
+                "pow","mul","pow","pow",
+            ],
+            [null,
+                "mul","mul","mul","none",
+                "root","mul"
+            ],
+        ]
+    return array[layer][id]
+}
+
+function upgradeStyle(layer, id){
+    document.getElementById("layer" + layer + "upg" + id).classList.remove("bought")
+    if (player.upgrade[layer].includes(id)) document.getElementById("layer" + layer + "upg" + id).classList.add("bought")
+}
+  
+// Buyables
+
+function buyableDescription(layer, id){
     switch(layer) {
-        case 1:
-            switch(id) {
-            case 1:
-                let mult = new ExpantaNum(1)
-                if (player.upgrade[1].includes(5)) mult = mult.mul(upgradeEffect(1,5))
-                return mult.eq(1) ? "Dots" : "(Dots*" + format(mult,4) + ")" 
-            break;
-            case 8:
-                let mult2 = new ExpantaNum(1.625)
-                if (player.upgrade[1].includes(12)) mult2 = mult2.mul(upgradeEffect(1,12))
-                return format(mult2,4)
-            break;
-            default: // upgrade not found
-                return ""
-        }
-        break;
         case 2:
             switch(id) {
             case 1:
-                return format(slogadd(4,2))
+                return "Add " + format(1) + " to Lines to Line Segments gain exponent per buyable level."
             break;
-
-            default: // upgrade not found
+            case 2:
+                return "Add " + format(0.5) + " to OoM of Dots to Line Segments gain exponent per buyable level."
+            break;
+            case 3:
+                return " Multiply Dots gain by " + format(1.3) + " per square rooted buyable level."
+            break;
+            default: // buyable not found
                 return ""
-        }
+            }
         break;
         default: // layer not found
             return ""
-    }
+        }
 }
-
-// Buyables
 
 function getBaseBuyableCost(layer,id){ // cost at level 1
     switch(layer) {
@@ -399,7 +510,7 @@ function buyBuyable(layer,id,max=false){
         }
 }
 
-function getBuyableEffect(layer,id){
+function buyableEffect(layer,id){
     let x
     switch(layer) {
     case 2:
@@ -450,10 +561,76 @@ function buyableShow(layer,id){
 const displayBuyableAccuracy = 
     [null,
         [],
-        [null,2,2,2],
+        [null,2,2,4],
     ]
 
+function buyableEffectType(layer,id){
+    let array = 
+        [null,
+            [],
+            [null,
+                "add","add","mul"],
+        ]
+    return array[layer][id]
+}
+
 // Milestones
+
+function milestoneDescription(layer, id){
+    switch(layer) {
+        case 2:
+            switch(id) {
+            case 1:
+                return "Unlock more Dot Upgrades."
+            break;
+            case 2:
+                return "Unlock Line Segments."
+            break;
+            case 3:
+                return "You always can buy max dots."
+            break;
+            case 4:
+                return "Autobuy Dots and resets nothing." + `<br>` + "Multiply points gain by 10^10^Lines."
+            break;
+            case 5:
+                return "Unlock ???." + `<br>` + "You keep Dot Upgrades on Line Reset."
+            break;
+            default: // milestone not found
+                return ""
+            }
+        break;
+        default: // layer not found
+            return ""
+        }
+}
+
+function milestoneReq(layer, id){
+    switch(layer) {
+        case 2:
+            switch(id) {
+            case 1:
+                return formatWhole(1) + " Line"
+            break;
+            case 2:
+                return formatWhole(2) + " Lines"
+            break;
+            case 3:
+                return formatWhole(3) + " Lines"
+            break;
+            case 4:
+                return formatWhole(4) + " Lines"
+            break;
+            case 5:
+                return formatWhole(5) + " Lines"
+            break;
+            default: // milestone not found
+                return ""
+            }
+        break;
+        default: // layer not found
+            return ""
+        }
+}
 
 function canGainMilestone(layer, id){
     if (player.milestone[layer].includes(id)) return false
@@ -514,7 +691,7 @@ function milestoneShow(layer,id){
         case 5:
             return player.milestone[2].includes(4)
         break;
-        default: // upgrade not found
+        default: // milestone not found
             return false
         }
     break;
@@ -559,7 +736,7 @@ const notationOptionName = [
 ]
 
 function changeAccuracyOptionButton(id){
-    let num = prompt("You want to change the " + notationOptionName[id] + " to... (min: " + notationOptionRange[id][0] + ", max: " + notationOptionRange[id][1] + ", default to " + notationOptionDefault[id] + ")",player.options.notationOption[id])
+    let num = prompt("You want to change the " + notationOptionName[id] + " to... (min: " + notationOptionRange[id][0] + ", max: " + notationOptionRange[id][1] + ", default to " + notationOptionDefault[id] + ", cancel or leave the input box blank to change it to default value)",player.options.notationOption[id])
     if (num === null || num == "") num = notationOptionDefault[id]
     num = Math.round(Number(num))
     if (isNaN(num)) num = notationOptionDefault[id]
@@ -574,6 +751,6 @@ function getStatHTML(){
     output = output + `Dimensional Shifts: <b>` + formatWhole(player.dimShift) + `</b><br>`
     output = output + `Dots: <b>` + formatWhole(player.prestige[1]) + `</b> (Next require: <b>` + format(LAYERS.req(1)) + `</b> Points, Effect: +<b>` + format(LAYERS.eff(1)) + `</b> points/s)<br>`
     if (player.dimShift>=1) output = output + `Lines: <b>` + formatWhole(player.prestige[2]) + `</b> (Next require: <b>` + format(LAYERS.req(2)) + `</b> Dots, Effect: <b>` + format(LAYERS.eff(2)) + `</b>x points gain)<br>`
-    if (player.milestone[2].includes(2)) output = output + `Line Segments: <b>` + format(player.lineSegments) + `</b> (Effect: ^<b>` + format(LAYERS.lineSegEff(),4) + `</b> points gain)<br>`
+    if (player.milestone[2].includes(2)) output = output + `Line Segments: <b>` + format(player.lineSegments) + `</b> (Effect: ^<b>` + format(LAYERS.lineSegEff(),4) + `</b> points gain)<br><br>`
     return output
 }

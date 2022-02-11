@@ -77,3 +77,9 @@ function expansion(base, n){
     n = new ExpantaNum(n).floor()
     return ExpantaNum.expansion(base, n)
 }
+
+function graham(n = 64){
+	n = new ExpantaNum(n).floor()
+	if (n.lte(0)) return new ExpantaNum(4)
+	return expansion(new ExpantaNum(3).arrow(4)(3), n)
+}

@@ -1086,6 +1086,10 @@ function standardize(num, precision=0){
     if (num.gte(ExpantaNum.mul("e1e3000",1000))) return format(num, precision)
     let exponent = num.log10().div(3).floor();
     let mantissa = num.div(new ExpantaNum(1000).pow(exponent))
+    /*
+    let mSub = mantissa.log10().floor().toNumber()
+    precision -= mSub
+    */
     let maxT1 = num.log10().sub(3).div(3).floor()
     let maxT2 = maxT1.log10().div(3).floor().toNumber()
     if (maxT1.lt(1e15)) maxT1 = maxT1.toNumber()
@@ -1100,9 +1104,9 @@ function standardize(num, precision=0){
       exponent = exponent.add(1)
     }
     if (num.lt(new ExpantaNum(1e33))) {
-      return mantissa.toFixed(precision) + " " + standardPreE33[maxT1]
+      return regularFormat(mantissa,precision) + " " + standardPreE33[maxT1]
     } else if (num.lt(new ExpantaNum(10).pow(3e15).mul(1000))) {
-      return mantissa.toFixed(precision) + " " + standard(tril, 4, 1) + standard(bill, 3, 1) + standard(mill, 2, 1) + standard(kill, 1, 1) + standard(ones, 0, 0)
+      return regularFormat(mantissa,precision) + " " + standard(tril, 4, 1) + standard(bill, 3, 1) + standard(mill, 2, 1) + standard(kill, 1, 1) + standard(ones, 0, 0)
     } else {
       return standard(tril, maxT2, (ones + kill + mill + bill !== 0 ? 1 : 0)) + standard(bill, maxT2 - 1, (ones + kill + mill !== 0 ? 1 : 0)) + standard(mill, maxT2 - 2, (ones + kill !== 0 ? 1 : 0)) + standard(kill, maxT2 - 3, (ones !== 0 ? 1 : 0)) + standard(ones, maxT2 - 4, 0) + "s"
     }

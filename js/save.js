@@ -9,6 +9,7 @@ function ENify(x){
 }
 
 function calc(dt, dt_offline){
+  dt = new ExpantaNum(dt).mul(getGameSpeed())
   AFactived = Boolean(new Date().getMonth() == 3 && new Date().getDate() == 1)
   player.points = player.points.add(getPointsGain().mul(dt))
   player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
@@ -45,6 +46,9 @@ function getPlayerData(){
       notationOption: [2,3,4,6,5,9], // from left to right are base, e, FGH, JK, Letters to next, Exp of Num to next
       font: 'Courier Prime'
     },
+    dev: {
+      devSpeed: new ExpantaNum(1)
+    },
     dimShift: 0,
     lineSegments: new ExpantaNum(0),
   }
@@ -73,7 +77,7 @@ function load(x){
       for (let i=1;i<=player.subtab.length-1;i++){
         subtab(i,1)
         for (let j=1;j<=player.subsubtab[i].length-1;j++){
-          if ([2].includes(j)){
+          if ([1].includes(i) && [2].includes(j)){
             subsubtab(i,j,1)
           }
         }
@@ -108,11 +112,21 @@ function loadPlayer(load) {
   player.majorVer = 1
   player.version = 1
   player.version2 = 1
-  player.version3 = 1
-  player.patchVer = 1
-  player.updateName = "Text Font Update"
+  player.version3 = 2
+  player.patchVer = 0
+  player.updateName = ""
+  // set notation
+  document.getElementById("notation-select").value = player.options.notation
+  
   console.log("Game loaded at Timestamp " + (Date.now()/1000).toLocaleString())
   scrollNextMessage()
+  window.setInterval(function() {
+    updateNotation()
+  }, 10)
+}
+
+function updateNotation(){
+  player.options.notation = Number(document.getElementById("notation-select").value)
 }
 
 function deepNaN(obj, data) {
@@ -151,6 +165,7 @@ function convertToExpNum(){
     }
   }
   player.lineSegments = ENify(player.lineSegments)
+  player.dev.devSpeed = ENify(player.dev.devSpeed)
 }
 
 function loadGame() {

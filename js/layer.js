@@ -51,7 +51,7 @@ const LAYERS = {
         x = new ExpantaNum(1)
         if (player.upgrade[1].includes(3)) x = x.mul(upgradeEffect(1,3))
         if (player.upgrade[1].includes(10)) x = x.mul(upgradeEffect(1,10))
-        if (buyableShow(2,3)) x = x.mul(getBuyableEffect(2,3))
+        if (buyableShow(2,3)) x = x.mul(buyableEffect(2,3))
         if (player.upgrade[2].includes(6)) x = x.mul(upgradeEffect(2,6))
         return x
       break;
@@ -265,8 +265,8 @@ const LAYERS = {
   lineSegGainExp(){
     let x = [new ExpantaNum(0),new ExpantaNum(1)] // first one is OoM of Dots, second one is Lines
     if (player.upgrade[1].includes(7)) x[0] = x[0].add(1)
-    if (buyableShow(2,1)) x[1] = x[1].add(getBuyableEffect(2,1))
-    if (buyableShow(2,2)) x[0] = x[0].add(getBuyableEffect(2,2))
+    if (buyableShow(2,1)) x[1] = x[1].add(buyableEffect(2,1))
+    if (buyableShow(2,2)) x[0] = x[0].add(buyableEffect(2,2))
     if (player.upgrade[2].includes(4)) x[0] = x[0].mul(1.6)
     return x
   },
@@ -296,4 +296,9 @@ function getPointsGain(){
   if (player.milestone[2].includes(2)) gain = gain.pow(LAYERS.lineSegEff())
   if (player.upgrade[1].includes(11)) gain = gain.pow(upgradeEffect(1,11))
   return gain
+}
+
+function getGameSpeed(){
+  let speed = new ExpantaNum(player.dev.devSpeed)
+  return speed
 }

@@ -30,6 +30,11 @@ html {
   src: url('font/SegoeUI.TTF');
 }
 
+@font-face {
+  font-family: "Larabie Font";
+  src: url('font/Larabiefont rg.ttf');
+}
+
 body {
   margin: 1rem;
   font-family: var(--font);
@@ -40,6 +45,19 @@ button {
   font-family: var(--font);
   line-height: 1.5;
   font-size: 16px;
+}
+
+select {
+  font-family: var(--font);
+  font-weight: bold;
+  line-height: 1.5;
+  font-size: 13px;
+  border-radius: 1000px;
+  border-color: #000000;
+  cursor: pointer;
+  height: 20px;
+  width: 190px;
+  padding-left: 5px;
 }
 
 .tabButton {
@@ -173,6 +191,10 @@ button {
 
 .optionButton:hover {
   background: #CCCCCC;
+}
+
+.noHoverButton:hover {
+  background: inherit;
 }
 
 .upgradeButton {
