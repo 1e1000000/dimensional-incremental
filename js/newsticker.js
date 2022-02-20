@@ -5,10 +5,21 @@ const msg6844_2 = ["RIP","F**k You","LOL"]
 const gabrielList = ["Gabrieldebastiani","Gabrieldebastiani","Gabrieldebastiani","gabrieldebastiani123","gabriel1","gabriel2","gabriel3","Gabriel1847"] // total: 8
 const laporteList = ["0936","3903","4362","5356","5419","5490","5545","5854","6409","6927","8032","8046"]
 const incrementalList = ["5038","9124","0298","6539","4002","2236","3898","2218","1821","4271"]
+const ggghhhhggtList = ["Ggghhhhggt","Jakekekekejej","Davidsew","Davavvavavavavavavvevaaadivid","Smacg the best","Wong stop banning me","Orange boss"]
 const smacg13toGhgtMSG = ["Vandalism","Blocking","Final warning"]
 const wth05toGhgtMSG = ["NO","NEVER","ALWAYS FAIR"]
 const usertoEMRMSG = ["Permaban on Eliezer's marble race","The change of my username on EMR Committee"]
-const wth05toEMRMSG = ["YOU ARE ONLY MAKING THE WIKI WORSE","YOU ARE ONLY MAKING THE WIKI MORE WORSE","YOU ARE ONLY MAKING THE WIKI EVEN WORSE","THIS IS USELESS","THIS IS USELESS, YOU STILL CAN BANNED FOR EVADE THE BAN"]
+const wth05toEMRMSG = [
+  "YOU ARE ONLY MAKING THE WIKI WORSE",
+  "YOU ARE ONLY MAKING THE WIKI MORE WORSE",
+  "YOU ARE ONLY MAKING THE WIKI EVEN WORSE",
+  "YOU ARE ONLY MAKING THE WIKI ABOUT TO BE CLOSED",
+  "YOU ARE ONLY HURTING THE WIKI",
+
+  "THIS IS USELESS",
+  "THIS IS USELESS, YOU STILL CAN BANNED FOR EVADE THE BAN",
+  "THIS IS USELESS, YOU STILL CAN GET BANNED FOR EVADE THE BAN"
+]
 const wth05toSmacg13MSG = [ // may extended later
   "Outdated Information on ML2020 Showdown Page",
   "Vandalism report",
@@ -41,6 +52,8 @@ const wth05toSmacg13MSG = [ // may extended later
   "First request in 2022",
   "Unblock these users",
   "Delete this",
+  "Hi Smacg",
+  "Random",
 ]
 
 const randomMessageBy6844 = [
@@ -192,7 +205,7 @@ function updateNewsArray() {
     // 1% if generate 98
     [() => "WHO JUST GHOSTPINGED ME 7 TIMES - SuperSpruce; TheMKeyHolder: i know who, it was @this moment that he know, he fxxked up.", Math.random()<=0.01],
     // 1% if generate this newsticker
-    [() => "bruh - red" + (Math.floor(Math.random()*100)).toString(36), true],
+    [() => "bruh - red" + (Math.floor(Math.random()*100)).toString(11), true],
     // 1% if generate reda
     [() => (Math.random() < 0.5 ? "Jamie!#0750" : "nonono#8241") + " has been warned, Reason: Bad word usage. (Repeat count: " + Math.floor(Math.random()*100+1)*2 + ")", true],
     // 1% if generate nonono with 160 repeat count or Jamie! with 20 repeat count
@@ -242,10 +255,10 @@ function updateNewsArray() {
     // Ref: Similar as above, but 5x rarer
     [() => "Can you " + (Math.random() < 0.01 ? "delete" : "unpin") + " this message, it seem SUPER ANNOYING - me", true],
     // 1% if generate delete
-    // Ref: On early February, I request to unpin the message that typed supercesi and pinned on October 2020
+    // Ref: On early February 2021, I request to unpin the message that typed supercesi and pinned on October 2020
     [() => "Can you unpin this message because the message is f**k off " + (Math.random() < 0.01 ? "LowDeath675" : "ld675"), true],
     // 1% if generate LowDeath675
-    // Ref: On late February, I request to unpin the message that typed f**k off LowDeath675 and pinned on 13 days before this message sent
+    // Ref: On late February 2021, I request to unpin the message that typed f**k off LowDeath675 and pinned on 13 days before this message sent
     [() => "DNA Ordinal = " + (Math.random() < 0.01 ? NaN : 0), true],
     // 1% if generate NaN
     // Ref: Googology Community in 2021
@@ -316,15 +329,18 @@ function updateNewsArray() {
     [() => "No, it was a bugfix of achievement 270; If you have less than " + (Math.random() < 0.01 ? format("ee6") : "e1m") + " constant and wonder why your hepteract/s are lower: There was a bug with achievement 270 that has been fixed now. Your hepteract/s just have been higher than they should have been until now. - Gringomaniac", true],
     // 1% if generate formatted ee6
     // Ref: It was the message after Achievement 270 on Synergism was fixed
-    [() => (Math.random() < 0.01 ? "Davavvavavavavavavvevaaadivid" : "Davidsew") + " left the message f**k on FlameMr317's wall: You", true],
-    // 1% if generate longer name
-    // Ref: The message that cause Davidsew was blocked on Jelle's Marble Run wiki
-    [() => "WongTingHo05 replied to the message " + (Math.random() < 0.01 ? " im sorry on WongTingHo05's wall: sorry, you must ruining your life" : smacg13toGhgtMSG[Math.floor(Math.random()*smacg13toGhgtMSG.length)] + " on Ggghhhhggt's wall: " + wth05toGhgtMSG[Math.floor(Math.random()*wth05toGhgtMSG.length)]), true],
-    // 1% if generate "sorry, you must ruining your life"
-    // Ref: 3 joke messages to Ggghhhhggt that sent on 2021/12/21 on 3 different message in Jelle's Marble Run wiki, plus an extra one
+    [() => ggghhhhggtList[Math.floor(Math.random()*ggghhhhggtList.length)] + " left the message f**k on " + (Math.random() < 0.01 ? "Pax de 2e's wall: You pax dumbass you banned smacg the best" : "FlameMr317's wall: You"), true],
+    // 1% if generate message to Pax de 2e
+    // Ref: The message that cause Davidsew was blocked on Jelle's Marble Run wiki, with some modification
+    [() => "WongTingHo05 replied to the message " + (Math.random() < 0.01 ? "Can you stop vandalism pages?" : smacg13toGhgtMSG[Math.floor(Math.random()*smacg13toGhgtMSG.length)]) + " on Ggghhhhggt's wall: " + wth05toGhgtMSG[Math.floor(Math.random()*wth05toGhgtMSG.length)], true],
+    // 1% if generate "Can you stop vandalism pages?"
+    // Ref: 3 joke messages to Ggghhhhggt that sent on 2021/12/21 on 3+1 different message in Jelle's Marble Run wiki
+    [() => "WongTingHo05 replied to the message im sorry on WongTingHo05's wall: sorry, you must " + (Math.random() < 0.01 ? "die" : "ruining your life"), true],
+    // 1% if generate die
+    // Ref: a joke messages to Ggghhhhggt that sent on 2021/11/07 in Jelle's Marble Run wiki
     [() => "WongTingHo05 replied to the message sorry for being mean on WongTingHo05's wall: sorry you runied your life because you reported yourself " + (Math.random() < 0.01 ? Math.floor(Math.random()*13) : "underage"), true],
     // 1% if generate number (from 0 to 12)
-    // Ref: a joke message to Jakekekekejej that sent on 2021/11/27 
+    // Ref: a joke message to Jakekekekejej that sent on 2021/11/27 in Jelle's Marble Run wiki
     [() => "you should also look message Wall, he sent " + (Math.random() < 0.01 ? "rude" : "nonsense") + " message into your Message Wall - me; me 9 minutes later: also found in my Wall", true],
     // 1% if generate rude
     // Ref: message that Jakekekejej coming into wiki and going to report due to vandalism and harassment
@@ -336,14 +352,17 @@ function updateNewsArray() {
     // 1% if generate ggghhhhggtggghhhhggtt
     // Ref: Unnecessary text that Ggghhhhggt added on The Loud House Encyclopedia wiki
     [() => (Math.random() < 0.01 ? "[[Category:Lllllllll]] [[Category:Joy]] [[Category:Joys]]" : "[[Category:Humans]] [[Category:Houses]]"), true],
-    // 1% if generate "Category" thrice
+    // 1% if generate "Category:" thrice
     // Ref: Unnecessary category that Ggghhhhggt added on The Loud House Encyclopedia wiki
     [() => "abilities = " + (Math.random() < 0.01 ? "hes" : "shes") + " a bat; affiliations = loooooooooooooool", true],
     // 1% if generate hes
     // Ref: Unnecessary text that Ggghhhhggt added on Whell of Time wiki
     [() => (Math.random() < 0.01 ? "05:23, 29 October 2021" : "19:49, 17 September 2021 ") + "Ggghhhhggt created page Category:Marbula One Season 2 (look) (Tag: Visual edit)", true],
-    // 1% if generate some day at October
-    // Ref: Time when Ggghhhhggt create the above page, content was "orangers"
+    // 1% if generate 05:23, 29 October 2021
+    // Ref: Time when Ggghhhhggt create the above page
+    [() => "08:58, 26 December 2021 TokihikoH11 deleted page Category:Marbula One Season 2 (" + (Math.random() < 0.01 ? "Spam: content before blanking was: 'orangers'" : "vandalism") + ")", true],
+    // 1% if generate Spam
+    // Ref: Time when TokihikoH11 delete the above page
     [() => "Fix Challenge multiplier row always being " + (Math.random() < 0.01 ? "1.25" : "1.250") + "x", true],
     // 1% if generate number without 0
     // Ref: One of the Pull Request on February 2021 that fix a display bug
@@ -396,11 +415,13 @@ function updateNewsArray() {
     [() => "how dare you who tf add wong a f**king coward and even " + (Math.random() < 0.01 ? "f-word" : "f**k") + " you into pages?", true],
     // 1% if generate f-word
     // Ref: in Early December, Davavvavavavavavavvevaaadivid harassing on pages
-    [() => "How many accounts did Ggghhhhggt created on fandom? It is 4, they were Ggghhhhggt, " + (Math.random() < 0.01 ? "Ggghhhhggt, Ggghhhhggt and Ggghhhhggt" : "Smacg the best, Wong stop banning me and Orange boss"), true],
+    [() => "How many accounts did Ggghhhhggt created on fandom? It is 7, they were Ggghhhhggt, " + (Math.random() < 0.01 ? "Ggghhhhggt, Ggghhhhggt, Ggghhhhggt, Ggghhhhggt, Ggghhhhggt and Ggghhhhggt" : "Jakekekekejej, Davidsew, Davavvavavavavavavvevaaadivid, Smacg the best, Wong stop banning me and Orange boss"), true],
     // 1% if generate four Ggghhhhggt
-    // Ref: in December, Ggghhhhggt start to create alts
+    // Ref: in November, Ggghhhhggt start to create alts
     [() => "How many edits did Ggghhhhggt and socks ever did on all wikis? It is " + Math.floor(Math.random()*100) + ".", true],
-    // 1% if generate 14 (11 from Ggghhhhggt, 3 from Orange boss)
+    // 1% if generate 22
+    // 12 from Ggghhhhggt, 2 from Jakekekekejej, 1 from Davidsew, 3 from Davavvavavavavavavvevaaadivid and 4 from Orange boss
+    // Ggghhhhggt: 7 in JMR wiki, 2 TLH, 2 in WoT, 1 in Community Cental
     // Ref: similar as above
     [() => "(Removed protection from Marble League " + (Math.random() < 0.01 ? "2021)" : "2020)"), true],
     // 1% if generate 2021
@@ -454,40 +475,43 @@ function updateNewsArray() {
 
 
     
-    // Exe k LG fan joke, each subsequent tickers are 2x rarer, no 1% ticker except first one
-    // Total: 16
-    [() => "!ban @" + (Math.random() < 0.01 ? "2nd" : numToOrd(Math.floor(10**(Math.random()*9+1)))) + " Exe k LG Fan ban evade", Math.random() <= 1/1],
-    // 1% if generate 2nd (Range: 10 - 1e10)
+    // Exe k LG fan joke, each subsequent tickers are 1.778x rarer, no 1% ticker except first one
+    // Total: 17
+    [() => "!ban @" + numToOrd(Math.floor(Math.random()*100)) + " Exe k LG Fan ban evade", Math.random() <= 1/1.778**0],
+    // 1% if generate 2
+    // Range: 0 - 99
     // Ref: On January 2022, the user was banned due to evade the ban on LNGI Game discord server
-    [() => "!ban @" + formatWhole(slogadd(Math.random()*9+1,2)) + "th Exe k LG Fan ban evade", Math.random() <= 1/2],
+    [() => "!ban @" + numToOrd(Math.floor(10**(Math.random()*8+2))) + " Exe k LG Fan ban evade", Math.random() <= 1/1.778**1],
+    // Range: 100 - 1e10
+    [() => "!ban @" + formatWhole(slogadd(Math.random()*9+1,2)) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**2],
     // Range: 1e10 - e1e10
-    [() => "!ban @" + formatWhole(tet10(Math.random()*7+3)) + "th Exe k LG Fan ban evade", Math.random() <= 1/4],
+    [() => "!ban @" + formatWhole(tet10(Math.random()*7+3)) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**3],
     // Range: e1e10 - 1F10
-    [() => "!ban @" + formatWhole(tet10(slogadd(Math.random()*9+1,1))) + "th Exe k LG Fan ban evade", Math.random() <= 1/8],
+    [() => "!ban @" + formatWhole(tet10(slogadd(Math.random()*9+1,1))) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**4],
     // Range: 1F10 - F1e10
-    [() => "!ban @" + formatWhole(tet10(slogadd(Math.random()*9+1,2))) + "th Exe k LG Fan ban evade", Math.random() <= 1/16],
+    [() => "!ban @" + formatWhole(tet10(slogadd(Math.random()*9+1,2))) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**5],
     // Range: F1e10 - Fe1e10
-    [() => "!ban @" + formatWhole(tet10(tet10(Math.random()*7+3))) + "th Exe k LG Fan ban evade", Math.random() <= 1/32],
+    [() => "!ban @" + formatWhole(tet10(tet10(Math.random()*7+3))) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**6],
     // Range: Fe1e10 - F1F10
-    [() => "!ban @" + formatWhole(pent10(Math.random()*7+3)) + "th Exe k LG Fan ban evade", Math.random() <= 1/64],
+    [() => "!ban @" + formatWhole(pent10(Math.random()*7+3)) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**7],
     // Range: F1F10 - 1G10
-    [() => "!ban @" + formatWhole(pent10(slogadd(Math.random()*9+1,1))) + "th Exe k LG Fan ban evade", Math.random() <= 1/128],
+    [() => "!ban @" + formatWhole(pent10(slogadd(Math.random()*9+1,1))) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**8],
     // Range: 1G10 - G1e10
-    [() => "!ban @" + formatWhole(pent10(slogadd(Math.random()*9+1,2))) + "th Exe k LG Fan ban evade", Math.random() <= 1/256],
+    [() => "!ban @" + formatWhole(pent10(slogadd(Math.random()*9+1,2))) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**9],
     // Range: G1e10 - Ge1e10
-    [() => "!ban @" + formatWhole(pent10(tet10(Math.random()*7+3))) + "th Exe k LG Fan ban evade", Math.random() <= 1/512],
+    [() => "!ban @" + formatWhole(pent10(tet10(Math.random()*7+3))) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**10],
     // Range: Ge1e10 - G1F10
-    [() => "!ban @" + formatWhole(pent10(tet10(slogadd(Math.random()*9+1,1)))) + "th Exe k LG Fan ban evade", Math.random() <= 1/1024],
+    [() => "!ban @" + formatWhole(pent10(tet10(slogadd(Math.random()*9+1,1)))) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**11],
     // Range: G1F10 - GF1e10
-    [() => "!ban @" + formatWhole(pent10(tet10(slogadd(Math.random()*9+1,2)))) + "th Exe k LG Fan ban evade", Math.random() <= 1/2048],
+    [() => "!ban @" + formatWhole(pent10(tet10(slogadd(Math.random()*9+1,2)))) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**12],
     // Range: GF1e10 - GFe1e10
-    [() => "!ban @" + formatWhole(pent10(tet10(tet10(Math.random()*7+3)))) + "th Exe k LG Fan ban evade", Math.random() <= 1/4096],
+    [() => "!ban @" + formatWhole(pent10(tet10(tet10(Math.random()*7+3)))) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**13],
     // Range: GFe1e10 - GF1F10
-    [() => "!ban @" + formatWhole(pent10(pent10(Math.random()*7+3))) + "th Exe k LG Fan ban evade", Math.random() <= 1/8192],
+    [() => "!ban @" + formatWhole(pent10(pent10(Math.random()*7+3))) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**14],
     // Range: GF1F10 - G1G10
-    [() => "!ban @" + formatWhole(new ExpantaNum.hyper(6)(10,Math.random()*7+3)) + "th Exe k LG Fan ban evade", Math.random() <= 1/16384],
+    [() => "!ban @" + formatWhole(new ExpantaNum.hyper(6)(10,Math.random()*7+3)) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**15],
     // Range: G1G10 - 1H10
-    [() => "!ban @" + formatWhole(hyper(Math.random()*6+7)) + "th Exe k LG Fan ban evade", Math.random() <= 1/32768],
+    [() => "!ban @" + formatWhole(hyper(Math.random()*6+7)) + "th Exe k LG Fan ban evade", Math.random() <= 1/1.778**16],
     // Range: 1H10 - 2J10
 
 
@@ -514,7 +538,10 @@ function updateNewsArray() {
     // 1% if generate Uno Reverse Card
     [() => "Pneumonoultramicroscopicsilicovolcanoconiosis", true],
     // No 1% news for now
-
+    [() => (Math.random() < 0.01 ? "BRAVO" : (Math.random() < 0.5 ? "PERFECT" : "ALL") + " CLEAR"), true],
+    // 1% if generate BRAVO
+    [() => (Math.random() < 0.01 ? "Time till Maximum Time on JS: " + formatTime((8.64e15-Date.now())/1000,3) : "Time till Y2038 bug: " + formatTime((2147483648000-Date.now())/1000,3)), true],
+    // 1% if generate Time till Maximum Time
 
 
 

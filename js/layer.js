@@ -299,6 +299,6 @@ function getPointsGain(){
 }
 
 function getGameSpeed(){
-  let speed = new ExpantaNum(player.dev.devSpeed)
+  let speed = new ExpantaNum(1)
   return speed
 }

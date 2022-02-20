@@ -144,8 +144,12 @@ function formatSmall(num, precision=2) {
     return format(num, precision, true)    
 }
 
-function formatTime(num, precision=2){
+function formatTime(num, precision=0){
     if (AFactived) return ""
+    precision = Math.max(player.options.notationOption[0], precision)
+    let mlt = new ExpantaNum("ee9")
+    let uni = new ExpantaNum(86400*365*1.38e10)
+    let uniYrs = new ExpantaNum(1.38e10)
     let y = new ExpantaNum(86400*365)
     let d = new ExpantaNum(86400)
     let h = new ExpantaNum(3600)
@@ -168,13 +172,28 @@ function formatTime(num, precision=2){
       let modM = num.sub(num.div(h).floor().mul(h)) // minutes
       let modH = num.sub(num.div(d).floor().mul(d)) // hours
       return formatWhole(num.div(d).floor()) + " days, " + formatWhole(modH.div(h).floor()) + " hours, " + formatWhole(modM.div(m).floor()) + " minutes and " + regularFormat(modS, precision) + " seconds"
-    } else if (num.lt(y.mul(1e9))){
+    } else if (num.lt(y.mul(1000))){
       let modS = num.sub(num.div(m).floor().mul(m)) // seconds
       let modM = num.sub(num.div(h).floor().mul(h)) // minutes
       let modH = num.sub(num.div(d).floor().mul(d)) // hours
       let modD = num.sub(num.div(y).floor().mul(y)) // days
       return commaFormat(num.div(y).floor()) + " years, " + formatWhole(modD.div(d).floor()) + " days, " + formatWhole(modH.div(h).floor()) + " hours, " + formatWhole(modM.div(m).floor()) + " minutes and " + regularFormat(modS, precision) + " seconds"
-    } else return format(num.div(y), precision) + " years"
+    } else if (num.lt(uni)){
+      return format(num.div(y)) + " years"
+    } else if (num.lt(uni.mul(1000))) {
+      let yrs = num.div(y)
+      let modY = yrs.sub(yrs.div(uniYrs).floor().mul(uniYrs)) // years
+      return commaFormat(yrs.div(uniYrs).floor()) + " uni, " + format(modY) + " years"
+    } else if (num.lt(mlt.mul(uni))){
+      return format(num.div(uni), precision) + " uni"
+    } else if (num.lt(mlt.pow(1000).mul(uni))){
+      let unis = num.div(uni)
+      let modUni = unis.div(mlt.pow(unis.log10().div(1e9).floor()))
+      return commaFormat(unis.log10().div(1e9).floor()) + " mlt, " + format(modUni) + " uni"
+    } else {
+      return format(num.div(uni).log10().div(1e9), precision) + " mlt"
+    }
+    
 }
 
 function format(num, precision=0, small=false, fixed0=false){
@@ -530,7 +549,7 @@ function formatUpArrow(num, precision=0, small=false) {
             topJ = 1 + Math.log10(Math.log10(bottom) + top)
             layer += 2
         }
-        return "10{10{10{...10{" + regularFormat(topJ, precision4) + "}10...}10}10}10 (" + commaFormat(layer) + " layers)" // might buggy
+        return "10{10{...10{" + format(hyper(topJ+3), precision4) + "}10...}10}10 (" + commaFormat(layer) + " layers)"
     }
     // K1,000,000,000 and beyond
     let n = num.layer + 1
@@ -681,7 +700,7 @@ function formatBAN(num, precision=0, small=false) {
         let pol = polarize(array)
         return "{10, " + format(pol.top+Math.log10(pol.bottom), precision3) + ", 10}"
     }
-    else if (num.lt("10^^^^^^^^^^10")) { // J9$1,000,000,000 ~ J10, up to J10 is prevent stack error
+    else if (num.lt("10^^^^^^^^^^10")) { // J9$1,000,000,000 ~ J10
         let rep = arraySearch(array, 10)
         if (rep >= 1) {
             setToZero(array, 10)

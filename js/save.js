@@ -9,7 +9,7 @@ function ENify(x){
 }
 
 function calc(dt, dt_offline){
-  dt = new ExpantaNum(dt).mul(getGameSpeed())
+  dt = new ExpantaNum(dt).mul(getGameSpeed()).mul(player.dev.devSpeed)
   AFactived = Boolean(new Date().getMonth() == 3 && new Date().getDate() == 1)
   player.points = player.points.add(getPointsGain().mul(dt))
   player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
@@ -26,9 +26,9 @@ function getPlayerData(){
     tab: 1,
     subtab: [null,1],
     subsubtab: [null,[null,1,1]],
-    prestige: [null,new ExpantaNum(0),new ExpantaNum(0)],
+    prestige: [null],
     upgrade: [null,[],[]],
-    buyables: [null,[],[null,new ExpantaNum(0),new ExpantaNum(0),new ExpantaNum(0)]],
+    buyables: [null,[null],[null]],
     milestone: [null,[],[]],
     majorVer: 1, // usually meta-layer
     version: 0, // usually a layer
@@ -52,15 +52,28 @@ function getPlayerData(){
     dimShift: 0,
     lineSegments: new ExpantaNum(0),
   }
+  for (let x=1; x<=amtLayers; x++){
+    s.prestige[x] = new ExpantaNum(0)
+    s.upgrade[x] = []
+    s.milestone[x] = []
+    for (let y=1; y<=loadBuyables[x]; y++) s.buyables[x][y] = new ExpantaNum(0)
+  }
   return s
 }
+
+const loadUpgrades=[null,12,6]
+const loadBuyables=[null,0,3]
+const loadMilestones=[null,0,5]
+const amtLayers=2
 
 function wipe() {
   player = getPlayerData()
 }
 
 function save(){
-    if (tmp.offlineActive) return
+    if (player.options.debug && tmp.offlineActive) console.log("Game failed to save because offline simulation in progress")
+    if (player.options.debug && player.points.toString() == "NaN") console.log("Game failed to save because you have NaN points")
+    if (tmp.offlineActive || player.points.toString() == "NaN") return
     else {
       if (localStorage.getItem(saveId) == '') getPlayerData()
       localStorage.setItem(saveId,btoa(JSON.stringify(player)))
@@ -113,7 +126,7 @@ function loadPlayer(load) {
   player.version = 1
   player.version2 = 1
   player.version3 = 2
-  player.patchVer = 0
+  player.patchVer = 1
   player.updateName = ""
   // set notation
   document.getElementById("notation-select").value = player.options.notation
@@ -176,7 +189,7 @@ function loadGame() {
 }
 
 window.setInterval(function() {
-  if (!tmp.offlineActive) save()
+  save()
 }, 5000)
 
 function hardReset() {

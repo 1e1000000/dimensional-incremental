@@ -63,6 +63,19 @@ _____________________________________________
 |_____|__________________|__________________|
 */
 
+function upgradeCostDisplay(layer, id){
+    switch(layer) {
+        case 1:
+            return formatWhole(upgradeCost1[layer][id]) + " points and " + formatWhole(upgradeCost2[layer][id]) + " dots"
+        break;
+        case 2:
+            return formatWhole(upgradeCost1[layer][id]) + " dots and " + formatWhole(upgradeCost2[layer][id]) + " line segments"
+        break;
+        default:
+            return ""
+    }
+}
+
 function upgradeDescription(layer, id){
     switch(layer) {
         case 1:
@@ -162,6 +175,7 @@ function buyUpgrade(layer,id){
     case 1:
         if (!canAffordUpgrade(layer,id)) return
         player.upgrade[layer].push(id)
+
         player.points = player.points.sub(upgradeCost1[layer][id])
         player.prestige[1] = player.prestige[1].sub(upgradeCost2[layer][id])
         if (player.points.lt(1) && player.prestige[1].eq(0)) player.points = new ExpantaNum(1) // prevent softlock
@@ -169,6 +183,7 @@ function buyUpgrade(layer,id){
     case 2:
         if (!canAffordUpgrade(layer,id)) return
         player.upgrade[layer].push(id)
+
         player.prestige[1] = player.prestige[1].sub(upgradeCost1[layer][id])
         player.lineSegments = player.lineSegments.sub(upgradeCost2[layer][id])
         if (player.points.lt(1) && player.prestige[1].eq(0)) player.points = new ExpantaNum(1) // prevent softlock
@@ -306,7 +321,7 @@ function upgradeShow(layer,id){
             return (player.upgrade[1].includes(9) && player.buyables[2][1].gte(9)) || player.upgrade[1].includes(10)
         break;
         case 11:
-            return player.upgrade[1].includes(10) || player.upgrade[1].includes(11)
+            return (player.upgrade[1].includes(10) && player.upgrade[2].includes(6)) || player.upgrade[1].includes(11)
         break;
         case 12:
             return player.upgrade[1].includes(11) || player.upgrade[1].includes(12)
@@ -372,6 +387,16 @@ function upgradeStyle(layer, id){
 }
   
 // Buyables
+
+function buyableCostDisplay(layer, id){
+    switch(layer) {
+        case 2:
+            return format(getBuyableCost(layer,id)) + " Line Segments"
+        break;
+        default:
+            return ""
+    }
+}
 
 function buyableDescription(layer, id){
     switch(layer) {
@@ -665,9 +690,9 @@ function canGainMilestone(layer, id){
 }
 
 function updateMilestones(){
-    for (let i=1;i<=2;i++){
+    for (let i=1;i<=amtLayers;i++){
         for (let j=1;j<=loadMilestones[i];j++){
-            if (canGainMilestone(i, j)) player.milestone[i].push(j)
+            if (canGainMilestone(i,j)) player.milestone[i].push(j)
         }
     }
 }
@@ -752,5 +777,13 @@ function getStatHTML(){
     output = output + `Dots: <b>` + formatWhole(player.prestige[1]) + `</b> (Next require: <b>` + format(LAYERS.req(1)) + `</b> Points, Effect: +<b>` + format(LAYERS.eff(1)) + `</b> points/s)<br>`
     if (player.dimShift>=1) output = output + `Lines: <b>` + formatWhole(player.prestige[2]) + `</b> (Next require: <b>` + format(LAYERS.req(2)) + `</b> Dots, Effect: <b>` + format(LAYERS.eff(2)) + `</b>x points gain)<br>`
     if (player.milestone[2].includes(2)) output = output + `Line Segments: <b>` + format(player.lineSegments) + `</b> (Effect: ^<b>` + format(LAYERS.lineSegEff(),4) + `</b> points gain)<br><br>`
+    return output
+}
+
+function getGameSpeedHTML(){
+    let output = ``
+    if (!getGameSpeed().eq(1)) output = output + `Game speed: <b style="font-size: 18px;">` + format(getGameSpeed(),3) + `</b>x`
+    if (!getGameSpeed().eq(1) && !player.dev.devSpeed.eq(1)) output = output + ", "
+    if (!player.dev.devSpeed.eq(1)) output = output + `Dev speed: <b style="font-size: 18px;">` + format(player.dev.devSpeed,3) + `</b>x`
     return output
 }

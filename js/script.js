@@ -28,12 +28,10 @@ function updateHTML(){
   }
   if (getGameSpeed().eq(1) && player.dev.devSpeed.eq(1)){
     document.getElementById("speedMsg").style.display = "none"
-    document.getElementById("gameSpeed").innerHTML = ""
-    document.getElementById("devSpeed").innerHTML = ""
+    document.getElementById("speedMsg").innerHTML = ""
   } else {
     document.getElementById("speedMsg").style.display = "block"
-    document.getElementById("gameSpeed").innerHTML = format(getGameSpeed().div(player.dev.devSpeed),3)
-    document.getElementById("devSpeed").innerHTML = format(player.dev.devSpeed,3)
+    document.getElementById("speedMsg").innerHTML = getGameSpeedHTML()
   }
   document.getElementById("points").innerHTML = format(player.points)
   document.getElementById("ptsPrefix").style.display = (player.points.gte("ee3") ? "none" : "initial")
@@ -58,21 +56,12 @@ function updateHTML(){
         // border
         document.getElementById("layer" + i + "upg" + j).style.borderColor = (player.upgrade[i].includes(j) || canAffordUpgrade(i,j) ? "#00FF00" : "#FF0000")
         // background
-        upgradeStyle(i, j)
+        upgradeStyle(i,j)
         // visibly
         document.getElementById("layer" + i + "upg" + j).style.display = (upgradeShow(i,j)?"inline-block":"none")
         document.getElementById("layer" + i + "upg" + j + "desc").innerHTML = upgradeDescription(i,j)
         document.getElementById("layer" + i + "upg" + j + "eff").innerHTML = effectDisplay(upgradeEffect(i,j),displayUpgradeAccuracy[i][j],upgradeEffectType(i,j))
-        switch(i){
-          case 1:
-            document.getElementById("layer" + i + "upg" + j + "cost").innerHTML = formatWhole(upgradeCost1[i][j]) + " points and " + formatWhole(upgradeCost2[i][j]) + " dots"
-          break;
-          case 2:
-            document.getElementById("layer" + i + "upg" + j + "cost").innerHTML = formatWhole(upgradeCost1[i][j]) + " dots and " + formatWhole(upgradeCost2[i][j]) + " line segments"
-          break
-          default:
-
-        }
+        document.getElementById("layer" + i + "upg" + j + "cost").innerHTML = upgradeCostDisplay(i,j)
       }
       for (let j=1;j<=loadBuyables[i];j++){ // buyables
         // border
@@ -82,13 +71,7 @@ function updateHTML(){
         document.getElementById("layer" + i + "buyable" + j + "desc").innerHTML = buyableDescription(i,j)
         document.getElementById("layer" + i + "buyable" + j + "eff").innerHTML = effectDisplay(buyableEffect(i,j),displayBuyableAccuracy[i][j],buyableEffectType(i,j))
         document.getElementById("layer" + i + "buyable" + j + "level").innerHTML = formatWhole(player.buyables[i][j])
-        switch(i){
-          case 2:
-            document.getElementById("layer" + i + "buyable" + j + "cost").innerHTML = format(getBuyableCost(i,j)) + " Line Segments"
-          break
-          default:
-
-        }
+        document.getElementById("layer" + i + "buyable" + j + "cost").innerHTML = buyableCostDisplay(i,j)
       }
       for (let j=1;j<=loadMilestones[i];j++){ // milestones
         document.getElementById("layer" + i + "milestone" + j).style.color = player.milestone[i].includes(j) ? "#00FF00" : "#000000"
@@ -129,10 +112,6 @@ function updateHTML(){
   }
 }
       
-const loadUpgrades=[null,12,6]
-const loadBuyables=[null,0,3]
-const loadMilestones=[null,0,5]
-const amtLayers=2
 const resourceName=[null,"dots","lines"]
 const resourceNameCapital=[null,"Dots","Lines"]
 const optionList=[["Default","Standard","Mixed","Up arrow","Standard (Up arrow)","Mixed (Up arrow)","Bird array","Letter (UCF)","Letter (BCF)","Number Troll","Letter Troll","Base64","Reverse","???"],["Off","On"]]
