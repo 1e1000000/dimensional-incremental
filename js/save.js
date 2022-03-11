@@ -1,4 +1,4 @@
-const saveId = "dimensionincremental"
+const saveId = "dimensionincremental-v1.1.1"
 
 function ENify(x){
     let nx = new ExpantaNum(0);
