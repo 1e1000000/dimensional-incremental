@@ -1,4 +1,6 @@
-var AFactived = false
+var AFactived = Boolean(new Date().getMonth() == 3 && new Date().getDate() == 1)
+var pL = new ExpantaNum(1.61622837e-35)
+var uni = new ExpantaNum(299792458*365.2422*86400*9.3e10)
 
 // format-expantanum.js by cloudytheconqueror
 // Code snippets from NumberFormating.js of ducdat0507's The Communitree,
@@ -27,7 +29,7 @@ function commaFormat(num, precision) {
     return portions[0]
 }
 
-function regularFormat(num, precision) {
+function regularFormat(num, precision=player.options.notationOption[0]) {
     if (AFactived) return ""
     if (isNaN(num)) return "NaN"
     let zeroCheck = num.array ? num.array[0][1] : num
@@ -144,7 +146,7 @@ function formatSmall(num, precision=2) {
     return format(num, precision, true)    
 }
 
-function formatTime(num, precision=0){
+function formatTime(num, precision=player.options.notationOption[0]){
     if (AFactived) return ""
     precision = Math.max(player.options.notationOption[0], precision)
     let mlt = new ExpantaNum("ee9")
@@ -193,10 +195,22 @@ function formatTime(num, precision=0){
     } else {
       return format(num.div(uni).log10().div(1e9), precision) + " mlt"
     }
-    
 }
 
-function format(num, precision=0, small=false, fixed0=false){
+function formatLength(num, precision=player.options.notationOption[0]){
+    if (AFactived) return ""
+    precision = Math.max(player.options.notationOption[0], precision)
+    num = new ExpantaNum(num)
+    if (num.lt(1e-24)){
+        return formatWhole(num.div(pL).round()) + "pL"
+    } else if (num.lt(1e-21)){
+        return format(num.mul(1e24),4) + "ym"
+    } else {
+        return format(num,4) + "m"
+    }
+}
+
+function format(num, precision=player.options.notationOption[0], small=false, fixed0=false, color=false){
     if (AFactived) return ""
     precision = Math.max(player.options.notationOption[0], precision)
     if (fixed0) precision = 0
@@ -204,12 +218,12 @@ function format(num, precision=0, small=false, fixed0=false){
         case 0:
         case 1:
         case 2:
-            return formatDefault(num, precision, small)
+            return formatDefault(num, precision, small, color)
         break;
         case 3:
         case 4:
         case 5:
-            return formatUpArrow(num, precision, small)
+            return formatUpArrow(num, precision, small, color)
         break;
         case 6:
             return formatBAN(num, precision, small)
@@ -253,12 +267,12 @@ function reverseString(str) {
     return joinArray; // "olleh"
 }
 
-function formatDefault(num, precision=0, small=false) {
+function formatDefault(num, precision=player.options.notationOption[0], small=false, color=false) {
     if (AFactived) return ""
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
-    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
-    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
+    let precision2 = player.options.notationOption[1] // for e
+    let precision3 = player.options.notationOption[2] // for F, G, H
+    let precision4 = player.options.notationOption[3] // for J, K
     num = new ExpantaNum(num)
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
@@ -268,6 +282,7 @@ function formatDefault(num, precision=0, small=false) {
     else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
     else if (num.lt(Math.min(1000,10**player.options.notationOption[5]))) return regularFormat(num, precision)
     else if (num.lt(10**player.options.notationOption[5])) return commaFormat(num)
+    else if (player.options.notation == 1 && player.options.fullStandard && num.lt(ExpantaNum.mul("e1e3000",1000))) return standardize(num, precision2)
     else if (num.lt("10^^" + player.options.notationOption[4])) { // 1e9 ~ 1F5
         let bottom = arraySearch(array, 0)
         let rep = arraySearch(array, 1)-1
@@ -368,12 +383,12 @@ function formatDefault(num, precision=0, small=false) {
     return "K" + format(n, precision)
 }
 
-function formatUpArrow(num, precision=0, small=false) {
+function formatUpArrow(num, precision=player.options.notationOption[0], small=false) {
     if (AFactived) return ""
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
-    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
-    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
+    let precision2 = player.options.notationOption[1] // for e
+    let precision3 = player.options.notationOption[2] // for F, G, H
+    let precision4 = player.options.notationOption[3] // for J, K
     num = new ExpantaNum(num)
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
@@ -383,6 +398,7 @@ function formatUpArrow(num, precision=0, small=false) {
     else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
     else if (num.lt(Math.min(1000,10**player.options.notationOption[5]))) return regularFormat(num, precision)
     else if (num.lt(10**player.options.notationOption[5])) return commaFormat(num)
+    else if (player.options.notation == 4 && player.options.fullStandard && num.lt(ExpantaNum.mul("e1e3000",1000))) return standardize(num,precision2)
     else if (num.lt("10^^" + player.options.notationOption[4])) { // 1e9 ~ 1F5
         let bottom = arraySearch(array, 0)
         let rep = arraySearch(array, 1)-1
@@ -513,7 +529,7 @@ function formatUpArrow(num, precision=0, small=false) {
     }
     else if (num.lt("J" + 10**player.options.notationOption[5])) { // J10 ~ J1,000,000,000
         let pol = polarize(array, true)
-        return "10{" + commaFormat(pol.height) + "}" + regularFormat(Math.log10(pol.bottom) + pol.top, precision4)
+        return "10{" + commaFormat(pol.height+1) + "}" + regularFormat(Math.log10(pol.bottom) + pol.top, precision4)
     }
     else if (num.lt("J^" + (player.options.notationOption[4]-1) + " 10")) { // J1,000,000,000 ~ 1K5
         let rep = num.layer
@@ -549,7 +565,7 @@ function formatUpArrow(num, precision=0, small=false) {
             topJ = 1 + Math.log10(Math.log10(bottom) + top)
             layer += 2
         }
-        return "10{10{...10{" + format(hyper(topJ+3), precision4) + "}10...}10}10 (" + commaFormat(layer) + " layers)"
+        return "10{10{...10{" + format(layerLess, precision4) + "}10...}10}10 (" + commaFormat(layer) + " layers)"
     }
     // K1,000,000,000 and beyond
     let n = num.layer + 1
@@ -557,12 +573,12 @@ function formatUpArrow(num, precision=0, small=false) {
     return "10{{1}}" + format(n, precision)
 }
 
-function formatBAN(num, precision=0, small=false) {
+function formatBAN(num, precision=player.options.notationOption[0], small=false) {
     if (AFactived) return ""
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
-    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
-    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
+    let precision2 = player.options.notationOption[1] // for e
+    let precision3 = player.options.notationOption[2] // for F, G, H
+    let precision4 = player.options.notationOption[3] // for J, K
     num = new ExpantaNum(num)
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
@@ -739,13 +755,13 @@ function formatBAN(num, precision=0, small=false) {
     return "{10, " + format(n, precision4) + ", 1, 2}"
 }
 
-function formatLetter(num, precision=0, small=false) {
+function formatLetter(num, precision=player.options.notationOption[0], small=false) {
     if (AFactived) return ""
-    num = new ExpantaNum(num)
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
-    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
-    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
+    let precision2 = player.options.notationOption[1] // for e
+    let precision3 = player.options.notationOption[2] // for F, G, H
+    let precision4 = player.options.notationOption[3] // for J, K
+    num = new ExpantaNum(num)
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
     if (num.sign < 0) return "-" + format(num.neg(), precision, small)
@@ -836,12 +852,12 @@ function formatLetter(num, precision=0, small=false) {
     }
 }
 
-function formatNumTroll(num, precision=0, small=false) {
+function formatNumTroll(num, precision=player.options.notationOption[0], small=false) {
     if (AFactived) return ""
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
-    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
-    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
+    let precision2 = player.options.notationOption[1] // for e
+    let precision3 = player.options.notationOption[2] // for F, G, H
+    let precision4 = player.options.notationOption[3] // for J, K
     num = new ExpantaNum(num)
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
@@ -951,12 +967,12 @@ function formatNumTroll(num, precision=0, small=false) {
     return "K" + format(n, precision)
 }
 
-function formatLetterTroll(num, precision=0, small=false) {
+function formatLetterTroll(num, precision=player.options.notationOption[0], small=false) {
     if (AFactived) return ""
     if (ExpantaNum.isNaN(num)) return "NaN"
-    let precision2 = Math.max(player.options.notationOption[1], precision) // for e
-    let precision3 = Math.max(player.options.notationOption[2], precision) // for F, G, H
-    let precision4 = Math.max(player.options.notationOption[3], precision) // for J, K
+    let precision2 = player.options.notationOption[1] // for e
+    let precision3 = player.options.notationOption[2] // for F, G, H
+    let precision4 = player.options.notationOption[3] // for J, K
     num = new ExpantaNum(num)
     let array = num.array
     if (num.abs().lt(1e-308)) return (0).toFixed(precision)
@@ -1071,11 +1087,11 @@ const standardUnits = ["", "U", "D", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No"]
 const standardTens = ["", "Dc", "Vg", "Tg", "Qag", "Qig", "Sxg", "Spg", "Ocg", "Nog"]
 const standardHundreds = ["", "Ct", "Dct", "Tct", "Qact", "Qict", "Sxct", "Spct", "Occt", "Noct"]
 const standardMilestonePreEE33 = ["", "Mi", "Mc", "Na", "Pc", "Fm", "At", "Zp", "Yc", "Xn", "Ve"]
-const standardMilestoneUnits = ["", "M", "Du", "Tr", "Te", "P", "Hx", "He", "O", "E", "Ve"]
-const standardMilestoneTens = ["", "e", "Is", "Trn", "Ten", "Pn", "Hxn", "Hen", "On", "En"]
-const standardMilestoneHundreds = ["", "Ht", "Dt", "Trt", "Tet", "Pt", "Hxt", "Het", "Ot", "Et"]
+const standardMilestoneUnits = ["", "Me", "Du", "Tr", "Te", "Pe", "He", "Hp", "Ot", "En", "Ve"]
+const standardMilestoneTens = ["", "E", "Is", "Trc", "Tec", "Pec", "Hec", "Hpc", "Otc", "Enc"]
+const standardMilestoneHundreds = ["", "Ht", "Dh", "Trh", "Teh", "Peh", "Hxh", "Heh", "Oth", "Enh"]
 
-function standard(t1, t2, more){
+function standard(t1, t2, more, color = false){
     t1 = t1 % 1000
     t2 = t2 % 1000
     if (t1 == 0) return ""
@@ -1096,10 +1112,11 @@ function standard(t1, t2, more){
       if (mod100 < 10.5) output2 = standardMilestoneUnits[mod100] + standardMilestoneHundreds[hundreds2]
       else output2 = standardMilestoneUnits[ones2] + standardMilestoneTens[tens2] + standardMilestoneHundreds[hundreds2]
     }
-    return output1 + output2 + (more && t2 !== 0 ? "-" : "")
+    if (color) return output1 + `<span style="color:red">` + output2 + (more && t2 !== 0 ? "-" : "") + `</span>`
+    else return output1 + output2 + (more && t2 !== 0 ? "-" : "")
 }
 
-function standardize(num, precision=0){
+function standardize(num, precision=player.options.notationOption[1], color = false){
     num = new ExpantaNum(num)
     if (num.lt(1000)) return regularFormat(num, precision)
     if (num.gte(ExpantaNum.mul("e1e3000",1000))) return format(num, precision)
@@ -1125,8 +1142,87 @@ function standardize(num, precision=0){
     if (num.lt(new ExpantaNum(1e33))) {
       return regularFormat(mantissa,precision) + " " + standardPreE33[maxT1]
     } else if (num.lt(new ExpantaNum(10).pow(3e15).mul(1000))) {
-      return regularFormat(mantissa,precision) + " " + standard(tril, 4, 1) + standard(bill, 3, 1) + standard(mill, 2, 1) + standard(kill, 1, 1) + standard(ones, 0, 0)
+      return regularFormat(mantissa,precision) + " " + standard(tril, 4, 1, color) + standard(bill, 3, 1, color) + standard(mill, 2, 1, color) + standard(kill, 1, 1, color) + standard(ones, 0, 0, color)
     } else {
-      return standard(tril, maxT2, (ones + kill + mill + bill !== 0 ? 1 : 0)) + standard(bill, maxT2 - 1, (ones + kill + mill !== 0 ? 1 : 0)) + standard(mill, maxT2 - 2, (ones + kill !== 0 ? 1 : 0)) + standard(kill, maxT2 - 3, (ones !== 0 ? 1 : 0)) + standard(ones, maxT2 - 4, 0) + "s"
+      return standard(tril, maxT2, (ones + kill + mill + bill !== 0 ? 1 : 0), color) + standard(bill, maxT2 - 1, (ones + kill + mill !== 0 ? 1 : 0), color) + standard(mill, maxT2 - 2, (ones + kill !== 0 ? 1 : 0), color) + standard(kill, maxT2 - 3, (ones !== 0 ? 1 : 0), color) + standard(ones, maxT2 - 4, 0, color)
     }
+}
+
+function getPointsDisplay(num, precision=player.options.notationOption[0], color=true){
+    return format(num, precision)
+    /*
+    let x
+    let array = num.array
+    num = new ExpantaNum(num)
+    let precision2 = player.options.notationOption[1] // for e
+    let precision3 = player.options.notationOption[2] // for F, G, H
+    if (color && (player.options.notation == 1 || player.options.notation == 4) && player.options.fullStandard && num.lt(ExpantaNum.mul("e1e3000",1000))) return standardize(num,precision,true)
+    else x = format(num)
+    // default
+    if (player.options.notation == 0 || player.options.notation == 1 || player.options.notation == 2 || player.options.notation == 9 || player.options.notation == 12){
+        x = x
+            .replaceAll("e",`<span style="color:red">e</span>`)
+            .replaceAll("F",`<span style="color:yellow">F</span>`)
+            .replaceAll("G",`<span style="color:lime">G</span>`)
+            .replaceAll("H",`<span style="color:cyan">H</span>`)
+            .replaceAll("J",`<span style="color:blue">J</span>`)
+            .replaceAll("K",`<span style="color:magenta">K</span>`)
+    }
+    else if (player.options.notation == 10){
+        x = x
+            .replaceAll("J",`<span style="color:red">J</span>`)
+            .replaceAll("K",`<span style="color:yellow">K</span>`)
+            .replaceAll("L",`<span style="color:lime">L</span>`)
+            .replaceAll("M",`<span style="color:cyan">M</span>`)
+            .replaceAll("N",`<span style="color:blue">N</span>`)
+            .replaceAll("P",`<span style="color:magenta">P</span>`)
+    }
+    else if (player.options.notation == 7 || player.options.notation == 8){
+        x = x
+            .replaceAll("E",`<span style="color:red">E</span>`)
+            .replaceAll("F",`<span style="color:orange">F</span>`)
+            .replaceAll("G",`<span style="color:yellow">G</span>`)
+            .replaceAll("H",`<span style="color:lime">H</span>`)
+            .replaceAll("J",`<span style="color:cyan">J</span>`)
+            .replaceAll("K",`<span style="color:blue">K</span>`)
+            .replaceAll("L",`<span style="color:magenta">L</span>`)
+    }
+    // up arrow
+    else if (player.options.notation == 3 || player.options.notation == 4 || player.options.notation == 5){
+        x = x
+            .replaceAll("10^",`<span style="color:red">10^</span>`)
+            .replaceAll(`<span style="color:red">10^</span>^`,`<span style="color:orange">10^^</span>`)
+            .replaceAll(`<span style="color:orange">10^^</span>^`,`<span style="color:yellow">10^^^</span>`)
+            .replaceAll(`<span style="color:yellow">10^^^</span>^`,`<span style="color:lime">10^^^^</span>`)
+        for (let i = 5; i <= 10; i++){
+            x = x.replaceAll("10{" + i + "}",`<span style="color:cyan">10{` + i + `}</span>`)
+        }
+        if (num.gte("J" + 10**player.options.notationOption[5]) && num.lt("J^" + (player.options.notationOption[4]-1) + " 10")){
+            x = x
+                .replaceAll("10{",`<span style="color:blue">10{</span>`)
+                .replaceAll("}10",`<span style="color:blue">}10</span>`)
+        }
+        x = x
+            .replaceAll("10{{1}}",`<span style="color:magenta">10{{1}}</span>`)
+    }
+    else if (player.options.notation == 6){
+        let color = "red"
+        if (num.gte("10^^" + player.options.notationOption[4])) color = "orange"
+        if (num.gte("10^^^" + player.options.notationOption[4])) color = "yellow"
+        if (num.gte("10^^^^" + player.options.notationOption[4])) color = "lime"
+        if (num.gte("10^^^^^" + player.options.notationOption[4])) color = "cyan"
+        if (num.gte("10^^^^^^^^^^10")) color = "blue"
+
+        x = x.replaceAll("{10,",`<span style="color:` + color + `">{10,</span>`)
+        x = x.replaceAll("}",`<span style="color:red">}</span>`)
+        x = x.replaceAll(`, 2<span style="color:red">}</span>`,`<span style="color:orange">, 2}</span>`)
+        x = x.replaceAll(`, 3<span style="color:red">}</span>`,`<span style="color:yellow">, 3}</span>`)
+        x = x.replaceAll(`, 4<span style="color:red">}</span>`,`<span style="color:lime">, 4}</span>`)
+        for (let i = 5; i <= 10; i++){
+            x = x.replaceAll(`, ` + i + `<span style="color:red">}</span>`,`<span style="color:cyan">, ` + i + `}</span>`)
+        }
+
+    }
+    return x
+    */
 }

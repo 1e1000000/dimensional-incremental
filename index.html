@@ -49,6 +49,7 @@
       <span id="offMsg" style="font-size: 14px;">Simulation speed: <b id="offSpeed" style="font-size: 18px;"></b>x<br></span>
       <span id="speedMsg" style="font-size: 14px;">Game speed: <b id="gameSpeed" style="font-size: 18px;"></b>x, Dev speed: <b id="devSpeed" style="font-size: 18px;"></b>x<br></span>
       <span style="font-size: 20px;"><text id="ptsPrefix">You have </text><b id="points" style="font-size: 30px;"></b><text id="ptsSuffix"> points</text><br>(<b id="pps"></b>/s)</span>
+      <span id="ptsSC" style="font-size: 15px;color:red;font-weight:bold;"></span>
     </div>
     <br>
     <table class="center"><tr>
@@ -149,6 +150,28 @@
           </button>
         </td>
       </tr>
+      <tr>
+        <td>
+          <button onclick="buyUpgrade(1,13)" id="layer1upg13" class="upgradeButton">
+            <span id="layer1upg13desc"></span><span id="layer1upg13eff"></span><br><br>Cost: <span id="layer1upg13cost"></span>.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,14)" id="layer1upg14" class="upgradeButton">
+            <span id="layer1upg14desc"></span><span id="layer1upg14eff"></span><br><br>Cost: <span id="layer1upg14cost"></span>.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,15)" id="layer1upg15" class="upgradeButton">
+            <span id="layer1upg15desc"></span><span id="layer1upg15eff"></span><br><br>Cost: <span id="layer1upg15cost"></span>.
+          </button>
+        </td>
+        <td>
+          <button onclick="buyUpgrade(1,16)" id="layer1upg16" class="upgradeButton">
+            <span id="layer1upg16desc"></span><span id="layer1upg16eff"></span><br><br>Cost: <span id="layer1upg16cost"></span>.
+          </button>
+        </td>
+      </tr>
     </table>
     </div>
     <div id="Tab1St2" class="center">
@@ -165,7 +188,11 @@
         </td>
         <td>
           <button onclick="subsubtab(1,2,2)" id="tab1st2_2" class="subsubtabButton center">Line Segments</button>
-        </td></tr>
+        </td>
+        <td>
+          <button onclick="subsubtab(1,2,3)" id="tab1st2_3" class="subsubtabButton center">String</button>
+        </td>
+      </tr>
       </table><br>
       <div id="Tab1St2_1" class="center">
         <table class="center milestoneTable">
@@ -189,11 +216,47 @@
             <td id="layer2milestone5req"></td>
             <td id="layer2milestone5desc"></td>
           </tr>
+          <tr id="layer2milestone6">
+            <td id="layer2milestone6req"></td>
+            <td id="layer2milestone6desc"></td>
+          </tr>
+          <tr id="layer2milestone7">
+            <td id="layer2milestone7req"></td>
+            <td id="layer2milestone7desc"></td>
+          </tr>
+          <tr id="layer2milestone8">
+            <td id="layer2milestone8req"></td>
+            <td id="layer2milestone8desc"></td>
+          </tr>
+          <tr id="layer2milestone9">
+            <td id="layer2milestone9req"></td>
+            <td id="layer2milestone9desc"></td>
+          </tr>
+          <tr id="layer2milestone10">
+            <td id="layer2milestone10req"></td>
+            <td id="layer2milestone10desc"></td>
+          </tr>
+          <tr id="layer2milestone11">
+            <td id="layer2milestone11req"></td>
+            <td id="layer2milestone11desc"></td>
+          </tr>
+          <tr id="layer2milestone12">
+            <td id="layer2milestone12req"></td>
+            <td id="layer2milestone12desc"></td>
+          </tr>
+          <tr id="layer2milestone13">
+            <td id="layer2milestone13req"></td>
+            <td id="layer2milestone13desc"></td>
+          </tr>
+          <tr id="layer2milestone14">
+            <td id="layer2milestone14req"></td>
+            <td id="layer2milestone14desc"></td>
+          </tr>
         </table>
       </div>
       <div id="Tab1St2_2" class="center">
         You have <b id="lineSegAmt" style="font-size: 24px;"></b> Line Segments (<span id="lineSegProd"></span>/s), which raise points gain by <b id="lineSegEff" style="font-size: 24px;"></b>.<br>
-        Line Segments gain formula: <b><span id="lineSegMulti">1.00</span>log10(Dots)<sup id="lineSegExp1">0</sup>Lines<sup id="lineSegExp2">1</sup></b>.<br>Line Segments cap at 10 seconds worth of production.<br>
+        Line Segments gain formula: <b>(<span id="lineSegMulti">1.00</span>*log<sub>10</sub>(Dots)<sup id="lineSegExp1">0</sup>Lines<sup id="lineSegExp2">1</sup>)<sup id="lineSegPow">1</sup></b>.<br>Line Segments cap at <span id="lineSegCap"></span> seconds worth of production.<br>
         <table class="center"><tr>
           <td>
             <button onclick="buyBuyable(2,1)" id="layer2buyable1" class="buyableButton">
@@ -210,7 +273,21 @@
               <span id="layer2buyable3desc"></span><br><span id="layer2buyable3eff"></span><br>Level <span id="layer2buyable3level"></span><br><br>Cost: <span id="layer2buyable3cost"></span>.
             </button>
           </td>
-        </tr></table><br>
+        </tr>
+        <tr>
+          <td>
+            <button onclick="buyBuyable(2,4)" id="layer2buyable4" class="buyableButton">
+              <span id="layer2buyable4desc"></span><br><span id="layer2buyable4eff"></span><br>Level <span id="layer2buyable4level"></span><br><br>Cost: <span id="layer2buyable4cost"></span>.
+            </button>
+          </td>
+          <td>
+            <button onclick="buyBuyable(2,5)" id="layer2buyable5" class="buyableButton">
+              <span id="layer2buyable5desc"></span><br><span id="layer2buyable5eff"></span><br>Level <span id="layer2buyable5level"></span><br><br>Cost: <span id="layer2buyable5cost"></span>.
+            </button>
+          </td>
+        </tr>
+        </table>
+        <br>
         <table class="center"><tr>
           <td>
             <button onclick="buyUpgrade(2,1)" id="layer2upg1" class="upgradeButton">
@@ -244,26 +321,44 @@
               <span id="layer2upg6desc"></span><span id="layer2upg6eff"></span><br><br>Cost: <span id="layer2upg6cost"></span>.
             </button>
           </td>
-        </tr></table>
+          <td>
+            <button onclick="buyUpgrade(2,7)" id="layer2upg7" class="upgradeButton">
+              <span id="layer2upg7desc"></span><span id="layer2upg7eff"></span><br><br>Cost: <span id="layer2upg7cost"></span>.
+            </button>
+          </td>
+          <td>
+            <button onclick="buyUpgrade(2,8)" id="layer2upg8" class="upgradeButton">
+              <span id="layer2upg8desc"></span><span id="layer2upg8eff"></span><br><br>Cost: <span id="layer2upg8cost"></span>.
+            </button>
+          </td>
+        </tr>
+      </table>
+      </div>
+      <div id="Tab1St2_3" class="center">
+        You have <b id="stringLength" style="font-size: 24px;"></b> of String, which raise Line Segments gain and effect by <b id="stringEff" style="font-size: 24px;"></b>.<br>
+        <button onclick="LAYERS.stringReset()" id="stringReset" class="layerButton">
+          Reset Line Segments to extend String Length by <b id="stringGain"></b><br>
+          Next at <b id="lineSegAmt2"></b>/<b id="stringReq"></b> Line Segments
+        </button>
       </div>
     </div>
-      
+
     </div>
     <div id="Tab0" class="center">
       <table class="center">
         <b style="font-size: 24px;">Saving</b>
         <tr>
           <td>
-            <button onclick="save()" class="saveButton" style="border-color: #0000FF">Save</button>
+            <button onclick="save()" id="save0" class="saveButton" style="border-color: #0000FF">Save</button>
           </td>
           <td>
-            <button onclick="exportGame()" class="saveButton" style="border-color: #00FF00">Export</button>
+            <button onclick="exportGame()" id="save1" class="saveButton" style="border-color: #00FF00">Export</button>
           </td>
           <td>
-            <button onclick="importGame()" class="saveButton" style="border-color: #00FF00">Import</button>
+            <button onclick="importGame()" id="save2" class="saveButton" style="border-color: #00FF00">Import</button>
           </td>
           <td>
-            <button onclick="hardReset()" class="saveButton" style="width: 120px;border-color: #FF0000">HARD RESET</button>
+            <button onclick="hardReset()" id="save3" class="saveButton" style="width: 120px;border-color: #FF0000">HARD RESET</button>
           </td>
         </tr>
       </table><br>
@@ -273,27 +368,28 @@
           <td></td>
           <td>
             Notation:<br><select name="notation" id="notation-select" class="select">
-              <optGroup style="color:green" label="Serious">
-                <option value=0 style="color:green">Default</option>
-                <option value=1 style="color:green">Standard</option>
-                <option value=2 style="color:green">Mixed</option>
-                <option value=3 style="color:green">Up Arrow</option>
-                <option value=4 style="color:green">Standard (Up Arrow)</option>
-                <option value=5 style="color:green">Mixed (Up Arrow)</option>
-                <option value=6 style="color:green">Bird Array</option>
-                <option value=7 style="color:green">Letter (UCF)</option>
-                <option value=8 style="color:green">Letter (BCF)</option>
+              <optGroup id="notationOptG1" style="color:green" label="Serious">
+                <option value=0 id="notationOpt0" style="color:green">Default</option>
+                <option value=1 id="notationOpt1" style="color:green">Standard</option>
+                <option value=2 id="notationOpt2" style="color:green">Mixed</option>
+                <option value=3 id="notationOpt3" style="color:green">Up Arrow</option>
+                <option value=4 id="notationOpt4" style="color:green">Standard (Up Arrow)</option>
+                <option value=5 id="notationOpt5" style="color:green">Mixed (Up Arrow)</option>
+                <option value=6 id="notationOpt6" style="color:green">Bird Array</option>
+                <option value=7 id="notationOpt7" style="color:green">Letter (UCF)</option>
+                <option value=8 id="notationOpt8" style="color:green">Letter (BCF)</option>
               </optGroup>
-              <optGroup style="color:maroon" label="Joke">
-                <option value=9 style="color:maroon">Number Troll</option>
-                <option value=10 style="color:maroon">Letter Troll</option>
-                <option value=11 style="color:maroon">Base64</option>
-                <option value=12 style="color:maroon">Reverse</option>
-                <option value=13 style="color:maroon">???</option>
+              <optGroup id="notationOptG2" style="color:maroon" label="Joke">
+                <option value=9 id="notationOpt9" style="color:maroon">Number Troll</option>
+                <option value=10 id="notationOpt10" style="color:maroon">Letter Troll</option>
+                <option value=11 id="notationOpt11" style="color:maroon">Base64</option>
+                <option value=12 id="notationOpt12" style="color:maroon">Reverse</option>
+                <option value=13 id="notationOpt13" style="color:maroon">???</option>
               </optGroup>
             </select>
           </td>
           <td>
+            <button onclick="changeOption(2)" class="optionButton">Display Standard notation past e3e<span id="accuracy5_1"></span>: <b id="option2">Off</b></button>
           </td>
           <td></td>
         </tr>
@@ -330,43 +426,43 @@
         </tr>
         <tr>
           <td>
+            <button onclick="player.options.font = 'Consolas'" class="saveButtonLong" style="font-family:'Consolas'"><b>Consolas</b></button>
+          </td>
+          <td>
             <button onclick="player.options.font = 'Courier Prime'" class="saveButtonLong" style="font-family:'Courier Prime'"><b>Courier Prime</b></button>
           </td>
           <td>
             <button onclick="player.options.font = 'Cousine'" class="saveButtonLong" style="font-family:'Cousine'"><b>Cousine</b></button>
           </td>
+        </tr>
+        <tr>
           <td>
             <button onclick="player.options.font = 'JetBrains Mono'" class="saveButtonLong" style="font-family:'JetBrains Mono'"><b>JetBrains Mono</b></button>
           </td>
-        </tr>
-        <tr>
           <td>
             <button onclick="player.options.font = 'Larabie Font'" class="saveButtonLong" style="font-family:'Larabie Font'"><b>Larabie Font</b></button>
           </td>
           <td>
             <button onclick="player.options.font = 'Monospace-Typewritter'" class="saveButtonLong" style="font-family:'Monospace-Typewritter'"><b>Monospace Typewritter</b></button>
           </td>
+        </tr>
+        <tr>
           <td>
             <button onclick="player.options.font = 'Nova Mono'" class="saveButtonLong" style="font-family:'Nova Mono'"><b>Nova Mono</b></button>
           </td>
-        </tr>
-        <tr>
           <td>
             <button onclick="player.options.font = 'Overpass Mono'" class="saveButtonLong" style="font-family:'Overpass Mono'"><b>Overpass Mono</b></button>
           </td>
           <td>
             <button onclick="player.options.font = 'Oxygen Mono'" class="saveButtonLong" style="font-family:'Oxygen Mono'"><b>Oxygen Mono</b></button>
           </td>
-          <td>
-            <button onclick="player.options.font = 'Roboto Mono'" class="saveButtonLong" style="font-family:'Roboto Mono'"><b>Roboto Mono</b></button>
-          </td>
         </tr>
         <tr>
           <td>
-            <button onclick="player.options.font = 'Ubuntu Mono'" class="saveButtonLong" style="font-family:'Ubuntu Mono'"><b>Ubuntu Mono</b></button>
+            <button onclick="player.options.font = 'Roboto Mono'" class="saveButtonLong" style="font-family:'Roboto Mono'"><b>Roboto Mono</b></button>
           </td>
           <td>
-
+            <button onclick="player.options.font = 'Ubuntu Mono'" class="saveButtonLong" style="font-family:'Ubuntu Mono'"><b>Ubuntu Mono</b></button>
           </td>
           <td>
 

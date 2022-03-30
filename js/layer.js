@@ -8,6 +8,7 @@ const LAYERS = {
       break;
       case 2:
         x = new ExpantaNum(1000)
+        if (player.milestone[2].includes(8)) x = x.div(128.1)
         return x
       break;
       default:
@@ -68,11 +69,13 @@ const LAYERS = {
     switch(layer) {
       case 1:
         x = new ExpantaNum(1e11)
-        return x
+        if (player.upgrade[1].includes(15)) x = x.mul(upgradeEffect(1,15))
+        if (player.upgrade[1].includes(16)) x = x.mul(upgradeEffect(1,16))
+        return x.floor()
       break;
       case 2:
         x = new ExpantaNum(100)
-        return x
+        return x.floor()
       break;
       default:
         return ExpantaNum(Infinity)
@@ -252,7 +255,7 @@ const LAYERS = {
     let x = new ExpantaNum(0)
     if (player.milestone[2].includes(2)){
       x = player.prestige[2].pow(LAYERS.lineSegGainExp()[1]).mul(player.prestige[1].max(10).log10().pow(LAYERS.lineSegGainExp()[0]))
-      x = x.mul(LAYERS.lineSegGainMulti())
+      x = x.mul(LAYERS.lineSegGainMulti()).pow(LAYERS.lineSegGainPow())
     }
     return x
   },
@@ -260,6 +263,8 @@ const LAYERS = {
     let x = new ExpantaNum(1)
     if (player.upgrade[2].includes(2)) x = x.mul(upgradeEffect(2,2))
     if (player.upgrade[2].includes(3)) x = x.mul(upgradeEffect(2,3))
+    if (player.upgrade[2].includes(7)) x = x.mul(1.035)
+    if (player.upgrade[1].includes(14)) x = x.mul(1.515)
     return x
   },
   lineSegGainExp(){
@@ -268,12 +273,69 @@ const LAYERS = {
     if (buyableShow(2,1)) x[1] = x[1].add(buyableEffect(2,1))
     if (buyableShow(2,2)) x[0] = x[0].add(buyableEffect(2,2))
     if (player.upgrade[2].includes(4)) x[0] = x[0].mul(1.6)
+    if (player.upgrade[2].includes(7)) x[1] = x[1].mul(1.13)
+    return x
+  },
+  lineSegGainPow(){
+    let x = new ExpantaNum(1)
+    if (player.milestone[2].includes(5)) x = x.mul(LAYERS.stringEff())
     return x
   },
   lineSegEff(){
     let x = player.lineSegments.max(10).log10()
     if (player.upgrade[2].includes(4)) x = x.pow(1.097)
+    if (player.milestone[2].includes(5)) x = x.pow(LAYERS.stringEff())
     return x
+  },
+  lineSegCap(){
+    let x = new ExpantaNum(10)
+    if (player.milestone[2].includes(9)) x = x.add(player.prestige[2])
+    return x
+  },
+  canStringReset(){
+    return player.lineSegments.gte(LAYERS.stringReq())
+  },
+  stringReset(forced = false){
+    if (LAYERS.canStringReset() || forced){
+      if (!forced) player.string = LAYERS.stringGain().max(player.string)
+      if (!forced) updateMilestones()
+      if (!false || forced){
+        if (!player.milestone[2].includes(12)) player.upgrade[2] = player.upgrade[2].filter(n=>(n>8))
+        for (let i=1;i<=5;i++) player.buyables[2][i] = new ExpantaNum(0)
+        player.lineSegments = new ExpantaNum(0)
+        LAYERS.doReset(2,true)
+      }
+    }
+  },
+  stringSoftcapstart(){
+    let start = [pL.rec(),pL.rec().mul(uni)]
+    return start
+  },
+  stringSoftcapeff(){
+    let start = [new ExpantaNum(1/3),new ExpantaNum(1/2)]
+    return start
+  },
+  stringGain(x = player.lineSegments){
+    x = new ExpantaNum(x)
+    let gain = new ExpantaNum(10).pow(x.max(1).log10().div(LAYERS.stringBaseReq().log10()).sub(1).pow(0.8))
+    if (gain.gte(LAYERS.stringSoftcapstart()[0])) gain = gain.div(LAYERS.stringSoftcapstart()[0]).pow(LAYERS.stringSoftcapeff()[0]).mul(LAYERS.stringSoftcapstart()[0])
+    if (gain.gte(LAYERS.stringSoftcapstart()[1])) gain = new ExpantaNum(10).pow(gain.log10().div(LAYERS.stringSoftcapstart()[1].log10()).pow(LAYERS.stringSoftcapeff()[1]).mul(LAYERS.stringSoftcapstart()[1].log10()))
+    return gain.floor()
+  },
+  stringBaseReq(){
+    let base = new ExpantaNum(1e21)
+    return base
+  },
+  stringReq(y = player.string){
+    y = new ExpantaNum(y)
+    if (y.gte(LAYERS.stringSoftcapstart()[1])) y = new ExpantaNum(10).pow(y.log10().div(LAYERS.stringSoftcapstart()[1].log10()).root(LAYERS.stringSoftcapeff()[1]).mul(LAYERS.stringSoftcapstart()[1].log10()))
+    if (y.gte(LAYERS.stringSoftcapstart()[0])) y = y.div(LAYERS.stringSoftcapstart()[0]).root(LAYERS.stringSoftcapeff()[0]).mul(LAYERS.stringSoftcapstart()[0])
+    y = y.add(1)
+    return new ExpantaNum(10).pow(y.max(1).log10().pow(1.25).add(1).mul(LAYERS.stringBaseReq().log10()))
+  },
+  stringEff(){
+    let eff = player.string.add(10).log10().pow(0.5)
+    return eff
   },
 }
 
@@ -290,12 +352,35 @@ function buyDimShift(){
 }
 
 function getPointsGain(){
-  let gain = LAYERS.eff(1)
-  gain = gain.mul(LAYERS.eff(2))
-  if (player.milestone[2].includes(4)) gain = gain.mul(slogadd(player.prestige[2],2))
-  if (player.milestone[2].includes(2)) gain = gain.pow(LAYERS.lineSegEff())
-  if (player.upgrade[1].includes(11)) gain = gain.pow(upgradeEffect(1,11))
+  let gain = getPointsGainMulti().pow(getPointsGainExp())
+  if (gain.gte(getPointsGainSoftcapStart())) gain = slogadd(slogadd(gain,-2).div(slogadd(getPointsGainSoftcapStart(),-2)).root(getPointsGainSoftcapExp()).mul(slogadd(getPointsGainSoftcapStart(),-2)),2)
   return gain
+}
+
+function getPointsGainMulti(){
+  let x = new ExpantaNum(1)
+  x = x.mul(LAYERS.eff(1))
+  if (player.dimShift>=1) x = x.mul(LAYERS.eff(2))
+  if (player.milestone[2].includes(4)) x = x.mul(slogadd(player.prestige[2],2))
+  return x
+}
+
+function getPointsGainExp(){
+  let x = new ExpantaNum(1)
+  if (player.milestone[2].includes(2)) x = x.mul(LAYERS.lineSegEff())
+  if (player.upgrade[1].includes(11)) x = x.mul(upgradeEffect(1,11))
+  if (buyableShow(2,4)) x = x.mul(buyableEffect(2,4))
+  return x
+}
+
+function getPointsGainSoftcapStart(){
+  let x = slogadd(inf(),1)
+  return x
+}
+
+function getPointsGainSoftcapExp(){
+  let x = new ExpantaNum(1/0)
+  return x
 }
 
 function getGameSpeed(){

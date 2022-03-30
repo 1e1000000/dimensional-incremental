@@ -10,10 +10,10 @@ function ENify(x){
 
 function calc(dt, dt_offline){
   dt = new ExpantaNum(dt).mul(getGameSpeed()).mul(player.dev.devSpeed)
-  AFactived = Boolean(new Date().getMonth() == 3 && new Date().getDate() == 1)
+  AFactived = false || Boolean(new Date().getMonth() == 3 && new Date().getDate() == 1)
   player.points = player.points.add(getPointsGain().mul(dt))
   player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
-  player.lineSegments = player.lineSegments.add(LAYERS.lineSegGain().mul(dt)).min(LAYERS.lineSegGain().mul(10))
+  player.lineSegments = player.lineSegments.add(LAYERS.lineSegGain().mul(dt)).min(LAYERS.lineSegGain().mul(LAYERS.lineSegCap()))
   for (let i=1;i<=amtLayers;i++){
     if (LAYERS.autoGain(i)) LAYERS.doReset(i)
   }
@@ -36,6 +36,7 @@ function getPlayerData(){
     version3: 0, // usually more content on existing content
     patchVer: 0, // usually a bug fix
     updateName: "",
+    tickerTimes: 0,
     offline: {
       current: Date.now(),
       time: 0,
@@ -44,13 +45,16 @@ function getPlayerData(){
       notation: 0,
       debug: 0,
       notationOption: [2,3,4,6,5,9], // from left to right are base, e, FGH, JK, Letters to next, Exp of Num to next
-      font: 'Courier Prime'
+      font: 'Courier Prime',
+      fullStandard: 0,
+      AFOption: 0,
     },
     dev: {
       devSpeed: new ExpantaNum(1)
     },
     dimShift: 0,
     lineSegments: new ExpantaNum(0),
+    string: new ExpantaNum(0),
   }
   for (let x=1; x<=amtLayers; x++){
     s.prestige[x] = new ExpantaNum(0)
@@ -61,9 +65,9 @@ function getPlayerData(){
   return s
 }
 
-const loadUpgrades=[null,12,6]
-const loadBuyables=[null,0,3]
-const loadMilestones=[null,0,5]
+const loadUpgrades=[null,16,8]
+const loadBuyables=[null,0,5]
+const loadMilestones=[null,0,14]
 const amtLayers=2
 
 function wipe() {
@@ -117,17 +121,17 @@ function loadPlayer(load) {
     }
   }
   // fix issues, empty yet
-
+  if (new Date().getMonth() == 3 && new Date().getDate() == 1) alert("April Fool!")
   // setup offline progression
   let off_time = (Date.now() - player.offline.current)/1000
   if (off_time >= 10) player.offline.time += off_time
   // set version
   player.majorVer = 1
   player.version = 1
-  player.version2 = 1
-  player.version3 = 2
-  player.patchVer = 1
-  player.updateName = ""
+  player.version2 = 2
+  player.version3 = 0
+  player.patchVer = 0
+  player.updateName = "String Update"
   // set notation
   document.getElementById("notation-select").value = player.options.notation
   
@@ -178,6 +182,7 @@ function convertToExpNum(){
     }
   }
   player.lineSegments = ENify(player.lineSegments)
+  player.string = ENify(player.string)
   player.dev.devSpeed = ENify(player.dev.devSpeed)
 }
 

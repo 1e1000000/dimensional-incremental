@@ -9,6 +9,7 @@ const ggghhhhggtList = ["Ggghhhhggt","Jakekekekejej","Davidsew","Davavvavavavava
 const smacg13toGhgtMSG = ["Vandalism","Blocking","Final warning"]
 const wth05toGhgtMSG = ["NO","NEVER","ALWAYS FAIR"]
 const usertoEMRMSG = ["Permaban on Eliezer's marble race","The change of my username on EMR Committee"]
+const md762MovedPages = ["Savage Speeders","O'rangers","Raspberry Racers","Hazers","Calculator","Calender","ITunes Store","Find My","Tiktok","_________"]
 const wth05toEMRMSG = [
   "YOU ARE ONLY MAKING THE WIKI WORSE",
   "YOU ARE ONLY MAKING THE WIKI MORE WORSE",
@@ -54,6 +55,10 @@ const wth05toSmacg13MSG = [ // may extended later
   "Delete this",
   "Hi Smacg",
   "Random",
+  "Random non-official lore edits found, now edits are undone",
+  "More unofficial lore edits are done by Legendaryboss15",
+  "Unblock these 8 users",
+  "Spammy title",
 ]
 
 const randomMessageBy6844 = [
@@ -174,6 +179,28 @@ function randomGgghhhhggt(length=8){
   return "G" + string + "t"
 }
 
+function familyGuyGenerate(x = player.points){
+  x = new ExpantaNum(x).max(1)
+  let count
+  if (x.lte("10^^10")) count = new ExpantaNum(10).pow(x.slog(10).sub(1)).floor().min(1e9)
+  else if (x.lte("10^^1e10")) count = x.slog(10).pow(9).min(1e90)
+  else count = x.slog(10).log10().pow(90)
+  let output = ""
+  if (count.lte(7.5)){
+    for (let i = new ExpantaNum(1); i.lte(count); i = i.add(1)){
+      output = output + "<h" + i.toString() + ">Family guy</h" + i.toString() + ">"
+    }
+  } else{
+    output = output + "<h1>Family guy</h1><h2>Family guy</h2><h3>Family guy</h3>..."
+    if (count.lt(1e15)){
+      for (let i = -2; i <= 0; i++){
+        output = output + "<h" + count.add(i).toString() + ">Family guy</h" + count.add(i).toString() + ">"
+      }
+    } else output = output + "<h" + count.toString() + ">Family guy</h" + count.toString() + ">"
+  }
+  return output + "Family guy"
+}
+
 function layerNameGenerate(x = player.points){
   x = new ExpantaNum(x).max(10)
   let input = x
@@ -199,8 +226,12 @@ function layerNameGenerate(x = player.points){
 function updateNewsArray() {
   newsArray = [
     // 2020
-    [() => (Math.random() < 0.01 ? "wtf md762 changed team page to app name" : "changing team page to app name, wtf"), true],
-    // 1% if generate texts include md762
+    [() => (Math.random() < 0.5 ? "NO NON JMR LORE IN " : "STOP ADDING NON JMR LORE TO ") + (Math.random() < 0.01 ? "BOF PAGE" : "THIS HOLY PAGE"), true],
+    // 1% if generate BOF
+    [() => "changing team page to app name, " + (Math.random() < 0.01 ? "what the fxxk" : "wtf"), true],
+    // 1% if generate what the fxxk
+    [() => "MarkDevlo762 moved page " + md762MovedPages[Math.floor(Math.random()*md762MovedPages.length)] + " to " + md762MovedPages[Math.floor(Math.random()*md762MovedPages.length)], true],
+    // 1% if generate from ______ to ______
     [() => "WHO JUST GHOSTPINGED ME 7 TIMES - SuperSpruce; TheMKeyHolder: i know who, it was @" + Math.floor(Math.random()*100), true],
     // 1% if generate 98
     [() => "WHO JUST GHOSTPINGED ME 7 TIMES - SuperSpruce; TheMKeyHolder: i know who, it was @this moment that he know, he fxxked up.", Math.random()<=0.01],
@@ -259,7 +290,7 @@ function updateNewsArray() {
     [() => "Can you unpin this message because the message is f**k off " + (Math.random() < 0.01 ? "LowDeath675" : "ld675"), true],
     // 1% if generate LowDeath675
     // Ref: On late February 2021, I request to unpin the message that typed f**k off LowDeath675 and pinned on 13 days before this message sent
-    [() => "DNA Ordinal = " + (Math.random() < 0.01 ? NaN : 0), true],
+    [() => (player.points.gte("e6000000003") ? "1.00 DNA = 1.00e6,000,000,003, but 1.00 DNA Ordinal = " + (Math.random() < 0.01 ? "NaN" : "0") : "DNA Ordinal = " + (Math.random() < 0.01 ? "NaN" : "0")), true],
     // 1% if generate NaN
     // Ref: Googology Community in 2021
     [() => "Hi Emb" + (Math.random() < 0.01 ? "y" : "i"), true],
@@ -307,16 +338,17 @@ function updateNewsArray() {
     [() => "Smacg13 blocked Jakekekekejej with an expiration time of " + (Math.random() < 0.01 ? "indefinite (Violating Terms of Use: Being underage)" : "1 week (Insecting nonsense/gibberish into pages)"), true],
     // 1% if generate infinite block
     // Ref: On Late October 2021, Jakekekekejej joined Jelle's Marble Run wiki, vandalism 2 pages and harassing 2 users (include me), then 11 days he says yourself 10 which is underage
-    [() => "For Jakekekekejej: " + (Math.random() < 0.01 ? "This user is currently blocked across the Fandom network." : "This account has been disabled globally by user choice, or by Fandom."), true],
-    // 1% if generate "This user is currently blocked across the Fandom network" with Jakekekekejej
+    [() => "For " + ggghhhhggtList[Math.floor(Math.random()*ggghhhhggtList.length)] + ": " + (Math.random() < 0.01 ? "This user is currently blocked across the Fandom network." : "This account has been disabled globally by user choice, or by Fandom."), true],
+    // 1% if generate "This user is currently blocked across the Fandom network"
     // Ref: banner that accounts getting disabled
-    [() => "For Ggghhhhggt: " + (Math.random() < 0.01 ? "This account has been disabled globally by user choice, or by Fandom." : "This user is currently blocked across the Fandom network."), true],
-    // 1% if generate "This account has been disabled globally by user choice, or by Fandom" with Ggghhhhggt
-    // Ref: banner that accounts getting blocked globally
-    [() => "Pax de 2e blocked EMR Committee with an expiration time of indefinite " + (Math.random() < 0.01 ? "(ban evade)" : "(ban evasion)"), true],
-    // 1% if generate evasion
-    // Ref: On Early December 2021, EMR Committee joined Jelle's Marble Run wiki, and the first edit was copying User:Eliezer's marble race, it was proven EMR Committee is the same person as Eliezer's marble race
-    [() => Math.random() < 0.01 ? "TikTok" : "Gray (Algicosathlon)", true],
+    [() => (Math.random() < 0.04 ? ("Pax de 2e blocked " + ["MOMOSTRONG with an expiration time of indefinite (account creation disabled)","Person01235 with an expiration time of indefinite (account creation disabled)","2917evkane with an expiration time of indefinite (account creation disabled, cannot edit own talk page) (Inserting nonsense/gibberish into pages)","Smacg the best with an expiration time of indefinite (account creation disabled, cannot edit own talk page) (Abusing multiple accounts)"][Math.floor(Math.random()*4)]) : (["Smacg13","Pax de 2e"][Math.floor(Math.random()*2)] + " blocked " + ["Eliezer's marble race","EMR Committee"][Math.floor(Math.random()*2)] + " with an expiration time of " + ["1 week", "2 weeks", "indefinite"][Math.floor(Math.random()*3)] + " (account creation disabled" + (Math.random() < 0.5 ? ", cannot edit own talk page" : "") + ") (" + ["Large amount of low quality edits, language errors, etc.","Removing content from pages","Removing content from pages: has had enough chances now","ban evasion"][Math.floor(Math.random()*4)] + ")")), true],
+    // 1% if generate one of these:
+    // Pax de 2e | Eliezer's marble race | 1 week     | no cannot edit own talk page   | Large amount of low quality edits, language errors, etc.
+    // Smacg13   | Eliezer's marble race | 2 week     | no cannot edit own talk page   | Removing content from pages
+    // Pax de 2e | Eliezer's marble race | indefinite | no cannot edit own talk page   | Removing content from pages: has had enough chances now
+    // Pax de 2e | EMR Committee         | indefinite | have cannot edit own talk page | ban evasion
+    // Ref: Combination of all blocks for EMR
+    [() => (Math.random() < 0.01 ? "TikTok" : "Gray (Algicosathlon)"), true],
     // 1% if generate TikTok
     // Ref: 2 spam pages where Orange boss created on Late December 2021 in Jelle's Marble Run wiki
     [() => "!ban @Maxim Ivushkin underage" + (Math.random() < 0.01 ? "; then I reacted +1" : ""), true],
@@ -332,6 +364,9 @@ function updateNewsArray() {
     [() => ggghhhhggtList[Math.floor(Math.random()*ggghhhhggtList.length)] + " left the message f**k on " + (Math.random() < 0.01 ? "Pax de 2e's wall: You pax dumbass you banned smacg the best" : "FlameMr317's wall: You"), true],
     // 1% if generate message to Pax de 2e
     // Ref: The message that cause Davidsew was blocked on Jelle's Marble Run wiki, with some modification
+    [() => "FlameMr317 replied to the message f**k on FlameMr317's wall: " + (Math.random() < 0.01 ? (Math.random() < 0.5 ? "''my feelings''" : "<i>my feelings</i>") : "*my feelings*") + " :(", true],
+    // 1% if generate <i> </i> (javascript italic) or '' '' (fandom italic) instead of * * (discord italic)
+    // Ref: The reply of the message that cause Davidsew was blocked on Jelle's Marble Run wiki
     [() => "WongTingHo05 replied to the message " + (Math.random() < 0.01 ? "Can you stop vandalism pages?" : smacg13toGhgtMSG[Math.floor(Math.random()*smacg13toGhgtMSG.length)]) + " on Ggghhhhggt's wall: " + wth05toGhgtMSG[Math.floor(Math.random()*wth05toGhgtMSG.length)], true],
     // 1% if generate "Can you stop vandalism pages?"
     // Ref: 3 joke messages to Ggghhhhggt that sent on 2021/12/21 on 3+1 different message in Jelle's Marble Run wiki
@@ -375,13 +410,13 @@ function updateNewsArray() {
     [() => "The description says -" + format(99) + "%, but actually is -" + format(99.5) + "% (x" + (Math.random() < 0.01 ? "5e-3" : "0.005") + ")", true],
     // 1% if generate 5e-3
     // Ref: One of the Description in Pull Request on 2021 that fix a display bug
-    [() => "It include: Achievement 270 reward " + (Math.random() < 0.01 ? "never" : "always") + " getting applied; Achievement " + formatWhole(270) + " reward scaling is " + format(10) + "x faster than intended", true],
-    // 1% if generate never
+    [() => "It include: Achievement " + formatWhole(270) + " reward " + (Math.random() < 0.1 ? "never" : "always") + " getting applied; Achievement " + formatWhole(270) + " reward scaling is " + format(10) + "x " + (Math.random() < 0.1 ? "slower" : "faster") + " than intended", true],
+    // 1% if generate both never and slower
     // Ref: One of the Description in Pull Request on 2021 that list old Achievement 270 bugs
-    [() => "Generating " + format(slogadd(91251**2*16384, Math.random() < 0.01 ? Math.random()+0.01 : 0)) + " h0nde accounts...", true],
-    // 1% if generate number greater than 1e15 (Range: 1e15 - e1e15)
+    [() => "Generating " + format(slogadd(Math.floor(Math.random()*20001+80000)**2*16384, Math.random() < 0.01 ? Math.random()+0.011 : 0).floor()) + " h0nde accounts...", true],
+    // 1% if generate number greater than 1e15 (Range: 1.007e15 - e1.644e15)
     // Ref: On June 2021, a bunch of h0nde discord account join discord servers, I later calculated it was around 136 trillion possible combinations
-    [() => "@rymino bto wtf stop trying to scam people - pg" + (Math.random() < 0.01 ? "11*12" : "132"), true],
+    [() => "@" + (Math.random() < 0.5 ? "Still Ryminio" : "rymino") + " bto wtf stop trying to scam people - pg" + (Math.random() < 0.01 ? "11*12" : "132"), true],
     // 1% if generate 11*12
     // Ref: Message sent after rymino post scam link in #general on The Modding Tree discord server
     [() => "he also posted the scam in every channel on my server and CG's server - the" + (Math.random() < 0.01 ? "slow" : "paper") + "pilot", true],
@@ -412,7 +447,10 @@ function updateNewsArray() {
     // 1% if Smacg13 is generated
     // Ref: Tetr.io KO message, → leftside with nothing means the player is KO'd by yourself
     // Ref (Cont): Jakekekekejej were KO'd by yourself as he revealed yourself underage, and Smacg13 blocked him due to vandalism
-    [() => "how dare you who tf add wong a f**king coward and even " + (Math.random() < 0.01 ? "f-word" : "f**k") + " you into pages?", true],
+    [() => `Recently I ckeck Smacg13's Message Wall in [[Jelle's Marble Runs Wiki]], I see one of the message sent by [[Jakekekekejej]] said: "Hi my name is jake im '''` + Math.floor(Math.random()*5+8) + `''' years old and im new here", but you need `+ Math.floor(Math.random()*5+12) + ` (or ` + Math.floor(Math.random()*4+16) + `) years old to not violate ToU. Created by Wongtingho05 at November 06, 2021 21:37 HKT, Id: #` + format(1099283), true],
+    // 1% if generate 10, 13 and 16
+    // Ref: One of the activity on fandom for report underages
+    [() => "how dare you who tf add 'wong a f**king coward' and even '" + (Math.random() < 0.01 ? "f-word" : "f**k") + " you' into pages?", true],
     // 1% if generate f-word
     // Ref: in Early December, Davavvavavavavavavvevaaadivid harassing on pages
     [() => "How many accounts did Ggghhhhggt created on fandom? It is 7, they were Ggghhhhggt, " + (Math.random() < 0.01 ? "Ggghhhhggt, Ggghhhhggt, Ggghhhhggt, Ggghhhhggt, Ggghhhhggt and Ggghhhhggt" : "Jakekekekejej, Davidsew, Davavvavavavavavavvevaaadivid, Smacg the best, Wong stop banning me and Orange boss"), true],
@@ -429,15 +467,18 @@ function updateNewsArray() {
     [() => "No, pretend of getting banned forever for " + (Math.random() < 0.01 ? "abusing multiple accounts; *evade the ban" : "evading the ban") + " - WongTingHo05", true],
     // 1% if generate "abusing multiple accounts; *evade the ban"
     // Ref: in Early December, EMR Committee come into JMR wiki, and shortly blocked later due to evade the ban
-    [() => "Unban me please im bored - Davidsew; I WILL NOT GONNA UNBAN YOU, INSTEAD, EXTEND BAN DURATION TO INFINITE - " + (Math.random() < 0.01 ? "Pax de 2e" : "Pax") + "; I WILL NOT UNBAN YOU TOO, I WILL BLOCK YOU GLOBALLY - a soap member", true],
+    [() => "Unban me please im bored - Davidsew; I WILL NOT GONNA UNBAN YOU, INSTEAD, EXTEND BAN DURATION TO INFINITE - " + (Math.random() < 0.01 ? "Pax de 2e" : "Pax") + "; I WILL NOT UNBAN YOU TOO, I WILL BLOCK YOU GLOBALLY - a soap member; OK, I WILL CLOSE YOUR ACCOUNT AS YOU ARE SAME PERSON AS JAKEKEKEKEJEJ AND THE USER ACCOUNT IS CLOSED DUE TO UNDERAGE - a wiki team member", true],
     // 1% if generate Pax de 2e
     // Ref: in Early December, Davidsew enter this message that want to unban him, but later user is local blocked forever due to he is same user as Davavvavavavavavavvevaaadivid, then a soap member block him globally
     [() => "Anyway, he vandalised multiple wikis, I don't care about result - me at " + (Math.random() < 0.01 ? "2021/12/04" : "4 December 2021"), true],
     // 1% if generate 2021/12/04
     // Ref: Message I leave about I want to block Ggghhhhggt globally
-    [() => "!soap Sockpuppet of Ggghhhhggt [Link to Orange boss user pages on Jelle's Marble Run wiki] - WongTingHo05; Can I ask what it is you're reporting? It appears you're already blocked the user and reverted their contributions, what would we do about it? - Zacatero; It appears they were reporting a sockpuppet of a " + (Math.random() < 0.01 ? "global blocked" : "g-blocked") + " user after having already reverted and locally blocked the sock. Then when no one reposnded to the report they pinged despite no further activity from the sock. - CwM; If you report something, you have to tell us what it is you're reporting. By default, we assume you're just reporting vandalism.. but if they are already locally blocked and the edits have been undone already.. there's nothing for us to do - Zacatero; Sock of Ggghhhhggt - WongTingHo05 replying to the message Can I ask what it is you're reporting? by Zacatero; Ggghhhhggt is now posion banned (IP block, all socks banned, account creation suspended from an IP), I confirm that Orange Boss is the same person - Miss Toki; Anyway, why you not global block? - WongTingHo05; Miss Toki: Already done", true],
+    [() => "Whats wrong with spamming pages? ALWAYS " + (Math.random() < 0.01 ? "RIGHT" : "WRONG"), true],
+    // 1% if generate RIGHT
+    // Ref: Message that Orange boss leave + my possible reply
+    [() => "The moment when soap forgot I want to global block Orange boss is because he is the same user as Ggghhhhggt and not vandalism: !soap Sockpuppet of Ggghhhhggt [Link to Orange boss user pages on Jelle's Marble Run wiki] - WongTingHo05; Can I ask what it is you're reporting? It appears you're already blocked the user and reverted their contributions, what would we do about it? - Zacatero; It appears they were reporting a sockpuppet of a " + (Math.random() < 0.01 ? "global blocked" : "g-blocked") + " user after having already reverted and locally blocked the sock. Then when no one reposnded to the report they pinged despite no further activity from the sock. - CwM; If you report something, you have to tell us what it is you're reporting. By default, we assume you're just reporting vandalism.. but if they are already locally blocked and the edits have been undone already.. there's nothing for us to do - Zacatero; Sock of Ggghhhhggt - WongTingHo05 replying to the message Can I ask what it is you're reporting? by Zacatero; Ggghhhhggt is now posion banned (IP block, all socks banned, account creation suspended from an IP), I confirm that Orange Boss is the same person - Miss Toki; Anyway, why you not global block? - WongTingHo05; Miss Toki: Already done", true],
     // 1% if generate global blocked
-    // Ref: Messages about I want to block Orange boss globally, this is current longest ticker without using .repeat parameter (1084+ byte, more than 1 kB)
+    // Ref: Messages about I want to block Orange boss globally
 
 
 
@@ -446,18 +487,30 @@ function updateNewsArray() {
 
     
     // 2022
-    [() => "Hi @DEMEMZEA, can you ban @Join Discord at Under 13? - WongTingHo05; Can i? Yes, Should i? No. people can lie in the internet, and what if @Join Discord at Under 13 is just lying? if i put my nickname as 'i am 12' doesn't mean i am 12. - DEMEMZEA; I think you need to do because username is underage, you should know on Ordinal Markup server - WongTingHo05; their username doesn't even imply they're underage, it says 'commit a TOS violation' - DEMEMZEA; I can see he was set the nickname to 'a 12 years old girl use discord' on OM server - WongTingHo05 then following an image; yeah - DEMEMZEA; ban " + (Math.random() < 0.01 ? "right now" : "rn") + "? - WongTingHo05; idk how to proceed, so i'll just mute them for 1 day and when the mods wake up they'll probably take care of it - DEMEMZEA; Reda: banned", true],
+    [() => "The moment when DEMEMZEA forgot how he dealt with Gabrieldebastianis: Hi @DEMEMZEA, can you ban @Join Discord at Under 13? - WongTingHo05; Can i? Yes, Should i? No. people can lie in the internet, and what if @Join Discord at Under 13 is just lying? if i put my nickname as 'i am 12' doesn't mean i am 12. - DEMEMZEA; I think you need to do because username is underage, you should know on Ordinal Markup server - WongTingHo05; their username doesn't even imply they're underage, it says 'commit a TOS violation' - DEMEMZEA; I can see he was set the nickname to 'a 12 years old girl use discord' on OM server - WongTingHo05 then following an image; yeah - DEMEMZEA; ban " + (Math.random() < 0.01 ? "right now" : "rn") + "? - WongTingHo05; idk how to proceed, so i'll just mute them for 1 day and when the mods wake up they'll probably take care of it - DEMEMZEA; Reda: banned", true],
     // 1% if generate right now
-    // Ref: Messages about I want to ban Join Discord at under 13 on MrRedShark77's server, this is current second longest ticker without using .repeat parameter (756+ byte)
+    // Ref: Messages about I want to ban Join Discord at under 13 on MrRedShark77's server
+    [() => "Unnecessary pinging smh - Windows" + (Math.random() < 0.01 ? "3.1" : "3point1") + "; i don't see a ping..? - Kozak", true],
+    // 1% if generate 3.1
+    // Ref: Random message on Mid January 2022
     [() => "pg" + (Math.random() < 0.01 ? 132 : "") + ", is this missing " + ("!").repeat(Math.floor(Math.random()*50)*2+1) + " fixed in a later version? - Lordshinjo", true],
     // 1% if generate 132
-    // Ref: Another message on Early January 2022, 
+    // Ref: Random message on Mid January 2022
     [() => (Math.random() < 0.01 ? "KICK, NOT BAN" : "BAN, NOT KICK"), true],
     // 1% if generate KICK, NOT BAN
     // Ref: On Mid January 2022, I sent this message after scammer post scam link and later deleted
+    [() => "{{ |link =https://youtu.be/" + (Math.random() < 0.01 ? "dQw4w9WgXcQ" : "iazTQVi1CEE") + " |me", true],
+    // 1% if generate dQw4w9WgXcQ
+    // Ref: On Late January 2022, Kira Yoshikage's burner vandalism a page
+    [() => '(Replaced content with "' + (Math.random() < 0.01 ? "" : "}}") + 'Fxxk you Max - Kira Yoshikage")', true],
+    // 1% if }} didn't generate
+    // Ref: On Late January 2022, Kira Yoshikage's burner harassing in an edit
+    [() => '(Replaced content with "Category:' + (Math.random() < 0.01 ? "Marblelympics" : "Marble League") + '")', true],
+    // 1% if generate Marblelympics
+    // Ref: On Late January 2022, Kira Yoshikage's burner vandalism Marble League Teams page
     [() => "WongTingHo05 " + (Math.random() < 0.01 ? "left the message Group B isn't Group of Death on Eliezer's marble race's wall: Group A is" : "replied to the message " + usertoEMRMSG[Math.floor(Math.random()*usertoEMRMSG.length)] + "'s wall: " + wth05toEMRMSG[Math.floor(Math.random()*wth05toEMRMSG.length)]), true],
     // 1% if generate "Group A is"
-    // Ref: 2+3 joke message to EMR that sent on 2022/1/3 on 2 different message in Jelle's Marble Run wiki, plus an extra one
+    // Ref: couple joke message to EMR that sent on 2022/1/3 on 2 different message in Jelle's Marble Run wiki, plus an extra one
     [() => "WongTingHo05 Message on " + (Math.random() < 0.01 ? "Videodude13's " : "Smacg13's ") + "wall: " + wth05toSmacg13MSG[Math.floor(Math.random()*wth05toSmacg13MSG.length)], true],
     // 1% if generate Videodude13
     // Ref: So many messages
@@ -467,7 +520,15 @@ function updateNewsArray() {
     [() => "!soap Remove content nearly completely, and harass " + (Math.random() < 0.01 ? "Smacg13" : "MaxTheBlob0112") + " [link to Kira Yoshikage's burner edits on Jelle's Marble Run wiki]", true],
     // 1% if generate Smacg13
     // Ref: Message that I want soap block above user globally
-
+    [() => "It has been [0][" + Math.floor(Math.random()*10) + "][" + Math.floor(Math.random()*10) + "] DAYS Since the last recorded incident of eating marbles - Mesp", true],
+    // 1% if generate [0][0][0]
+    // Ref: Days since the message that includes incident of eating marbles
+    [() => "why 4th strike lasts " + Math.floor(Math.random()*20+1) + " " + ["minutes","hours","days","weeks","months"][Math.floor(Math.random()*5)] +" but 5th strike lasts only 1 day?", true],
+    // 1% if generate 12 days
+    // Ref: Mistake found in NO! server in early March
+    [() => "When some " + (Math.random() < 0.01 ? "87" : "stoopid") + " prevent me building, then I type this is chatting room: STOP PREVEND ME BUILDING", true],
+    // 1% if generate 87
+    // Ref: Roblox chatroom
 
 
 
@@ -521,6 +582,7 @@ function updateNewsArray() {
 
 
 
+
     // Other
     [() => (Math.random() < 0.01 ? "player fell out of the water" : "death.fell.accident.water"), true],
     // 1% if generate player fell out of the water
@@ -528,21 +590,32 @@ function updateNewsArray() {
     // 1% if generate sus
     [() => "Current Newstickers array length: " + formatWhole(getNumberBasedOnArrayLength()), true],
     // 1% if generate 10^^x or above
-    [() => "Smacg13 left the message PermaBan on Ggghhhhggt's wall: Hi Despite you not making edit you have been permanently banned for sending rude messages to myself.", true],
-    // No 1% news for now
+    [() => "Smacg13 left the message PermaBan on " + (Math.random() < 0.01 ? "Jakekekekejej's wall: Hi Despite you not making edit you have been permanently banned for being underage." : "Ggghhhhggt's wall: Hi Despite you not making edit you have been permanently banned for sending rude messages to myself."), true],
+    // 1% if generate things for Jakekekekejej, these messages doesn't exist in JMR wiki, these is just fan-make
     [() => "Newsticker rarity: " + format(1/Math.random()), true],
     // 1% if generate number >=100
+    [() => "Newsticker appearances: " + format(Math.random() < 0.01 ? hardy(0, 10, player.tickerTimes) : hardy(player.tickerTimes, 10, 0)), true],
+    // 1% if generate very small number
+    [() => "&" + (Math.random() < 0.04 ? number2digits(Math.floor(Math.random()*100)) : Math.floor(Math.random()*96+160).toString(16)), true],
+    // 1% if generate e0
     [() => (Math.random() < 0.01 ? ":rofl:" : ":joy:"), true],
     // 1% if generate rofl
+    [() => (Math.random() < 0.01 ? ":sob:" : ":cry:"), true],
+    // 1% if generate sob
     [() => (Math.random() < 0.01 ? "Uno Reverse Card" : "No U Card"), true],
     // 1% if generate Uno Reverse Card
+    [() => (Math.random() < 0.01 ? "Flying" : "Black Man") + " Question mark", true],
+    // 1% if generate Flying
     [() => "Pneumonoultramicroscopicsilicovolcanoconiosis", true],
     // No 1% news for now
-    [() => (Math.random() < 0.01 ? "BRAVO" : (Math.random() < 0.5 ? "PERFECT" : "ALL") + " CLEAR"), true],
+    [() => (Math.random() < 0.01 ? "BRAVO" : (player.points.gte("e3e12") ? "PERFECT" : "ALL") + " CLEAR"), true],
     // 1% if generate BRAVO
     [() => (Math.random() < 0.01 ? "Time till Maximum Time on JS: " + formatTime((8.64e15-Date.now())/1000,3) : "Time till Y2038 bug: " + formatTime((2147483648000-Date.now())/1000,3)), true],
     // 1% if generate Time till Maximum Time
-
+    [() => "all clear op - " + (Math.random() < 0.01 ? new ExpantaNum("10^^1e308").toString() : format("10^^1e308")), true],
+    // 1% if generate string of F1e308
+    [() => "ok doremy by smolfeesh | death by doremy", true],
+    // no 1% ticker, 2 videos titles
 
 
 
@@ -566,6 +639,7 @@ function updateNewsArray() {
 
     // Game based, no 1%
     [() => layerNameGenerate(), player.points.gte(ExpantaNum.pow(2,1024))],
+    [() => familyGuyGenerate(), true],
     [() => "Number Generated: " + format(player.points.add(1).pow(player.prestige[1].max(1).log10())) + " (based on points and dots)", true],
     // Points, Dots
     [() => "Number Generated: " + format(powExp(player.points.add(1),0.5).pow(player.prestige[2].max(1).tetrate(2))) + " (based on points and lines)", player.dimShift >= 1],
@@ -578,15 +652,25 @@ function updateNewsArray() {
     // Dots, L.Segments
     [() => "Number Generated: " + format(powExp(player.lineSegments.add(1),player.prestige[2].pow(2))) + " (based on lines and line segments)", player.milestone[2].includes(2)],
     // Lines, L.Segments
+    [() => "Number Generated: " + format(player.points.add(1).pow(player.string.max(1))) + " (based on points and string length)", player.milestone[2].includes(5)],
+    // Points, String
+    [() => "Number Generated: " + format(slogadd(player.prestige[1].max(1).pow(player.string.max(10).log10()),1)) + " (based on dots and string length)", player.milestone[2].includes(5)],
+    // Dots, String
+    [() => "Number Generated: " + format(powExp(slogadd(player.string,1).pow(player.prestige[2].tetrate(2)),player.string.max(10).log10())) + " (based on lines and string length)", player.milestone[2].includes(5)],
+    // Lines, String
+    [() => "Number Generated: " + format(powExp(slogadd(player.lineSegments,1),player.string.log10().div(10))) + " (based on line segments and string length)", player.milestone[2].includes(5)],
+    // L.Segments, String
 
     [() => "Number Generated: " + format(powExp(player.points, Math.random()+0.5)) + " (based on points)", true],
     // Points, RNG
     [() => "Number Generated: " + format(player.prestige[1].max(1).tetrate(Math.random()+1.01)) + " (based on dots)", true],
     // Dots, RNG
-    [() => "Number Generated: " + format(slogadd(Math.random(),3).pow(player.prestige[2])) + " (based on lines)", player.dimShift >= 1],
+    [() => "Number Generated: " + format(slogadd(Math.random(),3).pow(player.prestige[2].tetrate(2))) + " (based on lines)", player.dimShift >= 1],
     // Lines, RNG
-    [() => "Number Generated: " + format(powExp(player.lineSegments,Math.random()*10)) + " (based on line segments)", player.milestone[2].includes(2)],
+    [() => "Number Generated: " + format(powExp(player.lineSegments,player.lineSegments.max(1).log10().pow(0.5).mul(Math.random()))) + " (based on line segments)", player.milestone[2].includes(2)],
     // L.Segments, RNG
+    [() => "Number Generated: " + format(slogadd(player.string.pow(player.string.max(1).log10().pow(2).mul(Math.random())),1)) + " (based on string)", player.milestone[2].includes(5)],
+    // String, RNG
 
     [() => "You are currently in " + formatWhole(player.dimShift) + " dimensional space", true],
     [() => "You are having " + format(player.prestige[1].div(LAYERS.gainSoftcap(1)),4) + "x more dots than softcap, dots require now goes " + format(player.prestige[1].div(LAYERS.gainSoftcap(1)).pow(LAYERS.softcapExp(1).sub(1)),4) + "x faster", player.prestige[1].gte(LAYERS.gainSoftcap(1))],
@@ -594,10 +678,8 @@ function updateNewsArray() {
     [() => "Current tab: " + player.tab + ", Current subtab (Tab 1): " + player.subtab[1] + ", Current subsubtab (Tab 1): " + player.subsubtab[1], true],
     [() => "NaN(illion) Detected", player.points.gte("1e3000000003")],
     [() => "Your points is equal to 2^^" + format(player.points.slog(2), 4) + " or 3^^" + format(player.points.slog(3), 4), true],
-
-
-
-
+    [() => "Your points is equal to " + format(player.points.max(1+1e-15).ssrt()) + "^" + format(player.points.max(1+1e-15).ssrt()) + " or 10^" + format(player.points.max(10**(1+1e-15)).log10().ssrt(),4) + "^" + format(player.points.max(10**(1+1e-15)).log10().ssrt(),4), true],
+    [() => "Points gain formula: " + format(getPointsGainMulti()) + "^" + format(getPointsGainExp()), true],
 
 
 
@@ -662,6 +744,7 @@ function scrollNextMessage() {
   //set the text
 	var m = array[nextMsgIndex][0];
 	if (typeof(m) == "function") m = m()
+  if (AFactived && Math.random() < 0.41) m = Math.random() < 0.5 ? "April Fool " + (new Date().getYear()+1900) : "ha ha april fool prank"
 	s.textContent = m
 
   //get the parent width so we can start the message beyond it
@@ -677,9 +760,11 @@ function scrollNextMessage() {
     //distance to travel is s.parentElement.clientWidth + s.clientWidth + parent padding
     //we want to travel at rate pixels per second so we need to travel for (distance / rate) seconds
     let dist = s.parentElement.clientWidth + s.clientWidth + 20; //20 is div_container padding
-    let rate = 100; //change this value to change the scroll speed
+    let rate = AFactived ? 141 : 100; //change this value to change the scroll speed
     let transformDuration = dist / rate;
-
+    if (!AFactived){
+      player.tickerTimes++
+    }
     //set the transition duration
     s.style.transition = 'transform '+transformDuration+'s linear';
     let textWidth = s.clientWidth;

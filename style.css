@@ -35,6 +35,11 @@ html {
   src: url('font/larabiefont rg.ttf');
 }
 
+@font-face {
+  font-family: "Consolas";
+  src: url('font/CONSOLA.TTF');
+}
+
 body {
   margin: 1rem;
   font-family: var(--font);
