@@ -1161,8 +1161,8 @@ function getStatHTML(){
     if (player.milestone[2].includes(2)) output = output + `<b>` + format(LAYERS.lineSegEff(),4) + `</b> (Line Segments effect)<br>`
     if (player.upgrade[1].includes(11)) output = output + `x<b>` + format(upgradeEffect(1,11),4) + `</b> (Dot Upgrade 11 effect)<br>`
     if (buyableShow(2,4)) output = output + `x<b>` + format(buyableEffect(2,4),4) + `</b> (Line Buyable 4 effect)<br>`
-    output = output + `Total gain exponent: <b>` + format(getPointsGainExp()) + `</b><br><br>`
-    output = output + `Overall points gain: <b>` + format(getPointsGain()) + `</b><br><br>`
+    output = output + `Total gain exponent: <b>` + format(getPointsGainExp(),4) + `</b><br><br>`
+    output = output + `Overall points gain: <b>` + format(getPointsGainMulti()) + `<sup>` + format(getPointsGainExp(),4) +`</sup></b> = <b>` + format(getPointsGain()) + `</b><br><br>`
     return output
 }
 

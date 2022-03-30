@@ -136,6 +136,7 @@ function updateHTML(){
     formatWhole(7) + " Lines, " + 
     format(3.95e172) + " Line Segments and " + 
     formatLength(pL.mul(72700)) + " of String"
+    document.getElementById("endgameProgression").innerHTML = format(slogadd(player.points.max(10),-2).div(slogadd("e5.3e45",-2)).mul(100).min(100),4)
   }
   if (player.tab==100){
     document.getElementById("stats").innerHTML = (AFactived ? "" : getStatHTML())
